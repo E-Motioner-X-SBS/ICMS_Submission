@@ -1,6 +1,6 @@
 /* Layout of the body (below the template header). All sizes in mm / pt. */
 
-.body { display: flex; flex-direction: column; gap: 6mm; }
+.body { display: flex; flex-direction: column; gap: 8mm; }
 
 /* band A — the finding + hero */
 .band-a { display: grid; grid-template-columns: 474mm 1fr; column-gap: 16mm; align-items: start; }

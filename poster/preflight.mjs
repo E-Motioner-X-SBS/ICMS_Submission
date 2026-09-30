@@ -31,13 +31,17 @@ for (const dpi of [150, 50]) {
   const png = PNG.sync.read(fs.readFileSync(path.join(tmp, `p${dpi}.png`)));
   // scan the top half (the QR card sits in band A) in overlapping tiles so jsQR sees one code at a time
   let found = null;
-  const tile = Math.round(png.width / 3), step = Math.round(tile / 2);
-  for (let y = 0; y + tile <= png.height / 2 + tile && !found; y += step)
-    for (let x = 0; x + tile <= png.width && !found; x += step) {
+  const pxmm = dpi / 25.4;
+  for (const tmm of [160, 250, 841 / 3]) {                       // several tile sizes, 50% overlap
+    const tile = Math.round(tmm * pxmm), step = Math.round(tile / 2);
+    for (let y = 0; y + tile <= png.height / 2 + tile && !found; y += step)
+    for (let x = 0; x < png.width && !found; x += step) {
       const w = Math.min(tile, png.width - x), h = Math.min(tile, png.height - y), buf = new Uint8ClampedArray(w * h * 4);
       for (let r = 0; r < h; r++) buf.set(png.data.subarray(((y + r) * png.width + x) * 4, ((y + r) * png.width + x + w) * 4), r * w * 4);
       const q = jsQR(buf, w, h); if (q) found = q.data;
     }
+    if (found) break;
+  }
   ok(found === want, `QR at ${dpi} dpi decodes to ${found === null ? "(nothing)" : JSON.stringify(found)}`);
 }
 fs.rmSync(tmp, { recursive: true, force: true });

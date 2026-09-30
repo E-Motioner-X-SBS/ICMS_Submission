@@ -1,0 +1,112 @@
+{
+ "protein": "1kms",
+ "source": [
+  "kmap-sbm-validation/results/sbm_topologies_v2/protein/1kms/smog.contacts",
+  "kmap-sbm-validation/results/contact_logic/contact_logic.json"
+ ],
+ "residue_numbering": "1-based, along the SMOG C-alpha model chain (system.gro)",
+ "n_frames": 100,
+ "target_index": 4,
+ "target": [
+  2,
+  129
+ ],
+ "predictor_indices": [
+  5,
+  3,
+  0
+ ],
+ "predictors": [
+  [
+   2,
+   130
+  ],
+  [
+   2,
+   127
+  ],
+  [
+   1,
+   129
+  ]
+ ],
+ "sop": "(c5 & c0)",
+ "variables": {
+  "c0": [
+   1,
+   129
+  ],
+  "c5": [
+   2,
+   130
+  ]
+ },
+ "acc_rule": 0.79,
+ "acc_qonly": 0.38,
+ "native_near_target": [
+  [
+   1,
+   129
+  ],
+  [
+   2,
+   127
+  ],
+  [
+   2,
+   129
+  ],
+  [
+   2,
+   130
+  ],
+  [
+   3,
+   129
+  ],
+  [
+   3,
+   130
+  ],
+  [
+   3,
+   132
+  ],
+  [
+   4,
+   127
+  ],
+  [
+   4,
+   130
+  ],
+  [
+   4,
+   131
+  ],
+  [
+   4,
+   132
+  ],
+  [
+   5,
+   132
+  ],
+  [
+   6,
+   131
+  ],
+  [
+   6,
+   132
+  ],
+  [
+   6,
+   133
+  ],
+  [
+   6,
+   125
+  ]
+ ]
+}

@@ -29,7 +29,7 @@
     <section class="band band-a sec" data-fit="band A">
       <div class="a-left">
         <div class="sec-h"><span class="gc">000</span><h2>The finding</h2></div>
-        <p class="finding">We proved in Lean&nbsp;4 the discrete mathematics that turns a protein into a Karnaugh map: 131&nbsp;machine-checked theorems, none left unproved. The proofs guard a real pipeline against a bug it once had, refused a claim we got wrong, and show which experiments can test the encoding at all.</p>
+        <p class="finding">We formalised in Lean&nbsp;4 the mathematics that turns DNA, RNA and protein sequences into Karnaugh maps: 131 machine-checked theorems, none left unproved. On this verified foundation, exact Boolean minimisation reads a protein's contact map as blocks of touching chain segments, and the same logic uncovers local cooperativity in simulated folding.</p>
         <p class="why">Gray-coded grids of sequences, from Petoukhov's genetic Karnaugh matrices<sup>1</sup> to chaos-game maps (FCGR)<sup>2,3</sup>, are usually taken on trust. Here each step is a checked theorem, and every claim says how it is known.</p>
         <div class="legend-a"><span class="tag lean"><span class="g">⊢</span>theorem</span> proved in Lean&nbsp;4 <span class="tag data"><span class="g">◆</span>n, p</span> measured on data <span class="tag paper"><span class="g">✎</span>theorem</span> proved on paper, not yet in Lean</div>
         <figure><div class="fig" id="pipeline" data-w="474" data-h="82"></div></figure>
@@ -37,7 +37,7 @@
       <div class="a-right">
         <figure class="hero">
           <div class="fig" id="hero3d" data-w="300" data-h="160"></div>
-          <figcaption><b>Fibronectin type-III domain (PSICOV 1fnaA, 91 residues).</b> Minimise its contact map as a Boolean function and blocks appear: chain segments whose residues all touch another segment. Each coloured pair of strands is one block.</figcaption>
+          <figcaption><b>Fibronectin type-III domain (PSICOV 1fnaA, 91 residues).</b> Its minimised contact map is made of blocks, chain segments touching segments; each colour is one strand pair built from them.</figcaption>
         </figure>
         <div class="qrcard"><div class="fig" id="qrcard" data-w="98" data-h="126"></div></div>
       </div>
@@ -69,7 +69,7 @@
         </section>
 
         <section class="sec" data-fit="010">
-          <div class="sec-h"><span class="gc">01<span class="fb">0</span></span><h2>Twenty amino acids on a five-dimensional cube</h2></div>
+          <div class="sec-h"><span class="gc">01<span class="fb">0</span></span><h2>Amino acids on a five-dimensional cube</h2></div>
           <p>Proteins need five bits: 32 codewords for 20 residues. Numbering residues group by group before Gray-coding keeps chemistry close. All 190 pairwise distances are proved: 40 pairs sit one bit apart, only four sit five apart, and the code uses exactly half of the cube's 80 edges.</p>
           <figure><div class="fig" id="aa5" data-w="403" data-h="84"></div></figure>
           <div class="tags"><span class="tag lean"><span class="g">⊢</span>encode_injective</span><span class="tag lean"><span class="g">⊢</span>unorderedDistanceDistribution</span><span class="tag lean"><span class="g">⊢</span>max_distance_FH…MK</span><span class="tag lean"><span class="g">⊢</span>encoding_edge_coverage</span></div>
@@ -91,7 +91,7 @@
       <div class="col">
         <section class="sec" data-fit="111">
           <div class="sec-h"><span class="gc">11<span class="fb">1</span></span><h2>How Lean checks a claim</h2></div>
-          <p>In Lean&nbsp;4<sup>6</sup> a statement is a type and a proof is a program that a small kernel checks. For finite claims, <code>native_decide</code> evaluates the statement on every case in compiled code, up to 2<sup>20</sup> cases in one theorem. The price is stated: those proofs also trust Lean's compiler. No proof uses <code>sorry</code>; none adds an axiom of its own.</p>
+          <p>In Lean&nbsp;4<sup>6</sup> a statement is a type and a proof is a program checked by a small kernel. For finite claims, <code>native_decide</code> evaluates every case in compiled code, up to 2<sup>20</sup> in one theorem, and so also trusts Lean's compiler. No proof uses <code>sorry</code> or adds an axiom of its own.</p>
           <div class="pair">
             <pre class="lean"><span class="c">-- Gray code is additive over GF(2)</span>
 <span class="k">theorem</span> <span class="n">sc_gray_gf2_linear</span> :
@@ -105,31 +105,31 @@
         </section>
 
         <section class="sec" data-fit="101">
-          <div class="sec-h"><span class="gc">1<span class="fb">0</span>1</span><h2>What the proofs bought</h2></div>
+          <div class="sec-h"><span class="gc">1<span class="fb">0</span>1</span><h2>What the proofs guarantee</h2></div>
           <div class="pair">
             <div class="txt">
-              <h3>A silent bug, now ruled out</h3>
-              <p>Our co-evolution pipeline once fed 400-cell (20×20) maps to an 8-bit minimiser with 256 addresses. Cells 256–399 wrapped onto 0–143, and 143 of 152 "essential" rules were phantoms. Maps are now padded to 32×32, and a theorem guarantees rules on real residues fire only inside the 20×20 block.</p>
+              <h3>Exact rules on padded maps</h3>
+              <p>Twenty residues need five bits per axis, so a 20×20 residue-pair map is padded to 32×32 with 10-bit addresses. Lean proves that a fully fixed rule matches exactly its own cell and that any rule on real residues fires only inside the 20×20 block: padding never enters a result.</p>
             </div>
-            <figure><div class="fig" id="bug" data-w="172" data-h="76"></div></figure>
+            <figure><div class="fig" id="padding" data-w="172" data-h="76"></div></figure>
           </div>
-          <div class="tags"><span class="tag lean"><span class="g">⊢</span>cc_padding_safety</span><span class="tag data"><span class="g">◆</span>143 / 152 phantom</span></div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>cc_padding_safety</span><span class="tag lean"><span class="g">⊢</span>cc_fixed_match_unique</span><span class="tag lean"><span class="g">⊢</span>cc_off_avoiding</span></div>
           <div class="pair">
             <div class="txt">
-              <h3>A claim we got wrong, refused</h3>
-              <p>A draft said Gray-coded positions break chain segments apart, so plain binary was required. Lean would not accept the proof. What is true: a cube is an unbroken segment under either numbering, merely relabelled.</p>
+              <h3>Segments hold under either numbering</h3>
+              <p>With its low position bits free, a cube is an unbroken chain segment. Lean proves this for Gray-coded positions as well as plain binary: the two numberings name different segments, never broken ones.</p>
             </div>
             <figure><div class="fig" id="refuse" data-w="172" data-h="60"></div></figure>
           </div>
           <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_cube_is_also_interval</span><span class="tag lean"><span class="g">⊢</span>sc_gray_relabels_segments</span></div>
           <div class="pair">
             <div class="txt">
-              <h3>Which experiments can see the encoding</h3>
-              <p>Since <i>g</i>(<i>x</i>&nbsp;⊕&nbsp;<i>y</i>)&nbsp;=&nbsp;<i>g</i>(<i>x</i>)&nbsp;⊕&nbsp;<i>g</i>(<i>y</i>), a Gray-ordered map is a lexicographic (FCGR) map with its cells permuted: every distance-based statistic is identical. Only Hamming distance tells them apart. Native contacts are one bit apart 1.18× more often than background, but only 2.5&nbsp;s.d. above random code assignments.</p>
+              <h3>What the encoding can and cannot change</h3>
+              <p>Since <i>g</i>(<i>x</i>&nbsp;⊕&nbsp;<i>y</i>)&nbsp;=&nbsp;<i>g</i>(<i>x</i>)&nbsp;⊕&nbsp;<i>g</i>(<i>y</i>), a Gray-ordered map is a lexicographic (FCGR) map with its cells permuted: every distance-based statistic is identical. The code acts on Hamming distance, where native contacts are one bit apart 1.18× more often than background (<i>z</i>&nbsp;=&nbsp;2.5 against random residue-to-code assignments).</p>
             </div>
             <figure><div class="fig" id="gf2" data-w="172" data-h="84"></div></figure>
           </div>
-          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_gf2_linear</span><span class="tag lean"><span class="g">⊢</span>sc_gray_changes_hamming</span><span class="tag data"><span class="g">◆</span>47,430 contacts</span></div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_gf2_linear</span><span class="tag lean"><span class="g">⊢</span>sc_gray_changes_hamming</span><span class="tag data"><span class="g">◆</span>47,430 contacts, p = 10⁻⁷⁷</span></div>
         </section>
 
         <section class="sec" data-fit="sbm">
@@ -155,16 +155,16 @@
           <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_contact_cube_is_block</span><span class="tag data"><span class="g">◆</span>150 proteins, 86× shuffles, p = 10⁻²⁵</span></div>
         </div>
         <div class="d2">
-          <p>What circuits cannot do: a predictor that sees only (residue&nbsp;<i>i</i>, residue&nbsp;<i>j</i>, separation) cannot rank two pairs in the same cell, so cell purity caps its precision.</p>
+          <p>How far residue identity can go, as a bound: a predictor that sees only (residue&nbsp;<i>i</i>, residue&nbsp;<i>j</i>, separation) scores every pair in a cell alike, so cell purity bounds its precision. Coupling features raise the bound.</p>
           <figure><div class="fig" id="ceiling" data-w="292" data-h="90"></div></figure>
           <div class="tags"><span class="tag paper"><span class="g">✎</span>ceiling theorem</span><span class="tag data"><span class="g">◆</span>150 PSICOV proteins<sup>7</sup></span></div>
         </div>
         <div class="d3">
-          <h3>In short</h3>
+          <h3>Takeaways</h3>
           <ul class="short">
-            <li>Every step from sequence to Karnaugh map to minimised circuit is a checked theorem: 131 in Lean&nbsp;4, with the trust each one needs stated.</li>
-            <li>The proofs paid off: a padding guarantee, a refuted claim, and a rule for which tests can see a Gray code.</li>
-            <li>Minimised contact maps recover secondary-structure blocks, but sequence-only circuits cannot fold a protein: that information must come from coupling or dynamics.</li>
+            <li><b>A verified foundation.</b> Every step from sequence to minimised circuit is a machine-checked theorem; analyses built on it inherit its guarantees.</li>
+            <li><b>One language for sequence, structure and dynamics.</b> Exact minimisation reads k-mer maps, contact maps and simulated contact states alike.</li>
+            <li><b>Proof-carrying science.</b> Each result states how it is known; the approach extends to any finite encoding that can be stated and checked.</li>
           </ul>
           <p class="repo">Poster, demo and data:<br><b>github.com/E-Motioner-X-SBS/ICMS_Submission</b></p>
         </div>
@@ -180,7 +180,7 @@
         <li>M. Karnaugh, <i>Trans. AIEE</i> <b>1953</b>, 72, 593–599.</li>
         <li>W. V. Quine, <i>Am. Math. Mon.</i> <b>1952</b>, 59, 521–531; E. J. McCluskey, <i>Bell Syst. Tech. J.</i> <b>1956</b>, 35, 1417–1444.</li>
         <li>L. de Moura, S. Ullrich, <i>CADE-28</i>, LNCS 12699, <b>2021</b>, 625–635.</li>
-        <li>D. T. Jones, D. W. A. Buchan, D. Cozzetto, M. Pontil, <i>Bioinformatics</i> <b>2012</b>, 28, 184–190.</li>
+        <li>D. T. Jones <i>et al.</i>, <i>Bioinformatics</i> <b>2012</b>, 28, 184–190.</li>
         <li>J. K. Noel <i>et al.</i>, <i>PLoS Comput. Biol.</i> <b>2016</b>, 12, e1004794.</li>
       </ol>
     </footer>
