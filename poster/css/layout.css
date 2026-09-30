@@ -18,19 +18,29 @@
 .cols h3 { margin-top: 1.5mm; }
 
 /* band D — structure */
-.band-d { padding-top: 7mm; padding-bottom: 7mm; }
+.band-d { padding-top: 6mm; padding-bottom: 6mm; }
 .d-grid { display: grid; grid-template-columns: 262mm 292mm 1fr; column-gap: 12mm; }
 .d-grid p { font-size: 25pt; line-height: 1.25; }
 
-/* footer */
-.foot { display: grid; grid-template-columns: 400mm 1fr 40mm; column-gap: 10mm; align-items: start; padding: 0 2mm; }
-.foot h3 { font-size: 27pt; }
-.foot ul { margin: 0; padding-left: 7mm; font-size: 24pt; line-height: 1.24; }
-.foot li { margin-bottom: 1.2mm; }
-.legend p { font-size: 21pt; line-height: 1.75; margin: 0; }
-.refs ol { margin: 0; padding-left: 7mm; font-size: 17.5pt; line-height: 1.26; color: var(--ink-2); }
-.qr { display: flex; flex-direction: column; align-items: center; }
-.qr-l { font-family: var(--sans); font-size: 17pt; color: var(--ink-2); margin-top: 1mm; }
+/* footer: references in three columns */
+.foot { display: grid; grid-template-columns: 1fr auto; column-gap: 10mm; align-items: end; padding: 0 2mm; }
+.refs { margin: 0; padding-left: 6mm; columns: 3; column-gap: 9mm; font-size: 16.5pt; line-height: 1.28; color: var(--ink-2); }
+.refs li { break-inside: avoid; }
+.repo { font-family: var(--sans); font-stretch: 92%; font-size: 18pt; color: var(--ink-2); white-space: nowrap; }
+.repo b { color: var(--ink); font-weight: 650; }
+
+/* header additions */
+.abstract-no .track { font-size: 24pt; color: var(--ink-2); margin-top: 0.6mm; white-space: nowrap; }
+
+/* hero + QR card */
+.a-right { position: relative; }
+.hero figcaption { width: 192mm; font-size: 21.5pt; line-height: 1.26; }
+.qrcard { position: absolute; right: 0; bottom: 0; }
+
+/* conclusions */
+.short { margin: 0; padding-left: 6.5mm; font-size: 25pt; line-height: 1.25; }
+.short li { margin-bottom: 2mm; }
+.short li::marker { color: var(--flip); }
 
 /* figure slots; placeholders are drawn only while a figure module is missing */
 .fig { position: relative; }
@@ -44,7 +54,7 @@
 /* text beside a figure: 200 mm of text (~48 characters a line at 27 pt) + the figure */
 .pair { display: grid; grid-template-columns: 1fr auto; column-gap: 7mm; align-items: start; }
 .pair + .pair { margin-top: 3mm; }
-.cols .sec p { font-size: 27pt; line-height: 1.27; }
+.cols .sec p { font-size: 26pt; line-height: 1.26; }
 .cols .txt .tags { margin-bottom: 0; }
 .pair pre.lean { align-self: stretch; font-size: 17.5pt; padding: 5mm 6mm; }
 .pair + .tags { margin-top: 2.2mm; }

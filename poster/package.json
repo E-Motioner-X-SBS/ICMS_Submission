@@ -6,7 +6,10 @@
     "build": "node build.mjs"
   },
   "dependencies": {
+    "jsqr": "^1.4.0",
     "playwright-core": "^1.63.0",
+    "pngjs": "^7.0.0",
+    "qrcode": "^1.5.4",
     "three": "^0.186.1"
   }
 }

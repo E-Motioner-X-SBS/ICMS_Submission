@@ -96,3 +96,15 @@ export async function loadTSV(name) {
   const [head, ...rows] = (await r.text()).trim().split("\n").map((l) => l.split("\t"));
   return rows.map((row) => Object.fromEntries(head.map((h, i) => [h, row[i] ?? ""])));
 }
+
+// Colour tokens as hex (mirror css/poster.css :root) for SVG attributes.
+export const COLORS = {
+  ink: "#14304F", ink2: "#4A5B6E", ink3: "#7B8A99", teal: "#1E86A8", gold: "#9C8420",
+  goldWash: "#FBF7E6", tealWash: "#EAF5F9", flip: "#E8871E", wash: "#F1F5F8", rule: "#C9D4DE", paper: "#FFFFFF",
+  // one-hue ink ramp (sequential / ordinal)
+  ink100: "#DCE3EA", ink200: "#B6C3D1", ink300: "#8C9FB4", ink400: "#5E7896", ink500: "#35557A", ink600: "#14304F",
+};
+// Validated categorical palette (dataviz validator, light mode on white): use in this order,
+// never cycled, never orange (orange is reserved for "the bit that flips").
+export const CATEGORICAL = ["#2a78d6", "#e34948", "#008300", "#e87ba4", "#4a3aa7", "#1baf7a", "#9b6a1c"];
+export const FONT = { sans: "Archivo, Arial, sans-serif", serif: "Caladea, Cambria, serif", mono: "'Plex Mono', Consolas, monospace" };

@@ -74,6 +74,15 @@ const words = await page.evaluate(() => {
   return t.split(/\s+/).filter(Boolean).length;
 });
 console.log(`word count (prose, captions, headings): ${words}`);
+const extents = await page.evaluate(() => {
+  const mm = 25.4 / 96, o = [];
+  for (const [k, sel] of [["band A", ".band-a"], ["left col", ".cols .col:first-child"], ["right col", ".cols .col:last-child"], ["band D", ".band-d"], ["footer", ".foot"]]) {
+    const e = document.querySelector(sel); if (!e) continue; const r = e.getBoundingClientRect();
+    o.push(`${k} ${Math.round(r.top * mm)}–${Math.round(r.bottom * mm)} mm`);
+  }
+  return o.join(" · ");
+});
+console.log(`extents (page 1189 mm, keep ≥ 8 mm margin): ${extents}`);
 
 const out = arg("--out") ?? path.join(here, "..", "SBS_ICMS2026_Poster");
 await page.pdf({ path: `${out}.pdf`, width: `${W_MM}mm`, height: `${H_MM}mm`, printBackground: true, preferCSSPageSize: true });

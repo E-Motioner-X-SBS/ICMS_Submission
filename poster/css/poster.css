@@ -88,7 +88,7 @@ sup { font-size: 0.6em; line-height: 0; }
 
 /* ───────────────── body grid ───────────────── */
 .body { position: absolute; left: 10.72mm; right: 10.28mm; top: 193mm; bottom: 10mm; }
-.band { background: var(--wash); border-radius: 9mm; padding: 9mm 11mm; }
+.band { background: var(--wash); border-radius: 9mm; padding: 8mm 11mm; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14mm; }
 .col { display: flex; flex-direction: column; }
 
