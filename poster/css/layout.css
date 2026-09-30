@@ -1,12 +1,12 @@
 /* Layout of the body (below the template header). All sizes in mm / pt. */
 
-.body { display: flex; flex-direction: column; gap: 8mm; }
+.body { display: flex; flex-direction: column; gap: 6mm; }
 
 /* band A — the finding + hero */
 .band-a { display: grid; grid-template-columns: 474mm 1fr; column-gap: 16mm; align-items: start; }
 .a-left { display: flex; flex-direction: column; }
 .finding {
-  font-family: var(--sans); font-stretch: 92%; font-weight: 640; font-size: 37pt; line-height: 1.14;
+  font-family: var(--sans); font-stretch: 92%; font-weight: 640; font-size: 35pt; line-height: 1.14;
   letter-spacing: -0.004em; margin: 0 0 3.5mm 0; color: var(--ink);
 }
 .why { font-size: 27pt; color: var(--ink-2); margin-bottom: 4mm; }
@@ -23,10 +23,10 @@
 .d-grid p { font-size: 25pt; line-height: 1.25; }
 
 /* footer: references in three columns */
-.foot { display: grid; grid-template-columns: 1fr auto; column-gap: 10mm; align-items: end; padding: 0 2mm; }
-.refs { margin: 0; padding-left: 6mm; columns: 3; column-gap: 9mm; font-size: 16.5pt; line-height: 1.28; color: var(--ink-2); }
+.foot { display: flex; flex-direction: column; gap: 1.5mm; padding: 0 2mm; }
+.refs { margin: 0; padding-left: 6mm; columns: 4; column-gap: 8mm; font-size: 16pt; line-height: 1.26; color: var(--ink-2); }
 .refs li { break-inside: avoid; }
-.repo { font-family: var(--sans); font-stretch: 92%; font-size: 18pt; color: var(--ink-2); white-space: nowrap; }
+.repo { font-family: var(--sans); font-stretch: 92%; font-size: 19pt !important; line-height: 1.3; color: var(--ink-2); margin: 2mm 0 0; }
 .repo b { color: var(--ink); font-weight: 650; }
 
 /* header additions */
