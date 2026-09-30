@@ -1,0 +1,54 @@
+/* Layout of the body (below the template header). All sizes in mm / pt. */
+
+.body { display: flex; flex-direction: column; gap: 8mm; }
+
+/* band A — the finding + hero */
+.band-a { display: grid; grid-template-columns: 474mm 1fr; column-gap: 16mm; align-items: start; }
+.a-left { display: flex; flex-direction: column; }
+.finding {
+  font-family: var(--sans); font-stretch: 92%; font-weight: 640; font-size: 37pt; line-height: 1.14;
+  letter-spacing: -0.004em; margin: 0 0 3.5mm 0; color: var(--ink);
+}
+.why { font-size: 27pt; color: var(--ink-2); margin-bottom: 4mm; }
+.a-right figcaption { font-size: 23pt; }
+
+/* two columns */
+.cols .col { gap: 6mm; }
+.cols .sec p { font-size: 29pt; line-height: 1.28; }
+.cols h3 { margin-top: 1.5mm; }
+
+/* band D — structure */
+.band-d { padding-top: 7mm; padding-bottom: 7mm; }
+.d-grid { display: grid; grid-template-columns: 262mm 292mm 1fr; column-gap: 12mm; }
+.d-grid p { font-size: 25pt; line-height: 1.25; }
+
+/* footer */
+.foot { display: grid; grid-template-columns: 400mm 1fr 40mm; column-gap: 10mm; align-items: start; padding: 0 2mm; }
+.foot h3 { font-size: 27pt; }
+.foot ul { margin: 0; padding-left: 7mm; font-size: 24pt; line-height: 1.24; }
+.foot li { margin-bottom: 1.2mm; }
+.legend p { font-size: 21pt; line-height: 1.75; margin: 0; }
+.refs ol { margin: 0; padding-left: 7mm; font-size: 17.5pt; line-height: 1.26; color: var(--ink-2); }
+.qr { display: flex; flex-direction: column; align-items: center; }
+.qr-l { font-family: var(--sans); font-size: 17pt; color: var(--ink-2); margin-top: 1mm; }
+
+/* figure slots; placeholders are drawn only while a figure module is missing */
+.fig { position: relative; }
+.fig.placeholder { outline: 0.6mm dashed #d5a; background: repeating-linear-gradient(45deg, #fff 0 4mm, #fbeef5 4mm 8mm); }
+.fig.placeholder::after {
+  content: attr(id) " · " attr(data-w) "×" attr(data-h) " mm"; position: absolute; left: 3mm; top: 2mm;
+  font-family: var(--mono); font-size: 18pt; color: #a37;
+}
+.lean-row { margin: 1mm 0 3mm; }
+
+/* text beside a figure: 200 mm of text (~48 characters a line at 27 pt) + the figure */
+.pair { display: grid; grid-template-columns: 1fr auto; column-gap: 7mm; align-items: start; }
+.pair + .pair { margin-top: 3mm; }
+.cols .sec p { font-size: 27pt; line-height: 1.27; }
+.cols .txt .tags { margin-bottom: 0; }
+.pair pre.lean { align-self: stretch; font-size: 17.5pt; padding: 5mm 6mm; }
+.pair + .tags { margin-top: 2.2mm; }
+
+.legend-a { font-family: var(--sans); font-stretch: 92%; font-size: 21pt; color: var(--ink-2); margin: 0 0 4mm; display: flex; flex-wrap: wrap; align-items: baseline; gap: 1.5mm 3mm; }
+.legend-a .tag { margin-left: 2mm; }
+.legend-a .tag:first-child { margin-left: 0; }

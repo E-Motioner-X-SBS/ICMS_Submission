@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICMS 2026 Poster</title>
+<link rel="stylesheet" href="css/poster.css">
+<link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+<main class="poster">
+  <!-- ═════════ template header (positions, fonts and frame copied from ICMS_Poster_template.pptx) ═════════ -->
+  <div class="tpl crop logo-icms"><img src="assets/icms2026.png" alt="ICMS 2026 logo"></div>
+  <div class="tpl abstract-no">Abstract No.<br><b>ICMS2026-#-#</b></div>
+  <div class="tpl conference">The 7th International Conference on Molecular Simulation<br>4-8 October, 2026<br>Indian Institute of Science, Bengaluru</div>
+  <div class="tpl crop logo-iisc"><img src="assets/iisc.png" alt="Indian Institute of Science logo"></div>
+  <div class="tpl crop logo-sacm"><img src="assets/sacm.jpg" alt="Society for Atomistic and Continuum Modeling logo"></div>
+
+  <div class="tpl titlebox">
+    <div class="t">Is KMAP Possible? Formal Verification of Karnaugh Map Encoding for Biological Sequences in Lean&nbsp;4</div>
+    <div class="a"><u>Shuvam Banerji Seal</u>, Susmita Roy*, Dwaipayan Roy</div>
+    <div class="f">Indian Institute of Science Education and Research Kolkata, India</div>
+    <div class="e">*susmita.roy@iiserkol.ac.in</div>
+  </div>
+
+  <div class="body">
+
+    <!-- ═════════ 000 · the finding ═════════ -->
+    <section class="band band-a sec" data-fit="band A">
+      <div class="a-left">
+        <div class="sec-h"><span class="gc">000</span><h2>The finding</h2></div>
+        <p class="finding">We proved in Lean&nbsp;4 the discrete mathematics that turns a protein into a Karnaugh map: 131&nbsp;machine-checked theorems, none left unproved. The proofs guard a real pipeline against a bug it once had, refused a claim we got wrong, and show which experiments can test the encoding at all.</p>
+        <p class="why">Gray-coded grids of sequences, from Petoukhov's genetic Karnaugh matrices to chaos-game maps (FCGR), are usually taken on trust. Here each step is a checked theorem, and every claim says how it is known.</p>
+        <div class="legend-a"><span class="tag lean"><span class="g">⊢</span>theorem</span> proved in Lean&nbsp;4 <span class="tag data"><span class="g">◆</span>n, p</span> measured on data <span class="tag paper"><span class="g">✎</span>theorem</span> proved on paper, not yet in Lean</div>
+        <figure><div class="fig" id="pipeline" data-w="474" data-h="82"></div></figure>
+      </div>
+      <figure class="a-right">
+        <div class="fig" id="hero3d" data-w="300" data-h="172"></div>
+        <figcaption><b>Fibronectin type-III domain (PSICOV 1fnaA, 91 residues).</b> Minimising its contact map as a Boolean function returns blocks: chain segments that touch every residue of another segment. Each coloured pair of strands is one such block.</figcaption>
+      </figure>
+    </section>
+
+    <div class="cols">
+      <!-- ═════════ left column ═════════ -->
+      <div class="col">
+        <section class="sec" data-fit="001">
+          <div class="sec-h"><span class="gc">00<span class="fb">1</span></span><h2>A code that changes one bit at a time</h2></div>
+          <div class="pair">
+            <div class="txt">
+              <p>Binary counting can flip many bits at once: 0111&nbsp;→&nbsp;1000 flips four. The reflected Gray code <i>g</i>(<i>n</i>)&nbsp;=&nbsp;<i>n</i>&nbsp;⊕&nbsp;(<i>n</i>&nbsp;≫&nbsp;1) visits every number once and changes exactly one bit per step. DNA needs two bits, and A&nbsp;C&nbsp;G&nbsp;T is itself a Gray cycle.</p>
+            </div>
+            <figure><div class="fig" id="gray" data-w="196" data-h="68"></div></figure>
+          </div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>gray_hamming_one</span><span class="tag lean"><span class="g">⊢</span>gray_injective</span><span class="tag lean"><span class="g">⊢</span>gray_cycle_AC…TA</span></div>
+        </section>
+
+        <section class="sec" data-fit="011">
+          <div class="sec-h"><span class="gc">0<span class="fb">1</span>1</span><h2>A Karnaugh map is a folded truth table</h2></div>
+          <div class="pair">
+            <div class="txt">
+              <p>Order a grid's rows and columns by the Gray code and touching cells differ in one variable, even across the edges, which wrap like a torus. Put a <i>k</i>-mer's first letters on the rows and the rest on the columns: each 2-mer owns one cell of a 4×4 map, each 4-mer one of a 16×16 map.</p>
+            </div>
+            <figure><div class="fig" id="kmap" data-w="196" data-h="82"></div></figure>
+          </div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>dinucEncode_injective</span><span class="tag lean"><span class="g">⊢</span>tetranucEncode_injective</span><span class="tag lean"><span class="g">⊢</span>gray_code_preserves_adjacency</span></div>
+        </section>
+
+        <section class="sec" data-fit="010">
+          <div class="sec-h"><span class="gc">01<span class="fb">0</span></span><h2>Twenty amino acids on a five-dimensional cube</h2></div>
+          <p>Proteins need five bits: 32 codewords for 20 residues. Numbering residues group by group before Gray-coding keeps chemistry close. All 190 pairwise distances are proved: 40 pairs sit one bit apart, only four sit five apart, and the code uses exactly half of the cube's 80 edges.</p>
+          <figure><div class="fig" id="aa5" data-w="403" data-h="88"></div></figure>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>encode_injective</span><span class="tag lean"><span class="g">⊢</span>unorderedDistanceDistribution</span><span class="tag lean"><span class="g">⊢</span>max_distance_FH…MK</span><span class="tag lean"><span class="g">⊢</span>encoding_edge_coverage</span></div>
+        </section>
+
+        <section class="sec" data-fit="110">
+          <div class="sec-h"><span class="gc"><span class="fb">1</span>10</span><h2>Contacts as a Boolean function</h2></div>
+          <div class="pair">
+            <div class="txt">
+              <p>A contact map is a Boolean function: <i>C</i>(<i>i</i>,<i>j</i>)&nbsp;=&nbsp;1 when residues <i>i</i> and <i>j</i> lie within 8&nbsp;Å. Quine–McCluskey merges 1-cells one bit apart into ever larger cubes; the cubes that cannot grow, the prime implicants, describe the map most briefly. For an 8-residue example Lean proves the map symmetric, and that no two of its contacts can merge.</p>
+            </div>
+            <figure><div class="fig" id="qm" data-w="196" data-h="86"></div></figure>
+          </div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>contactMap8_symmetric</span><span class="tag lean"><span class="g">⊢</span>contactMap_no_groupable_minterms</span><span class="tag lean"><span class="g">⊢</span>cc_cover_complete</span></div>
+        </section>
+      </div>
+
+      <!-- ═════════ right column ═════════ -->
+      <div class="col">
+        <section class="sec" data-fit="111">
+          <div class="sec-h"><span class="gc">11<span class="fb">1</span></span><h2>How Lean checks a claim</h2></div>
+          <p>In Lean&nbsp;4 a statement is a type and a proof is a program that a small kernel checks. For finite claims, <code>native_decide</code> evaluates the statement on every case in compiled code, up to 2<sup>20</sup> cases in one theorem. The price is stated: those proofs also trust Lean's compiler. No proof uses <code>sorry</code>; none adds an axiom of its own.</p>
+          <div class="pair">
+            <pre class="lean"><span class="c">-- Gray code is additive over GF(2)</span>
+<span class="k">theorem</span> <span class="n">sc_gray_gf2_linear</span> :
+  <span class="k">∀</span> x y : Fin 32,
+    scGray (x.val ^^^ y.val)
+      = scGray x.val ^^^ scGray y.val
+  := <span class="k">by</span> <span class="t">native_decide</span></pre>
+            <figure><div class="fig" id="inventory" data-w="190" data-h="56"></div></figure>
+          </div>
+          <div class="tags"><span class="tag data"><span class="g">◆</span>axiom audit: 131 theorems, 0 sorry</span><span class="tag data"><span class="g">◆</span>Python ↔ Lean bridge: 156/156 checks</span></div>
+        </section>
+
+        <section class="sec" data-fit="101">
+          <div class="sec-h"><span class="gc">1<span class="fb">0</span>1</span><h2>What the proofs bought</h2></div>
+          <div class="pair">
+            <div class="txt">
+              <h3>A silent bug, now ruled out</h3>
+              <p>Our co-evolution pipeline once fed 400-cell (20×20) maps to an 8-bit minimiser with 256 addresses. Cells 256–399 wrapped onto 0–143, and 143 of 152 "essential" rules were phantoms. Maps are now padded to 32×32, and a theorem guarantees rules on real residues fire only inside the 20×20 block.</p>
+            </div>
+            <figure><div class="fig" id="bug" data-w="190" data-h="80"></div></figure>
+          </div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>cc_padding_safety</span><span class="tag data"><span class="g">◆</span>143 / 152 phantom</span></div>
+          <div class="pair">
+            <div class="txt">
+              <h3>A claim we got wrong, refused</h3>
+              <p>A draft said Gray-coded positions break chain segments apart, so plain binary was required. Lean would not accept the proof. What is true: a cube is an unbroken segment under either numbering, merely relabelled.</p>
+            </div>
+            <figure><div class="fig" id="refuse" data-w="190" data-h="64"></div></figure>
+          </div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_cube_is_also_interval</span><span class="tag lean"><span class="g">⊢</span>sc_gray_relabels_segments</span></div>
+          <div class="pair">
+            <div class="txt">
+              <h3>Which experiments can see the encoding</h3>
+              <p>Since <i>g</i>(<i>x</i>&nbsp;⊕&nbsp;<i>y</i>)&nbsp;=&nbsp;<i>g</i>(<i>x</i>)&nbsp;⊕&nbsp;<i>g</i>(<i>y</i>), a Gray-ordered map is a lexicographic (FCGR) map with its cells permuted: every distance-based statistic is identical. Only Hamming distance tells them apart. Native contacts are one bit apart 1.18× more often than background, but only 2.5&nbsp;s.d. above random code assignments.</p>
+            </div>
+            <figure><div class="fig" id="gf2" data-w="190" data-h="92"></div></figure>
+          </div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_gf2_linear</span><span class="tag lean"><span class="g">⊢</span>sc_gray_changes_hamming</span><span class="tag data"><span class="g">◆</span>47,430 contacts</span></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ═════════ 100 · structure ═════════ -->
+    <section class="band band-d sec" data-fit="100">
+      <div class="sec-h"><span class="gc"><span class="fb">1</span>00</span><h2>What it means for protein structure</h2></div>
+      <div class="d-grid">
+        <div class="d1">
+          <p>With plain position bits, a prime implicant of a contact map is a block: every residue of one chain segment touches every residue of another. That is the Boolean signature of a β-ladder or a helix packing, and real proteins are full of it.</p>
+          <figure><div class="fig" id="contact" data-w="250" data-h="112"></div></figure>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_contact_cube_is_block</span><span class="tag data"><span class="g">◆</span>150 proteins, 86× shuffles, p = 10⁻²⁵</span></div>
+        </div>
+        <div class="d2">
+          <p>What such circuits cannot do: a predictor that sees only (residue&nbsp;<i>i</i>, residue&nbsp;<i>j</i>, separation) cannot rank two pairs that land in the same cell, so its precision is capped by how pure the cells are.</p>
+          <figure><div class="fig" id="ceiling" data-w="292" data-h="100"></div></figure>
+          <div class="tags"><span class="tag paper"><span class="g">✎</span>ceiling theorem</span><span class="tag data"><span class="g">◆</span>150 PSICOV proteins</span></div>
+        </div>
+        <div class="d3">
+          <h3>The same minimiser on simulations</h3>
+          <p>Applied to contact states along structure-based-model trajectories instead of sequences, Boolean rules link contacts that are neighbours on the contact map:</p>
+          <figure><div class="fig" id="sbm" data-w="210" data-h="84"></div></figure>
+          <div class="tags"><span class="tag data"><span class="g">◆</span>480 proteins, 478 higher</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ footer: conclusions, legend, references ═════════ -->
+    <footer class="foot">
+      <div class="concl">
+        <h3>In short</h3>
+        <ul>
+          <li>Every step from sequence to Karnaugh map to minimised circuit is a checked theorem: 131 in Lean&nbsp;4, with the trust each one needs stated.</li>
+          <li>The proofs paid off in practice: a padding guarantee, a refuted claim, and a clear rule for which tests can see a Gray code.</li>
+          <li>Minimised contact maps recover secondary-structure blocks, but sequence-only circuits cannot fold a protein; the missing information has to come from coupling or dynamics.</li>
+        </ul>
+      </div>
+      <div class="refs">
+        <h3>References</h3>
+        <ol>
+          <li>S. V. Petoukhov, <i>BioSystems</i> <b>2024</b>, 246, 105349.</li>
+          <li>M. He, K. Kari, F. E. Millan Arias, <i>J. Theor. Biol.</i> <b>2012</b>, 301, 103–111.</li>
+          <li>G. G. Almeida, S. Vinga, <i>J. Bioinform. Comput. Biol.</i> <b>2009</b>, 7, 237–253.</li>
+          <li>D. T. Jones <i>et al.</i>, <i>Bioinformatics</i> <b>2012</b>, 28, 184–190.</li>
+          <li>L. de Moura, S. Ullrich, <i>CADE-28</i>, LNCS 12699, <b>2021</b>, 625–635.</li>
+          <li>M. Karnaugh, <i>Trans. AIEE</i> <b>1953</b>, 72, 593–599.</li>
+        </ol>
+      </div>
+      <div class="qr"><div class="fig" id="qrcode" data-w="34" data-h="34"></div><div class="qr-l">code &amp; data</div></div>
+    </footer>
+  </div>
+</main>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

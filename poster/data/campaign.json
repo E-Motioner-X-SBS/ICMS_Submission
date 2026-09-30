@@ -1,0 +1,131 @@
+{
+ "block_fraction": {
+  "n_real_higher": 145,
+  "real_mean": 0.20587421365817485,
+  "shuffled_mean": 0.002383529885922779,
+  "wilcoxon": {
+   "p": 1.5246265658846788e-25,
+   "stat": 0.0
+  }
+ },
+ "compression": {
+  "n_real_higher": 150,
+  "real_mean": 1.7449594242393849,
+  "shuffled_mean": 1.2245562701962838,
+  "wilcoxon": {
+   "p": 2.2996057560669792e-26,
+   "stat": 0.0
+  }
+ },
+ "n_targets": 150,
+ "n_shuffles": 5,
+ "target_row": {
+  "length": 91,
+  "real": {
+   "complete": true,
+   "compression": 1.8611111111111112,
+   "frac_minterms_in_blocks": 0.31840796019900497,
+   "n_block_cubes": 32,
+   "n_contacts": 201,
+   "n_cover": 216,
+   "n_on": 402,
+   "n_primes": 278,
+   "pis_per_contact": 0.5373134328358209,
+   "sound": true
+  },
+  "shuffled_mean_block_frac": 0.0,
+  "shuffled_mean_compression": 1.300568718998635,
+  "shuffled_mean_cover": 309.2,
+  "target": "1fnaA"
+ },
+ "ceiling": {
+  "feature_sets": {
+   "L1_group_sep": {
+    "ceiling_expected_mean": 0.1418057565001596,
+    "ceiling_expected_median": 0.11323692548632913,
+    "ceiling_expected_sd": 0.11230581545481347,
+    "ceiling_optimistic_mean": 0.2349248823480256,
+    "features": [
+     "g_i",
+     "g_j",
+     "sbin"
+    ],
+    "n_cells_used": 256
+   },
+   "L2_identity_only": {
+    "ceiling_expected_mean": 0.13830991011318736,
+    "ceiling_expected_median": 0.1149062380405664,
+    "ceiling_expected_sd": 0.10124347127846213,
+    "ceiling_optimistic_mean": 0.26837813245582515,
+    "features": [
+     "aa_i",
+     "aa_j"
+    ],
+    "n_cells_used": 400
+   },
+   "L2_identity_sep": {
+    "ceiling_expected_mean": 0.19330375862958132,
+    "ceiling_expected_median": 0.17267094017094015,
+    "ceiling_expected_sd": 0.11403466651232609,
+    "ceiling_optimistic_mean": 0.20841206728875875,
+    "features": [
+     "aa_i",
+     "aa_j",
+     "sbin"
+    ],
+    "n_cells_used": 1600
+   },
+   "L2_identity_sep_MIq": {
+    "ceiling_expected_mean": 0.24124747603125155,
+    "ceiling_expected_median": 0.23166368515205726,
+    "ceiling_expected_sd": 0.12691496612541758,
+    "ceiling_optimistic_mean": 0.24475742022770505,
+    "features": [
+     "aa_i",
+     "aa_j",
+     "sbin",
+     "mi_q"
+    ],
+    "n_cells_used": 6390
+   },
+   "MIq_only": {
+    "ceiling_expected_mean": 0.04304999830691128,
+    "ceiling_expected_median": 0.038928488484300486,
+    "ceiling_expected_sd": 0.01879364143034672,
+    "ceiling_optimistic_mean": 1.0,
+    "features": [
+     "mi_q"
+    ],
+    "n_cells_used": 4
+   },
+   "gray_h_sep": {
+    "ceiling_expected_mean": 0.078949798640973,
+    "ceiling_expected_median": 0.075,
+    "ceiling_expected_sd": 0.04533328728578966,
+    "ceiling_optimistic_mean": 0.13968997847026332,
+    "features": [
+     "gray_h",
+     "sbin"
+    ],
+    "n_cells_used": 24
+   },
+   "sep_only": {
+    "ceiling_expected_mean": 0.059796725177468535,
+    "ceiling_expected_median": 0.055995514147688066,
+    "ceiling_expected_sd": 0.020163205370735227,
+    "ceiling_optimistic_mean": 0.9760068185329313,
+    "features": [
+     "sbin"
+    ],
+    "n_cells_used": 4
+   }
+  },
+  "literature_anchor": {
+   "PATH_B_circuit_L2_holdout": 0.179,
+   "PATH_B_plain_MI": 0.097,
+   "PSICOV_published_prec_at_L5": 0.723
+  },
+  "n_targets": 150,
+  "note": "Each cell is scored by its own pooled empirical contact rate -- the feature class handed the test labels. 'optimistic' resolves within-cell ties in favour of contacts and is therefore a true upper bound for ANY function of these features; 'expected' uses random tie-breaking and is what a real circuit averages."
+ }
+}

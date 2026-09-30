@@ -1,0 +1,34 @@
+{
+ "n_contacts": 47430,
+ "n_proteins": 150,
+ "observed_h1_rate": 0.22831541218637993,
+ "background_h1_rate": 0.1937381404174573,
+ "enrichment_h1": 1.1784742627054088,
+ "binomial_two_sided_p": 1.1099257703483917e-77,
+ "observed_h_distribution": [
+  5042.0,
+  10829.0,
+  14559.0,
+  11856.0,
+  4616.0,
+  528.0
+ ],
+ "background_h_distribution": [
+  3491.0,
+  9189.0,
+  15150.0,
+  13626.0,
+  5547.0,
+  427.0
+ ],
+ "chi_square_gof": {
+  "stat": 1414.9074367202404,
+  "p": 8.101869899035343e-304,
+  "bins_after_merge": 6
+ },
+ "bootstrap_ci95_h1_rate": [
+  0.22270746661990196,
+  0.23400099334878136
+ ],
+ "note": "Background = within-protein, within-sep-bin resampling of NON-contact consensus residue pairs (composition+correlation controlled). Spike comparison: 38 pairs, 1.18x, p=0.345."
+}

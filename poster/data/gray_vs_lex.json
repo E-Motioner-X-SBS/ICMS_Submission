@@ -1,0 +1,46 @@
+{
+ "n_sequences": 120,
+ "quantile": 0.75,
+ "part_a_invariance": {
+  "max_abs_distance_difference": 2.7755575615628914e-16,
+  "cophenetic_gray": 0.9767467827324525,
+  "cophenetic_lex": 0.9767467827324525,
+  "cophenetic_difference": 0.0,
+  "sorted_cell_values_identical": true
+ },
+ "part_b_ordering_sensitive": {
+  "geometric_adjacency": {
+   "moran_gray_mean": 0.19952905677606286,
+   "moran_lex_mean": 0.2089284520645712,
+   "gray_higher_frac": 0.425,
+   "mean_difference": -0.009399395288508361,
+   "wilcoxon": {
+    "stat": 2895.0,
+    "p": 0.054243297530888905
+   }
+  },
+  "qm": {
+   "n": 120,
+   "cover_gray_mean": 13.933333333333334,
+   "cover_lex_mean": 13.916666666666666,
+   "primes_gray_mean": 177.725,
+   "primes_lex_mean": 166.45833333333334,
+   "gray_fewer_cubes_frac": 0.24166666666666667,
+   "mean_cover_difference": 0.016666666666666666,
+   "wilcoxon": {
+    "stat": 907.5,
+    "p": 0.9555718045338285
+   }
+  },
+  "walsh": {
+   "spectral_entropy_gray": 9.49084627458736,
+   "spectral_entropy_lex": 9.490846274587359,
+   "cophenetic_gray": 0.9948169663308938,
+   "cophenetic_lex": 0.9948169663308939
+  },
+  "pooled_2x2": {
+   "cophenetic_gray": 0.944263209182369,
+   "cophenetic_lex": 0.9442632091823691
+  }
+ }
+}

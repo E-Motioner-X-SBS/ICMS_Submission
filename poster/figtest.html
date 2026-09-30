@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Figure test</title>
+<link rel="stylesheet" href="css/poster.css">
+<style>
+  body { background: #fff; }
+  .stage { position: relative; padding: 6mm; font-family: var(--serif); font-size: var(--body); color: var(--ink); }
+  .fig-host { outline: 0.4mm dashed #f0a; outline-offset: 0; }
+</style></head>
+<body><div class="stage"><div class="fig-host" id="host"></div></div>
+<script type="module">
+  // figtest.html?fig=<module name in js/figs/>&w=<mm>&h=<mm>
+  const q = new URLSearchParams(location.search);
+  const host = document.getElementById("host");
+  host.id = q.get("fig");
+  host.style.width = q.get("w") + "mm"; host.style.height = q.get("h") + "mm";
+  try {
+    await document.fonts.ready;
+    const mod = await import(`./js/figs/${q.get("fig")}.js`);
+    await mod.default(host, { w: Number(q.get("w")), h: Number(q.get("h")) });
+    await document.fonts.ready;
+  } catch (e) { console.error("FIGURE ERROR:", e.stack || e.message); document.title = "ERROR"; }
+  window.__posterReady = true;
+</script></body></html>

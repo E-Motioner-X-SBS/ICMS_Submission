@@ -1,0 +1,7 @@
+# build scratch
+node_modules/
+poster/figs_png/
+poster/preview.png
+poster/crop.png
+*.log
+.DS_Store

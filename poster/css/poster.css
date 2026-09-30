@@ -1,0 +1,148 @@
+/* ICMS 2026 poster — A0 portrait (841 × 1189 mm). Tokens from DESIGN.md. */
+
+@font-face { font-family: "Caladea"; src: url(../fonts/Caladea-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "Caladea"; src: url(../fonts/Caladea-Bold.ttf); font-weight: 700; }
+@font-face { font-family: "Caladea"; src: url(../fonts/Caladea-Italic.ttf); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Caladea"; src: url(../fonts/Caladea-BoldItalic.ttf); font-weight: 700; font-style: italic; }
+@font-face { font-family: "Carlito"; src: url(../fonts/Carlito-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "Carlito"; src: url(../fonts/Carlito-Bold.ttf); font-weight: 700; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-VF.ttf); font-weight: 100 900; font-stretch: 62% 125%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-Italic-VF.ttf); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; }
+@font-face { font-family: "Plex Mono"; src: url(../fonts/IBMPlexMono-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "Plex Mono"; src: url(../fonts/IBMPlexMono-Medium.ttf); font-weight: 500; }
+@font-face { font-family: "Plex Mono"; src: url(../fonts/IBMPlexMono-SemiBold.ttf); font-weight: 600; }
+
+:root {
+  --ink: #14304F;
+  --ink-2: #4A5B6E;
+  --ink-3: #7B8A99;
+  --teal: #1E86A8;
+  --gold: #9C8420;
+  --flip: #E8871E;
+  --wash: #F1F5F8;
+  --rule: #C9D4DE;
+  --paper: #FFFFFF;
+  --tpl-blue: #4472C4;        /* template frame colour (theme accent1) */
+
+  /* amino-acid groups — validated with dataviz/validate_palette.js (all hard checks pass) */
+  --g-hydrophobic: #9b6a1c;
+  --g-aromatic: #4a3aa7;
+  --g-sulfur: #008300;
+  --g-breaker: #e87ba4;
+  --g-polar: #1baf7a;
+  --g-negative: #e34948;
+  --g-positive: #2a78d6;
+
+  --body: 31pt;
+  --caption: 24pt;
+  --label: 22pt;
+  --serif: "Caladea", "Cambria", serif;
+  --sans: "Archivo", "Arial", sans-serif;
+  --mono: "Plex Mono", "Consolas", monospace;
+}
+
+@page { size: 841mm 1189mm; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); }
+body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+.poster {
+  position: relative; width: 841mm; height: 1189mm; overflow: hidden;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--serif); font-size: var(--body); line-height: 1.32;
+  font-kerning: normal; text-rendering: geometricPrecision;
+}
+
+/* ───────────────── template header (positions copied from the .pptx) ───────────────── */
+.tpl { position: absolute; }
+.crop { position: absolute; overflow: hidden; }
+.crop img { position: absolute; display: block; }
+.logo-icms  { left: 16.11mm;  top: 2.17mm; width: 61.02mm; height: 59.78mm; }
+.logo-icms img { width: 71.20mm; height: 71.20mm; left: -5.387mm; top: -4.305mm; }
+.logo-iisc  { left: 707.72mm; top: 0.77mm; width: 64.27mm; height: 71.21mm; }
+.logo-iisc img { width: 112.34mm; height: 79.03mm; left: -25.12mm; top: -7.824mm; }
+.logo-sacm  { left: 772.59mm; top: 4.49mm; width: 55mm; height: 55mm; }
+.logo-sacm img { width: 55mm; height: 55mm; left: 0; top: 0; }
+.abstract-no {
+  left: 81.96mm; top: 17.63mm; width: 95.44mm; height: 33.34mm;
+  padding: 1.27mm 2.54mm; font-family: "Carlito", "Calibri", sans-serif; font-size: 36pt; line-height: 1.2;
+}
+.abstract-no b { font-weight: 700; }
+.conference {
+  left: 77.13mm; top: 9.11mm; width: 660.37mm; height: 48.73mm; padding: 1.27mm 2.54mm;
+  font-family: "Caladea", "Cambria", serif; font-size: 36pt; line-height: 1.2; text-align: center;
+}
+.titlebox {
+  left: 10.72mm; top: 66.93mm; width: 819.54mm; height: 117.32mm;
+  border: 1pt solid var(--tpl-blue); border-radius: 19.55mm; background: #fff;
+  box-shadow: 0 0 2.8mm 0.9mm rgba(40, 98, 214, 0.40);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 1.27mm 2.54mm; font-family: "Caladea", "Cambria", serif; text-align: center; line-height: 1.16;
+}
+.titlebox .t { font-size: 72pt; font-weight: 700; max-width: 780mm; line-height: 1.08; margin-bottom: 2.2mm; }
+.titlebox .a { font-size: 45pt; }
+.titlebox .a u { text-decoration-thickness: 2.2pt; text-underline-offset: 5pt; }
+.titlebox .f { font-size: 45pt; }
+.titlebox .e { font-size: 40pt; }
+sup { font-size: 0.6em; line-height: 0; }
+
+/* ───────────────── body grid ───────────────── */
+.body { position: absolute; left: 10.72mm; right: 10.28mm; top: 193mm; bottom: 10mm; }
+.band { background: var(--wash); border-radius: 9mm; padding: 9mm 11mm; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14mm; }
+.col { display: flex; flex-direction: column; }
+
+/* section heading: Gray-coded number + title. The flipped bit is orange. */
+.sec { position: relative; }
+.sec-h { display: flex; align-items: baseline; gap: 6mm; margin: 0 0 3.2mm 0; }
+.gc {
+  font-family: var(--mono); font-weight: 600; font-size: 34pt; letter-spacing: 0.06em;
+  color: var(--ink-3); flex: none;
+}
+.gc .fb { color: var(--flip); }
+.sec-h h2 {
+  font-family: var(--sans); font-stretch: 88%; font-weight: 780; font-size: 50pt; line-height: 1.02;
+  margin: 0; letter-spacing: -0.005em; color: var(--ink);
+}
+h3 { font-family: var(--sans); font-stretch: 90%; font-weight: 700; font-size: 32pt; margin: 0 0 1.2mm 0; line-height: 1.1; }
+p { margin: 0 0 2.4mm 0; }
+.lede { font-size: 33pt; }
+em { font-style: italic; }
+strong { font-weight: 700; }
+.mute { color: var(--ink-2); }
+.num { font-family: var(--sans); font-weight: 700; font-stretch: 92%; }
+
+/* evidence tags — how each claim is known */
+.tag {
+  display: inline-flex; align-items: baseline; gap: 0.35em; white-space: nowrap;
+  font-family: var(--mono); font-weight: 500; font-size: 19pt; line-height: 1.25;
+  padding: 0.12em 0.42em 0.1em; border-radius: 0.5em; vertical-align: 0.12em;
+  border: 1.4pt solid currentColor;
+}
+.tag.lean { color: var(--gold); background: #FBF7E6; }
+.tag.data { color: var(--teal); background: #EAF5F9; font-family: var(--sans); font-weight: 600; font-stretch: 92%; font-size: 20pt; }
+.tag.paper { color: var(--ink-2); background: #fff; border-style: dashed; font-family: var(--sans); font-weight: 600; font-stretch: 92%; font-size: 20pt; }
+.tag .g { font-family: var(--sans); font-weight: 800; }
+.tags { display: flex; flex-wrap: wrap; gap: 1.6mm 2mm; margin: 1.2mm 0 2mm; }
+
+figure { margin: 0; }
+figcaption { font-size: var(--caption); line-height: 1.3; color: var(--ink-2); margin-top: 1.5mm; }
+figcaption b { color: var(--ink); }
+svg { display: block; overflow: visible; }
+svg text { font-family: var(--sans); fill: var(--ink); }
+svg .mono { font-family: var(--mono); }
+svg .serif { font-family: var(--serif); }
+
+code, .code { font-family: var(--mono); font-size: 0.8em; }
+pre.lean {
+  margin: 0; padding: 4.5mm 6mm; border-radius: 5mm; background: #0F2740; color: #E8EEF4;
+  font-family: var(--mono); font-size: 18.5pt; line-height: 1.38; white-space: pre; overflow: hidden;
+}
+pre.lean .k { color: #F2B563; }   /* keywords */
+pre.lean .n { color: #8FD3E8; }   /* theorem name */
+pre.lean .c { color: #8C9DB0; }   /* comment */
+pre.lean .t { color: #B9E4A6; }   /* tactic */
+
+.hr { height: 0; border-top: 1.2pt solid var(--rule); margin: 5mm 0; }
+.row { display: flex; gap: 8mm; align-items: flex-start; }
+.grow { flex: 1 1 0; min-width: 0; }
