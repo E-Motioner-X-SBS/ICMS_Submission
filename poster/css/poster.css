@@ -6,8 +6,17 @@
 @font-face { font-family: "Caladea"; src: url(../fonts/Caladea-BoldItalic.ttf); font-weight: 700; font-style: italic; }
 @font-face { font-family: "Carlito"; src: url(../fonts/Carlito-Regular.ttf); font-weight: 400; }
 @font-face { font-family: "Carlito"; src: url(../fonts/Carlito-Bold.ttf); font-weight: 700; }
-@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-VF.ttf); font-weight: 100 900; font-stretch: 62% 125%; }
-@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-Italic-VF.ttf); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; }
+/* Archivo as STATIC instances (from pdoom-video-sbs): variable fonts become Type 3 glyphs
+   in Chrome's PDF output, which some print preflight tools reject. */
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w875-300.ttf); font-weight: 300; font-stretch: 87.5%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w875-500.ttf); font-weight: 500; font-stretch: 87.5%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w875-700.ttf); font-weight: 700; font-stretch: 87.5%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w875-900.ttf); font-weight: 900; font-stretch: 87.5%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w1000-300.ttf); font-weight: 300; font-stretch: 100%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w1000-500.ttf); font-weight: 500; font-stretch: 100%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w1000-700.ttf); font-weight: 700; font-stretch: 100%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/Archivo-w1000-900.ttf); font-weight: 900; font-stretch: 100%; }
+@font-face { font-family: "Archivo"; src: url(../fonts/ArchivoItalic-w1000-400.ttf); font-weight: 400; font-style: italic; }
 @font-face { font-family: "Plex Mono"; src: url(../fonts/IBMPlexMono-Regular.ttf); font-weight: 400; }
 @font-face { font-family: "Plex Mono"; src: url(../fonts/IBMPlexMono-Medium.ttf); font-weight: 500; }
 @font-face { font-family: "Plex Mono"; src: url(../fonts/IBMPlexMono-SemiBold.ttf); font-weight: 600; }
@@ -50,7 +59,7 @@ body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   position: relative; width: 841mm; height: 1189mm; overflow: hidden;
   background: var(--paper); color: var(--ink);
   font-family: var(--serif); font-size: var(--body); line-height: 1.32;
-  font-kerning: normal; text-rendering: geometricPrecision;
+  font-kerning: normal; text-rendering: geometricPrecision; font-synthesis: none;
 }
 
 /* ───────────────── template header (positions copied from the .pptx) ───────────────── */
