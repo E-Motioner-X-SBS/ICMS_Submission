@@ -122,7 +122,7 @@ export default {
       add(yours, 
         h(`li${a.sound && a.complete ? "" : ".bad"}`, `${int(a.nPrimes)} prime implicants; a cover of ${int(a.nCover)}, sound and complete`, " ", h("span.tag.data", "◆ checked on every input")),
         h("li", `${int(a.contactsInBlocks)} of ${int(cm.n)} contacts in ${a.blocks.length} ${a.blocks.length === 1 ? "block" : "blocks"} of touching segments`, " ", h("span.tag.lean", "⊢ sc_contact_cube_is_block"), " ", h("span.tag.data", "◆ your map")));
-    } catch (e) { if (alive) { yours.lastChild.remove(); add(yours, h("li.bad", e.message)); } }
+    } catch (e) { if (alive) { yours.lastChild.remove(); add(yours, h(e?.kind === "too-long" ? "li.wait" : "li.bad", e.message)); } }
   },
   unmount() { this._off?.(); },
 };

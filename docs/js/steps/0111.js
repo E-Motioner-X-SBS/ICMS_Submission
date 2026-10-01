@@ -1,5 +1,5 @@
 // 0111 Contacts become a Boolean function: the chain's contact map, in 3D and as a truth table.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, add, residueLabel } from "../ui.js";
 import { contactMapCanvas } from "../viz/maps.js";
 import { createViewer } from "../viz/structure3d.js";
 import { contactFunction } from "../core/qm.js";
@@ -10,7 +10,7 @@ export default {
   async mount(el, ctx) {
     const { chain } = ctx, cm = ctx.derived.contacts(), L = cm.L;
     const f = contactFunction(cm.pairs, L), p = f.p;
-    const resLabel = (i) => { const r = chain.residues[i]; return `${r.one ?? "?"}${r.authSeqId ?? r.seqId}`; };
+    const resLabel = (i) => residueLabel(chain, i);
     let sel = null, viewer = null, map = null, alive = true, ro = null;
     this._off = () => { alive = false; viewer?.dispose(); ro?.disconnect(); };
 

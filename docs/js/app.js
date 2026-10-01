@@ -1,5 +1,7 @@
 // The app: routing (#/ID/CHAIN/STEP), structure loading, per-chain caches, navigation.
 import { EXAMPLES, fetchEntry, defaultChain, normalizeId } from "./core/rcsb.js";
+import { chainOptions } from "./core/chains.js";
+import { cachedExample, fingerprint } from "./core/cache.js";
 import { contactMap } from "./core/contacts.js";
 import { h, toast } from "./ui.js";
 
@@ -23,21 +25,7 @@ const idx = (id) => CHAPTERS.findIndex((c) => c.id === id);
 // ── state ────────────────────────────────────────────────────────────────────
 const state = { id: null, chainId: null, structure: null, chain: null, step: "0000", derived: new Map(), mounted: null, loading: null };
 
-/** Chains a visitor can pick; for nucleic acids with several strands, also all strands together. */
-export function chainOptions(structure) {
-  const opts = structure.chains.map((c) => ({ id: c.id, chain: c, label: `${c.id}`, sub: `${c.entityType}, ${c.length}` }));
-  for (const type of ["dna", "rna"]) {
-    const cs = structure.chains.filter((c) => c.entityType === type);
-    if (cs.length >= 2 && cs.length <= 4) {
-      const residues = cs.flatMap((c) => c.residues);
-      const merged = { ...cs[0], uid: `${structure.id}/${cs.map((c) => c.id).join("+")}`, id: cs.map((c) => c.id).join("+"),
-        residues, seq: cs.map((c) => c.seq).join(""), seqCanonical: cs.map((c) => c.seqCanonical ?? c.seq).join(""), length: residues.length,
-        strands: cs.map((c) => ({ id: c.id, length: c.length })), notes: [] };
-      opts.unshift({ id: merged.id, chain: merged, label: `${merged.id}`, sub: `all ${type === "dna" ? "DNA" : "RNA"} strands, ${merged.length}` });
-    }
-  }
-  return opts;
-}
+export { chainOptions };
 function pickChain(structure, chainId) {
   const opts = chainOptions(structure);
   if (chainId) { const o = opts.find((x) => x.id === chainId); if (o) return o.chain; }
@@ -64,22 +52,39 @@ function runJob(msg, onRound) {
   const id = ++jobId;
   return new Promise((resolve, reject) => { pending.set(id, { resolve, reject, onRound }); qmWorker().postMessage({ id, ...msg }); });
 }
-export const MAX_QM_RESIDUES = 700;
+export const MAX_QM_RESIDUES = 2048;                 // 11 position bits; a 972-residue chain minimises in ~0.3 s
 function memo(key, make) {
   const k = `${state.chain?.uid}|${key}`;
   if (!state.derived.has(k)) state.derived.set(k, make());
   return state.derived.get(k);
 }
+// For the bundled examples the slow results are precomputed (data/examples/, same engine); a
+// cached record is used only when its fingerprint matches the contacts or codes computed here.
+async function fromCache(part, key) {
+  const rec = await cachedExample(state.chain?.uid);
+  return rec && rec[part] && rec.contactsKey === key ? rec[part] : null;
+}
 const derived = {
   contacts: () => memo("contacts", () => contactMap(state.chain)),
-  analysis: (onRound) => memo("analysis", () => {
+  analysis: (onRound) => memo("analysis", async () => {
     const cm = derived.contacts();
-    if (cm.L > MAX_QM_RESIDUES) return Promise.reject(new Error(`This chain has ${cm.L} residues; the live minimiser handles up to ${MAX_QM_RESIDUES}. Pick a shorter chain or one of the examples.`));
+    if (cm.L > MAX_QM_RESIDUES) throw Object.assign(new Error(`This chain has ${cm.L} residues; the in-browser minimiser takes chains of up to ${MAX_QM_RESIDUES}. Pick another chain of this entry, or another structure.`), { kind: "too-long" });
+    const hit = await fromCache("analysis", fingerprint(cm.L, cm.pairs));
+    if (hit) return { ...hit, cached: true };
     const rounds = [];                                   // kept, so a later visit can replay the merge rounds
     return runJob({ type: "contacts", pairs: cm.pairs, length: cm.L }, (r) => { rounds.push(r); onRound?.(r); }).then((res) => ({ ...res, rounds }));
   }),
-  shuffles: (n = 5) => memo(`shuffles${n}`, () => { const cm = derived.contacts(); return runJob({ type: "shuffles", pairs: cm.pairs, length: cm.L, n, seed: 20260905 }); }),
-  sequenceCircuit: (codes, w) => memo(`seq${w}`, () => runJob({ type: "sequence", codes, w })),
+  shuffles: (n = 5) => memo(`shuffles${n}`, async () => {
+    const cm = derived.contacts();
+    const hit = n === 5 ? await fromCache("shuffles", fingerprint(cm.L, cm.pairs)) : null;
+    if (hit) return hit;
+    return runJob({ type: "shuffles", pairs: cm.pairs, length: cm.L, n, seed: 20260905 });
+  }),
+  sequenceCircuit: (codes, w) => memo(`seq${w}`, async () => {
+    const rec = await cachedExample(state.chain?.uid);
+    if (rec?.sequence && rec.sequence.w === w && rec.sequence.codesKey === fingerprint(codes.length, codes)) return { ...rec.sequence.result, cached: true };
+    return runJob({ type: "sequence", codes, w });
+  }),
 };
 
 // ── routing ──────────────────────────────────────────────────────────────────
@@ -87,7 +92,9 @@ function parseHash() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   if (!parts.length) return { step: "0000" };
   if (/^[01]{4}$/.test(parts[0])) return { step: parts[0] };
-  return { id: normalizeId(parts[0]) || null, chainId: parts[1] ? decodeURIComponent(parts[1]) : null, step: /^[01]{4}$/.test(parts[2] || "") ? parts[2] : "0001" };
+  const id = normalizeId(decodeURIComponent(parts[0]));
+  if (!id) return { bad: decodeURIComponent(parts[0]), step: "0000" };
+  return { id, chainId: parts[1] ? decodeURIComponent(parts[1]) : null, step: /^[01]{4}$/.test(parts[2] || "") ? parts[2] : "0001" };
 }
 export function go(step, { id = state.id, chainId = state.chainId } = {}) {
   const target = id ? `#/${id}/${encodeURIComponent(chainId || "")}/${step}` : `#/${step}`;
@@ -110,6 +117,11 @@ async function route() {
   const r = parseHash();
   const step = CHAPTERS.some((c) => c.id === r.step) ? r.step : "0000";
   const main = document.getElementById("chapter");
+  if (r.bad) {
+    renderChrome();
+    main.replaceChildren(h("div.error", `“${r.bad}” is not a PDB ID. A PDB ID has four characters and starts with a digit, like 1UBQ.`), h("p", h("a", { href: "#/0000" }, "Pick a structure")));
+    return;
+  }
   try {
     if (r.id && (r.id !== state.id || (r.chainId && r.chainId !== state.chainId))) {
       main.replaceChildren(h("div.loading", h("span.spinner"), `Loading ${r.id} from the Protein Data Bank…`));
@@ -192,3 +204,8 @@ document.addEventListener("keydown", (e) => {
 window.addEventListener("hashchange", route);
 window.addEventListener("error", (e) => toast(`Unexpected error: ${e.message}`));
 route();
+
+// offline and instant revisits: the service worker precaches the site and keeps fetched structures
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register(new URL("../sw.js", import.meta.url)).catch(() => { /* the site works without it */ });
+}

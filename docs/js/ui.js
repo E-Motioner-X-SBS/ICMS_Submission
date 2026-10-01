@@ -154,7 +154,7 @@ export function dataTable(columns, rows, { pageSize = 12, sortKey = null, desc =
     page = Math.min(page, pages - 1);
     head.replaceChildren(...columns.map((c) => h("th", { scope: "col", class: c.num ? "num" : "", "aria-sort": key === c.key ? (down ? "descending" : "ascending") : "none" },
       h("button", { type: "button", title: c.title || `Sort by ${c.label}`, on: { click: () => { if (key === c.key) down = !down; else { key = c.key; down = !!c.num; } draw(); } } },
-        c.label, key === c.key ? (down ? " ↓" : " ↑") : ""))), action ? h("th", { scope: "col" }, "") : null);
+        c.label, key === c.key ? (down ? " ↓" : " ↑") : ""))), ...(action ? [h("th", { scope: "col" }, "")] : []));
     tbody.replaceChildren(...rs.slice(page * pageSize, (page + 1) * pageSize).map((r) => h("tr",
       columns.map((c) => h(c.num ? "td.num" : "td", c.fmt ? c.fmt(r[c.key], r) : r[c.key])),
       action ? h("td", h("button.btn.small.ghost", { type: "button", on: { click: () => action.run(r) } }, action.label)) : null)));
@@ -165,4 +165,17 @@ export function dataTable(columns, rows, { pageSize = 12, sortKey = null, desc =
   }
   draw();
   return h("div.datatable", search, h("div.scrollx", { "data-noswipe": "" }, h("table", caption ? h("caption", caption) : null, h("thead", head), tbody)), pager);
+}
+
+/** How a chapter reports a failed step: a calm note for a stated limit, an error box otherwise. */
+export const failBox = (e) => (e?.kind === "too-long" ? h("p.note", e.message) : h("div.error", e?.userMessage || e?.message || String(e)));
+
+/** A residue as a reader names it: letter + the PDB file's own number (author numbering), with the
+ *  strand for merged nucleic-acid chains. Positions in the bits stay 0-based; labels do not. */
+export function residueLabel(chain, k) {
+  const r = chain.residues[k];
+  if (!r) return `?${k}`;
+  let strand = "";
+  if (chain.strands) { let acc = 0; for (const s of chain.strands) { if (k < acc + s.length) { strand = `${s.id}:`; break; } acc += s.length; } }
+  return `${strand}${r.one ?? "?"}${r.authSeqId ?? r.seqId ?? k}`;
 }

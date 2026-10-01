@@ -1,7 +1,7 @@
 // 1101 From the rules, inferences: block rules that continue one another describe one pair of
 // touching segments; their positions give direction and register exactly. Nucleic acids add a
 // base-pairing cross-check from geometry.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, add, failBox, residueLabel, dataTable } from "../ui.js";
 import { createViewer } from "../viz/structure3d.js";
 import { circuitTerms, rulesFrom, inferences, basePairs, setText } from "../core/rules.js";
 import { int } from "../core/format.js";
@@ -61,19 +61,19 @@ export default {
       h("p.hook", "Block rules that continue one another along both segments describe one pair of touching segments. Their positions then tell, by counting rather than fitting, which segments pair, in which direction and in which register."),
       status);
     let a;
-    try { a = await ctx.derived.analysis(); } catch (e) { status.replaceChildren(h("div.error", e.message)); return; }
+    try { a = await ctx.derived.analysis(); } catch (e) { status.replaceChildren(failBox(e)); return; }
     if (!alive) return;
     status.remove();
     const rules = rulesFrom(circuitTerms(a.cover, a.p, L), cm.has);
     const inf = inferences(rules, chain, cm.has);
-    const label = (k) => `${chain.residues[k]?.one ?? "?"}${k}`;
+    const label = (k) => residueLabel(chain, k);
     const n = (o) => inf.filter((c) => c.orientation === o).length;
     const W = () => Math.max(300, Math.min(stageWidth(el), 640));
 
     const cards = inf.map((c, k) => {
       const o = ORIENT[c.orientation];
       const evidence = c.register
-        ? `${c.register.kind} stays between ${c.register.lo} and ${c.register.hi} over all ${c.nPairs} contacts`
+        ? `over all ${c.nPairs} contacts, positions satisfy ${c.register.kind} = ${c.register.lo}–${c.register.hi}`
         : `${c.nPairs} contacts from ${c.blocks.length} ${c.blocks.length === 1 ? "rule" : "rules"}`;
       const sentence = [
         c.orientation === "antiparallel" || c.orientation === "parallel" ? `Segments ${label(c.i0)}–${label(c.i1 - 1)} and ${label(c.j0)}–${label(c.j1 - 1)} run ${o.word}.` : `Segments ${label(c.i0)}–${label(c.i1 - 1)} and ${label(c.j0)}–${label(c.j1 - 1)} touch as a block.`,
@@ -102,14 +102,18 @@ export default {
       h("p.small", "How direction is read: in an antiparallel pair one segment runs forward while the other runs back, so i + j stays nearly constant across its contacts; in a parallel pair j − i does. The ranges below are the full spread over every contact of the pair, not an average."),
       viewBox,
       h("div.legend", Object.values(ORIENT).map((o) => h("span", h("i", { style: { background: o.color } }), o.word))),
-      ...cards,
+      ...cards.slice(0, 8),
+      inf.length > 8 ? h("details.thm-more", h("summary", `${inf.length - 8} more strand pairs`), dataTable([
+        { key: "seg", label: "segments" }, { key: "o", label: "direction" }, { key: "ev", label: "evidence" }, { key: "n", label: "contacts", num: true }, { key: "r", label: "rules", num: true }],
+        inf.slice(8).map((c) => ({ seg: `${label(c.i0)}–${label(c.i1 - 1)} · ${label(c.j0)}–${label(c.j1 - 1)}`, o: ORIENT[c.orientation].word + (c.hairpin ? ", hairpin" : ""),
+          ev: c.register ? `${c.register.kind} = ${c.register.lo}–${c.register.hi}` : "", n: c.nPairs, r: c.blocks.length })), { sortKey: "n", desc: true, pageSize: 10 })) : null,
       na ? h("h2", "Cross-check: base pairs from geometry") : null,
       na ? h("div", { id: "bp" }) : null,
       tags([["lean", "sc_contact_cube_is_block"], ["lean", "contactMap8_symmetric"], ["data", `your structure: ${int(inf.length)} pairs from ${int(rules.filter((r) => r.kind === "block").length)} block rules`]]),
       h("p", "Each inference rests on rules that hold for every pair they name, and on the segment lemma that makes a block rule a pair of unbroken segments. The words antiparallel and hairpin describe the counted geometry; naming it a β-sheet or a stem is the reader's interpretation."),
       theoremBlock("1101", ["SequenceCircuits.sc_contact_cube_is_block", "ContactMapCompleteness.contactMap8_symmetric", "ContactMapCompleteness.contactCell_symmetric"]),
       nextStep(ctx, "Back to the sequence: minimised the same way, it must come back unchanged."));
-    el.querySelectorAll("[data-ladder]").forEach((d) => d.append(ladder(inf[+d.dataset.ladder], label, W())));
+    el.querySelectorAll("[data-ladder]").forEach((d) => d.append(ladder(inf[+d.dataset.ladder], label, W())));   // only the cards shown
 
     if (na) {
       const bp = basePairs(chain), box = el.querySelector("#bp");

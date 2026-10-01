@@ -146,7 +146,7 @@ export function toVerilog(terms, p, name = "contact") {
   const prods = terms.map((t) => { const l = [...lit(t.I.pattern, "i"), ...lit(t.J.pattern, "j")]; return l.length ? `(${l.join(" & ")})` : "1'b1"; });
   return [`// ${name}: C(i, j) = 1 iff residues i and j touch. ${terms.length} AND terms, one OR. Exact.`,
     `module ${name.replace(/\W/g, "_")} (input [${p - 1}:0] i, input [${p - 1}:0] j, output C);`,
-    `  assign C = ${prods.join("\n           | ")};`, "endmodule", ""].join("\n");
+    `  assign C = ${prods.length ? prods.join("\n           | ") : "1'b0   // no contacts: the constant 0"};`, "endmodule", ""].join("\n");
 }
 
 /** Base pairs by geometry (nucleic acids only): a purine N1 within `cutoff` Å of a pyrimidine

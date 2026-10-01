@@ -1,5 +1,5 @@
 // 1111 Read the sequence back: the sequence as a Boolean function, minimised, decoded.
-import { h, theoremBlock, tags, nextStep, css, inkOn, sleep, reducedMotion, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, inkOn, sleep, reducedMotion, add, failBox } from "../ui.js";
 import { encodeSequence, bits, alphabet, letterVar } from "../core/encoding.js";
 import { int, num } from "../core/format.js";
 
@@ -26,7 +26,7 @@ export default {
 
     let r;
     try { r = await ctx.derived.sequenceCircuit(codes, w); }
-    catch (e) { status.replaceChildren(h("div.error", e.message)); return; }
+    catch (e) { status.replaceChildren(failBox(e)); return; }
     if (!alive) return;
     el.querySelector(".hook").textContent = `Now the sequence itself becomes a Boolean function: f(i, a) = 1 when position i holds the letter whose code is a. That is ${int(codes.length)} 1-cells over ${r.p} position bits plus ${w} letter bits.`;
     status.remove();

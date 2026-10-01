@@ -1,6 +1,6 @@
 // 0100 The structure as a circuit: the minimised contact function drawn as a two-level
 // AND–OR circuit (PLA view and gate view), evaluated live, verified on every input, exported.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, add, failBox } from "../ui.js";
 import { contactMapCanvas } from "../viz/maps.js";
 import { circuitTerms, evaluate, verifyEverywhere, toPLA, toVerilog } from "../core/rules.js";
 import { bits } from "../core/encoding.js";
@@ -95,7 +95,7 @@ export default {
       h("p.hook", `The whole PDB entry is now one Boolean function, and its minimised cover is a circuit: one AND gate per term, one OR gate collecting them. Feed it the bits of two positions and it answers, exactly, whether those ${chain.entityType === "protein" ? "residues" : "nucleotides"} touch.`),
       status);
     let a;
-    try { a = await ctx.derived.analysis(); } catch (e) { status.replaceChildren(h("div.error", e.message)); return; }
+    try { a = await ctx.derived.analysis(); } catch (e) { status.replaceChildren(failBox(e)); return; }
     if (!alive) return;
     status.remove();
     const p = a.p, terms = circuitTerms(a.cover, p, L);
@@ -163,7 +163,9 @@ export default {
         h("div.stat", h("div.v", `${2 * p}`), h("div.l", `input wires (${p} for i, ${p} for j)`)),
         h("div.stat", h("div.v", int(terms.length)), h("div.l", "AND gates, one OR")),
         h("div.stat", h("div.v", int(literals)), h("div.l", "literals (wires into ANDs)")),
-        h("div.stat", h("div.v", `${num(4 ** p / terms.length, 0)}×`), h("div.l", `smaller than the ${int(4 ** p)}-row truth table`))),
+        terms.length ? h("div.stat", h("div.v", `${num(4 ** p / terms.length, 0)}×`), h("div.l", `smaller than the ${int(4 ** p)}-row truth table`))
+          : h("div.stat", h("div.v", "C = 0"), h("div.l", "the constant 0: no gate is needed"))),
+      terms.length ? null : h("p.note", `This chain has no contacts under the definition (${cm.def.label}), so its circuit is the constant 0: it answers “no contact” for every input, which the button below checks.`),
       h("h2", "The AND plane"),
       h("p", "Each row is one AND gate. A filled dot means the gate needs that input wire to be 1, an open dot that it needs 0 (a NOT in front), no dot that it ignores the wire. Every gate feeds the single OR on the right; the number after it is how many cells the gate covers. Tap a row."),
       h("section.stage.white", { "aria-label": "AND plane of the circuit" }, pla, pager),

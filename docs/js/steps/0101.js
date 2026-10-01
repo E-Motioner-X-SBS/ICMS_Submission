@@ -1,5 +1,5 @@
 // 0101 Minimisation finds blocks: exact Quine–McCluskey on the chain's contact function.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, sleep, reducedMotion, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, sleep, reducedMotion, add, failBox } from "../ui.js";
 import { contactMapCanvas, barsSVG } from "../viz/maps.js";
 import { createViewer } from "../viz/structure3d.js";
 import { bits } from "../core/encoding.js";
@@ -55,7 +55,7 @@ export default {
     let analysis;
     try {
       analysis = await ctx.derived.analysis();
-    } catch (e) { if (alive) rounds.replaceChildren(h("div.error", e.message)); return; }
+    } catch (e) { if (alive) rounds.replaceChildren(failBox(e)); return; }
     if (!alive) return;
     res = analysis;
     // replay the merge rounds at a readable pace
@@ -77,7 +77,9 @@ export default {
       h("ul.checks",
         h(`li${res.sound ? "" : ".bad"}`, "Sound: no cube of the cover touches a 0-cell."),
         h(`li${res.complete ? "" : ".bad"}`, `Complete: every one of the ${int(res.nOn)} 1-cells is covered.`)),
-      h("p.small", { style: { marginBottom: 0 } }, `${int(res.nOn)} cells, ${int(res.nPrimes)} primes, ${res.ms ? `${Math.round(res.ms)} ms` : ""} in a Web Worker.`));
+      h("p.small", { style: { marginBottom: 0 } }, res.cached
+        ? `${int(res.nOn)} cells, ${int(res.nPrimes)} primes. Precomputed for this example by the same engine and matched to the contacts parsed here; any other entry is minimised live in a Web Worker.`
+        : `${int(res.nOn)} cells, ${int(res.nPrimes)} primes, ${res.ms ? `${Math.round(res.ms)} ms` : ""} in a Web Worker.`));
 
     // ── blocks, grouped into strand pairs (the poster's definition) ──
     const blocks = res.blocks;
@@ -146,7 +148,7 @@ export default {
         h("div", { html: barsSVG([{ label: `chain ${chain.id}`, value: res.fracContactsInBlocks, color: "var(--teal)" },
           ...sh.map((r, k) => ({ label: `shuffle ${k + 1}`, value: r.fracContactsInBlocks, color: "var(--ink-3)" }))], { width: 340, max: Math.max(0.05, res.fracContactsInBlocks) }) }),
         h("div.cap", h("b", `${pct(res.fracContactsInBlocks)} vs ${pct(mean, 2)}`), " of contacts in blocks, real vs mean of 5 separation-preserving shuffles (seeded, reproducible).")));
-    }).catch((e) => { const box = el.querySelector("#shuffles"); if (box) box.replaceChildren(h("div.error", e.message)); });
+    }).catch((e) => { const box = el.querySelector("#shuffles"); if (box) box.replaceChildren(failBox(e)); });
     viewer = await createViewer(viewBox, chain);
     if (!alive) { viewer?.dispose(); return; }
     paintAll();
