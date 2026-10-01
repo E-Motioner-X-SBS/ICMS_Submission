@@ -1,0 +1,790 @@
+{
+ "psicov": {
+  "proteins": 150,
+  "exact": 150,
+  "residues": 21837,
+  "contacts": 47430,
+  "inputs": 6905856,
+  "gates": 54229,
+  "primes": 68544,
+  "rules": 27997,
+  "exceptions": 0,
+  "missed": 0,
+  "ruleKinds": {
+   "block": 2476,
+   "pair": 6705,
+   "strided": 12015,
+   "single": 6801
+  },
+  "contactsInBlocks": 9260,
+  "proteinsWithBlocks": 145,
+  "strandPairs": 1142,
+  "antiparallel": 352,
+  "parallel": 198,
+  "hairpins": 99,
+  "proteinsWithAntiparallel": 116,
+  "sequencesLossless": 150,
+  "campaignMatch": {
+   "primes": 150,
+   "gates": 150,
+   "contacts": 150
+  }
+ },
+ "fna": {
+  "contacts": 201,
+  "gates": 216,
+  "rules": 111,
+  "inputs": 16384,
+  "contactsInBlocks": 56,
+  "pairs": [
+   {
+    "i0": 24,
+    "i1": 34,
+    "j0": 60,
+    "j1": 70,
+    "contacts": 22,
+    "rules": 6,
+    "orientation": "antiparallel",
+    "register": {
+     "kind": "i + j",
+     "lo": 92,
+     "hi": 96
+    },
+    "gap": 26,
+    "hairpin": false
+   },
+   {
+    "i0": 0,
+    "i1": 8,
+    "j0": 13,
+    "j1": 18,
+    "contacts": 14,
+    "rules": 4,
+    "orientation": "antiparallel",
+    "register": {
+     "kind": "i + j",
+     "lo": 16,
+     "hi": 20
+    },
+    "gap": 5,
+    "hairpin": true
+   },
+   {
+    "i0": 10,
+    "i1": 14,
+    "j0": 52,
+    "j1": 56,
+    "contacts": 10,
+    "rules": 3,
+    "orientation": "antiparallel",
+    "register": {
+     "kind": "i + j",
+     "lo": 63,
+     "hi": 66
+    },
+    "gap": 38,
+    "hairpin": false
+   },
+   {
+    "i0": 56,
+    "i1": 60,
+    "j0": 88,
+    "j1": 90,
+    "contacts": 6,
+    "rules": 2,
+    "orientation": "parallel",
+    "register": {
+     "kind": "j − i",
+     "lo": 29,
+     "hi": 32
+    },
+    "gap": 28,
+    "hairpin": false
+   },
+   {
+    "i0": 8,
+    "i1": 10,
+    "j0": 88,
+    "j1": 90,
+    "contacts": 4,
+    "rules": 1,
+    "orientation": "short",
+    "register": null,
+    "gap": 78,
+    "hairpin": false
+   }
+  ]
+ },
+ "curated": {
+  "chains": 112,
+  "exact": 112,
+  "byType": {
+   "protein": {
+    "structures": 81,
+    "contacts": 27553,
+    "rules": 16559,
+    "exceptions": 0,
+    "inputs": 5971968,
+    "basePairs": null,
+    "antiparallel": 185,
+    "parallel": 72,
+    "hairpins": 59
+   },
+   "dna": {
+    "structures": 25,
+    "contacts": 489,
+    "rules": 347,
+    "exceptions": 0,
+    "inputs": 29440,
+    "basePairs": {
+     "n": 231,
+     "watsonCrick": 231
+    },
+    "antiparallel": 1,
+    "parallel": 0,
+    "hairpins": 0
+   },
+   "rna": {
+    "structures": 6,
+    "contacts": 54,
+    "rules": 39,
+    "exceptions": 0,
+    "inputs": 2112,
+    "basePairs": {
+     "n": 15,
+     "watsonCrick": 12
+    },
+    "antiparallel": 0,
+    "parallel": 0,
+    "hairpins": 0
+   }
+  },
+  "totals": {
+   "contacts": 28096,
+   "inputs": 6003520,
+   "gates": 32686,
+   "rules": 16945,
+   "exceptions": 0,
+   "missed": 0
+  },
+  "skipped": 42
+ },
+ "spike": {
+  "sequences": 1299,
+  "unique": 301,
+  "pairs": 10,
+  "allowed": 41,
+  "forbidden": 35,
+  "implications": 23,
+  "violations": 0,
+  "uniqueMinimum": true,
+  "lossless": true,
+  "showcase": {
+   "at": [
+    371,
+    376
+   ],
+   "ref": [
+    "S",
+    "T"
+   ],
+   "n": 1294,
+   "allowed": [
+    {
+     "pair": "FA",
+     "count": 970
+    },
+    {
+     "pair": "LT",
+     "count": 311
+    },
+    {
+     "pair": "SA",
+     "count": 1
+    },
+    {
+     "pair": "ST",
+     "count": 12
+    }
+   ],
+   "forbidden": [
+    "FT",
+    "LA"
+   ],
+   "implications": [
+    {
+     "if": "F",
+     "at": "i",
+     "then": "A",
+     "support": 970,
+     "counterexamples": 0
+    },
+    {
+     "if": "L",
+     "at": "i",
+     "then": "T",
+     "support": 311,
+     "counterexamples": 0
+    }
+   ]
+  },
+  "pairsTable": [
+   {
+    "at": [
+     371,
+     376
+    ],
+    "n": 1294,
+    "allowed": [
+     "FA",
+     "LT",
+     "SA",
+     "ST"
+    ],
+    "forbidden": [
+     "FT",
+     "LA"
+    ],
+    "implications": [
+     {
+      "if": "F",
+      "at": "i",
+      "then": "A",
+      "support": 970
+     },
+     {
+      "if": "L",
+      "at": "i",
+      "then": "T",
+      "support": 311
+     }
+    ]
+   },
+   {
+    "at": [
+     19,
+     27
+    ],
+    "n": 1276,
+    "allowed": [
+     "IS",
+     "TA",
+     "TS"
+    ],
+    "forbidden": [
+     "IA"
+    ],
+    "implications": [
+     {
+      "if": "I",
+      "at": "i",
+      "then": "S",
+      "support": 957
+     },
+     {
+      "if": "A",
+      "at": "j",
+      "then": "T",
+      "support": 318
+     }
+    ]
+   },
+   {
+    "at": [
+     376,
+     405
+    ],
+    "n": 1297,
+    "allowed": [
+     "AD",
+     "AN",
+     "TD"
+    ],
+    "forbidden": [
+     "TN"
+    ],
+    "implications": [
+     {
+      "if": "T",
+      "at": "i",
+      "then": "D",
+      "support": 324
+     },
+     {
+      "if": "N",
+      "at": "j",
+      "then": "A",
+      "support": 970
+     }
+    ]
+   },
+   {
+    "at": [
+     67,
+     95
+    ],
+    "n": 1298,
+    "allowed": [
+     "AI",
+     "AT",
+     "VI"
+    ],
+    "forbidden": [
+     "VT"
+    ],
+    "implications": [
+     {
+      "if": "V",
+      "at": "i",
+      "then": "I",
+      "support": 314
+     },
+     {
+      "if": "T",
+      "at": "j",
+      "then": "A",
+      "support": 983
+     }
+    ]
+   },
+   {
+    "at": [
+     405,
+     408
+    ],
+    "n": 1289,
+    "allowed": [
+     "DR",
+     "NR",
+     "NS"
+    ],
+    "forbidden": [
+     "DS"
+    ],
+    "implications": [
+     {
+      "if": "D",
+      "at": "i",
+      "then": "R",
+      "support": 319
+     },
+     {
+      "if": "S",
+      "at": "j",
+      "then": "N",
+      "support": 958
+     }
+    ]
+   },
+   {
+    "at": [
+     211,
+     214
+    ],
+    "n": 1259,
+    "allowed": [
+     "IE",
+     "IK",
+     "IR",
+     "KR",
+     "NR"
+    ],
+    "forbidden": [
+     "KE",
+     "KK",
+     "NE",
+     "NK"
+    ],
+    "implications": [
+     {
+      "if": "N",
+      "at": "i",
+      "then": "R",
+      "support": 985
+     },
+     {
+      "if": "E",
+      "at": "j",
+      "then": "I",
+      "support": 271
+     }
+    ]
+   },
+   {
+    "at": [
+     211,
+     213
+    ],
+    "n": 1258,
+    "allowed": [
+     "IP",
+     "KG",
+     "NE",
+     "NG",
+     "NV"
+    ],
+    "forbidden": [
+     "IE",
+     "IG",
+     "IV",
+     "KE",
+     "KP",
+     "KV",
+     "NP"
+    ],
+    "implications": [
+     {
+      "if": "I",
+      "at": "i",
+      "then": "P",
+      "support": 272
+     },
+     {
+      "if": "P",
+      "at": "j",
+      "then": "I",
+      "support": 272
+     },
+     {
+      "if": "V",
+      "at": "j",
+      "then": "N",
+      "support": 8
+     }
+    ]
+   },
+   {
+    "at": [
+     213,
+     214
+    ],
+    "n": 1278,
+    "allowed": [
+     "ER",
+     "GR",
+     "PE",
+     "PK",
+     "VR"
+    ],
+    "forbidden": [
+     "EE",
+     "EK",
+     "GE",
+     "GK",
+     "PR",
+     "VE",
+     "VK"
+    ],
+    "implications": [
+     {
+      "if": "G",
+      "at": "i",
+      "then": "R",
+      "support": 977
+     },
+     {
+      "if": "V",
+      "at": "i",
+      "then": "R",
+      "support": 21
+     },
+     {
+      "if": "E",
+      "at": "j",
+      "then": "P",
+      "support": 278
+     }
+    ]
+   },
+   {
+    "at": [
+     null,
+     214
+    ],
+    "n": 301,
+    "allowed": [
+     "GR",
+     "IR",
+     "LR",
+     "SR",
+     "VE",
+     "VK"
+    ],
+    "forbidden": [
+     "GE",
+     "GK",
+     "IE",
+     "IK",
+     "LE",
+     "LK",
+     "SE",
+     "SK",
+     "VR"
+    ],
+    "implications": [
+     {
+      "if": "I",
+      "at": "i",
+      "then": "R",
+      "support": 13
+     },
+     {
+      "if": "L",
+      "at": "i",
+      "then": "R",
+      "support": 6
+     },
+     {
+      "if": "E",
+      "at": "j",
+      "then": "V",
+      "support": 278
+     }
+    ]
+   },
+   {
+    "at": [
+     486,
+     493
+    ],
+    "n": 1297,
+    "allowed": [
+     "FQ",
+     "FR",
+     "PQ",
+     "VQ"
+    ],
+    "forbidden": [
+     "PR",
+     "VR"
+    ],
+    "implications": [
+     {
+      "if": "V",
+      "at": "i",
+      "then": "Q",
+      "support": 102
+     },
+     {
+      "if": "R",
+      "at": "j",
+      "then": "F",
+      "support": 1173
+     }
+    ]
+   }
+  ]
+ },
+ "sbm": {
+  "runs": {
+   "proteins": 479,
+   "frames": 48385,
+   "with_rules": 474,
+   "implications": 9986,
+   "neighbour_implications": 3966,
+   "with_neighbour_rules": 471,
+   "equivalences": 7,
+   "two_input": 0,
+   "counterexamples_in_examples": 0
+  },
+  "unique": {
+   "proteins": 436,
+   "frames": 44085,
+   "with_rules": 433,
+   "implications": 8875,
+   "neighbour_implications": 3661,
+   "with_neighbour_rules": 430,
+   "equivalences": 6,
+   "two_input": 0,
+   "counterexamples_in_examples": 0
+  },
+  "dense": {
+   "proteins": 10,
+   "frames": 80000,
+   "with_rules": 8,
+   "implications": 33,
+   "neighbour_implications": 33,
+   "with_neighbour_rules": 8,
+   "equivalences": 0,
+   "two_input": 0,
+   "counterexamples_in_examples": 0
+  },
+  "thresholds": {
+   "min_support_frames": 20,
+   "min_broken_frames": 5,
+   "min_frames": 50,
+   "neighbour_l1": 2
+  },
+  "definition": "contact formed when C-alpha distance < 1.2 x native (SMOG2 C-alpha model); rule holds in every frame",
+  "denseExamples": [
+   {
+    "target": "1m1q",
+    "frames": 8000,
+    "rules": 7,
+    "neighbour": 7,
+    "example": {
+     "if": [
+      56,
+      60
+     ],
+     "then": [
+      55,
+      60
+     ],
+     "l1": 1,
+     "if_formed": 4995,
+     "then_formed": 6510,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1j0o",
+    "frames": 8000,
+    "rules": 5,
+    "neighbour": 5,
+    "example": {
+     "if": [
+      67,
+      71
+     ],
+     "then": [
+      67,
+      72
+     ],
+     "l1": 1,
+     "if_formed": 6398,
+     "then_formed": 7365,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1m1r",
+    "frames": 8000,
+    "rules": 7,
+    "neighbour": 7,
+    "example": {
+     "if": [
+      56,
+      60
+     ],
+     "then": [
+      55,
+      60
+     ],
+     "l1": 1,
+     "if_formed": 4931,
+     "then_formed": 6587,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1j0p",
+    "frames": 8000,
+    "rules": 5,
+    "neighbour": 5,
+    "example": {
+     "if": [
+      68,
+      72
+     ],
+     "then": [
+      68,
+      73
+     ],
+     "l1": 1,
+     "if_formed": 6804,
+     "then_formed": 7570,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1jxy",
+    "frames": 8000,
+    "rules": 2,
+    "neighbour": 2,
+    "example": {
+     "if": [
+      9,
+      30
+     ],
+     "then": [
+      8,
+      30
+     ],
+     "l1": 1,
+     "if_formed": 6080,
+     "then_formed": 7113,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1jxu",
+    "frames": 8000,
+    "rules": 1,
+    "neighbour": 1,
+    "example": {
+     "if": [
+      4,
+      44
+     ],
+     "then": [
+      4,
+      43
+     ],
+     "l1": 1,
+     "if_formed": 5207,
+     "then_formed": 6435,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1CBN",
+    "frames": 8000,
+    "rules": 1,
+    "neighbour": 1,
+    "example": {
+     "if": [
+      4,
+      44
+     ],
+     "then": [
+      4,
+      43
+     ],
+     "l1": 1,
+     "if_formed": 5429,
+     "then_formed": 6687,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   },
+   {
+    "target": "1C75",
+    "frames": 8000,
+    "rules": 5,
+    "neighbour": 5,
+    "example": {
+     "if": [
+      39,
+      64
+     ],
+     "then": [
+      39,
+      63
+     ],
+     "l1": 1,
+     "if_formed": 6289,
+     "then_formed": 7599,
+     "frames": 8000,
+     "counterexamples": 0
+    }
+   }
+  ]
+ }
+}

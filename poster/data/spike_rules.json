@@ -1,0 +1,921 @@
+{
+ "source": "/store/shuvam/E-motioner-X-SBS/co-evolution-analysis/Spike_protein.aln-fasta",
+ "n_sequences": 1299,
+ "n_unique": 301,
+ "columns": 1276,
+ "numbering": "Wuhan-Hu-1 (UniProt P0DTC2), by global alignment of the column consensus",
+ "consensus_identity_to_wuhan": 0.978,
+ "min_support": 5,
+ "pairs": [
+  {
+   "columns": [
+    373,
+    378
+   ],
+   "wuhan": [
+    371,
+    376
+   ],
+   "wuhan_ref": [
+    "S",
+    "T"
+   ],
+   "n_sequences": 1294,
+   "n_unique_sequences": 296,
+   "alphabet_i": [
+    "F",
+    "L",
+    "S"
+   ],
+   "alphabet_j": [
+    "A",
+    "T"
+   ],
+   "allowed": [
+    {
+     "pair": "FA",
+     "count": 970
+    },
+    {
+     "pair": "LT",
+     "count": 311
+    },
+    {
+     "pair": "SA",
+     "count": 1
+    },
+    {
+     "pair": "ST",
+     "count": 12
+    }
+   ],
+   "forbidden": [
+    "FT",
+    "LA"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "F",
+     "at": "i",
+     "then": "A",
+     "support": 970,
+     "counterexamples": 0
+    },
+    {
+     "if": "L",
+     "at": "i",
+     "then": "T",
+     "support": 311,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 4,
+     "n_primes": 8,
+     "n_cover": 4,
+     "n_essential": 4,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 2,
+     "n_primes": 6,
+     "n_cover": 2,
+     "n_essential": 2,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    18,
+    26
+   ],
+   "wuhan": [
+    19,
+    27
+   ],
+   "wuhan_ref": [
+    "T",
+    "A"
+   ],
+   "n_sequences": 1276,
+   "n_unique_sequences": 294,
+   "alphabet_i": [
+    "I",
+    "T"
+   ],
+   "alphabet_j": [
+    "A",
+    "S"
+   ],
+   "allowed": [
+    {
+     "pair": "IS",
+     "count": 957
+    },
+    {
+     "pair": "TA",
+     "count": 318
+    },
+    {
+     "pair": "TS",
+     "count": 1
+    }
+   ],
+   "forbidden": [
+    "IA"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "I",
+     "at": "i",
+     "then": "S",
+     "support": 957,
+     "counterexamples": 0
+    },
+    {
+     "if": "A",
+     "at": "j",
+     "then": "T",
+     "support": 318,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 3,
+     "n_primes": 7,
+     "n_cover": 2,
+     "n_essential": 2,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 1,
+     "n_primes": 5,
+     "n_cover": 1,
+     "n_essential": 1,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    378,
+    407
+   ],
+   "wuhan": [
+    376,
+    405
+   ],
+   "wuhan_ref": [
+    "T",
+    "D"
+   ],
+   "n_sequences": 1297,
+   "n_unique_sequences": 299,
+   "alphabet_i": [
+    "A",
+    "T"
+   ],
+   "alphabet_j": [
+    "D",
+    "N"
+   ],
+   "allowed": [
+    {
+     "pair": "AD",
+     "count": 3
+    },
+    {
+     "pair": "AN",
+     "count": 970
+    },
+    {
+     "pair": "TD",
+     "count": 324
+    }
+   ],
+   "forbidden": [
+    "TN"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "T",
+     "at": "i",
+     "then": "D",
+     "support": 324,
+     "counterexamples": 0
+    },
+    {
+     "if": "N",
+     "at": "j",
+     "then": "A",
+     "support": 970,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 3,
+     "n_primes": 7,
+     "n_cover": 3,
+     "n_essential": 3,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 1,
+     "n_primes": 5,
+     "n_cover": 1,
+     "n_essential": 1,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    66,
+    94
+   ],
+   "wuhan": [
+    67,
+    95
+   ],
+   "wuhan_ref": [
+    "A",
+    "T"
+   ],
+   "n_sequences": 1298,
+   "n_unique_sequences": 300,
+   "alphabet_i": [
+    "A",
+    "V"
+   ],
+   "alphabet_j": [
+    "I",
+    "T"
+   ],
+   "allowed": [
+    {
+     "pair": "AI",
+     "count": 1
+    },
+    {
+     "pair": "AT",
+     "count": 983
+    },
+    {
+     "pair": "VI",
+     "count": 314
+    }
+   ],
+   "forbidden": [
+    "VT"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "V",
+     "at": "i",
+     "then": "I",
+     "support": 314,
+     "counterexamples": 0
+    },
+    {
+     "if": "T",
+     "at": "j",
+     "then": "A",
+     "support": 983,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 3,
+     "n_primes": 6,
+     "n_cover": 2,
+     "n_essential": 2,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 1,
+     "n_primes": 5,
+     "n_cover": 1,
+     "n_essential": 1,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    407,
+    410
+   ],
+   "wuhan": [
+    405,
+    408
+   ],
+   "wuhan_ref": [
+    "D",
+    "R"
+   ],
+   "n_sequences": 1289,
+   "n_unique_sequences": 298,
+   "alphabet_i": [
+    "D",
+    "N"
+   ],
+   "alphabet_j": [
+    "R",
+    "S"
+   ],
+   "allowed": [
+    {
+     "pair": "DR",
+     "count": 319
+    },
+    {
+     "pair": "NR",
+     "count": 12
+    },
+    {
+     "pair": "NS",
+     "count": 958
+    }
+   ],
+   "forbidden": [
+    "DS"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "D",
+     "at": "i",
+     "then": "R",
+     "support": 319,
+     "counterexamples": 0
+    },
+    {
+     "if": "S",
+     "at": "j",
+     "then": "N",
+     "support": 958,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 3,
+     "n_primes": 6,
+     "n_cover": 2,
+     "n_essential": 2,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 1,
+     "n_primes": 5,
+     "n_cover": 1,
+     "n_essential": 1,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    210,
+    216
+   ],
+   "wuhan": [
+    211,
+    214
+   ],
+   "wuhan_ref": [
+    "N",
+    "R"
+   ],
+   "n_sequences": 1259,
+   "n_unique_sequences": 284,
+   "alphabet_i": [
+    "I",
+    "K",
+    "N"
+   ],
+   "alphabet_j": [
+    "E",
+    "K",
+    "R"
+   ],
+   "allowed": [
+    {
+     "pair": "IE",
+     "count": 271
+    },
+    {
+     "pair": "IK",
+     "count": 1
+    },
+    {
+     "pair": "IR",
+     "count": 1
+    },
+    {
+     "pair": "KR",
+     "count": 1
+    },
+    {
+     "pair": "NR",
+     "count": 985
+    }
+   ],
+   "forbidden": [
+    "KE",
+    "KK",
+    "NE",
+    "NK"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "N",
+     "at": "i",
+     "then": "R",
+     "support": 985,
+     "counterexamples": 0
+    },
+    {
+     "if": "E",
+     "at": "j",
+     "then": "I",
+     "support": 271,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 5,
+     "n_primes": 8,
+     "n_cover": 4,
+     "n_essential": 4,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 4,
+     "n_primes": 8,
+     "n_cover": 4,
+     "n_essential": 4,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    210,
+    215
+   ],
+   "wuhan": [
+    211,
+    213
+   ],
+   "wuhan_ref": [
+    "N",
+    "V"
+   ],
+   "n_sequences": 1258,
+   "n_unique_sequences": 283,
+   "alphabet_i": [
+    "I",
+    "K",
+    "N"
+   ],
+   "alphabet_j": [
+    "E",
+    "G",
+    "P",
+    "V"
+   ],
+   "allowed": [
+    {
+     "pair": "IP",
+     "count": 272
+    },
+    {
+     "pair": "KG",
+     "count": 1
+    },
+    {
+     "pair": "NE",
+     "count": 1
+    },
+    {
+     "pair": "NG",
+     "count": 976
+    },
+    {
+     "pair": "NV",
+     "count": 8
+    }
+   ],
+   "forbidden": [
+    "IE",
+    "IG",
+    "IV",
+    "KE",
+    "KP",
+    "KV",
+    "NP"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "I",
+     "at": "i",
+     "then": "P",
+     "support": 272,
+     "counterexamples": 0
+    },
+    {
+     "if": "P",
+     "at": "j",
+     "then": "I",
+     "support": 272,
+     "counterexamples": 0
+    },
+    {
+     "if": "V",
+     "at": "j",
+     "then": "N",
+     "support": 8,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 5,
+     "n_primes": 9,
+     "n_cover": 5,
+     "n_essential": 5,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 7,
+     "n_primes": 11,
+     "n_cover": 7,
+     "n_essential": 7,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    215,
+    216
+   ],
+   "wuhan": [
+    213,
+    214
+   ],
+   "wuhan_ref": [
+    "V",
+    "R"
+   ],
+   "n_sequences": 1278,
+   "n_unique_sequences": 295,
+   "alphabet_i": [
+    "E",
+    "G",
+    "P",
+    "V"
+   ],
+   "alphabet_j": [
+    "E",
+    "K",
+    "R"
+   ],
+   "allowed": [
+    {
+     "pair": "ER",
+     "count": 1
+    },
+    {
+     "pair": "GR",
+     "count": 977
+    },
+    {
+     "pair": "PE",
+     "count": 278
+    },
+    {
+     "pair": "PK",
+     "count": 1
+    },
+    {
+     "pair": "VR",
+     "count": 21
+    }
+   ],
+   "forbidden": [
+    "EE",
+    "EK",
+    "GE",
+    "GK",
+    "PR",
+    "VE",
+    "VK"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "G",
+     "at": "i",
+     "then": "R",
+     "support": 977,
+     "counterexamples": 0
+    },
+    {
+     "if": "V",
+     "at": "i",
+     "then": "R",
+     "support": 21,
+     "counterexamples": 0
+    },
+    {
+     "if": "E",
+     "at": "j",
+     "then": "P",
+     "support": 278,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 5,
+     "n_primes": 9,
+     "n_cover": 5,
+     "n_essential": 5,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 7,
+     "n_primes": 11,
+     "n_cover": 7,
+     "n_essential": 7,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    212,
+    216
+   ],
+   "wuhan": [
+    null,
+    214
+   ],
+   "wuhan_ref": [
+    null,
+    "R"
+   ],
+   "n_sequences": 301,
+   "n_unique_sequences": 92,
+   "alphabet_i": [
+    "G",
+    "I",
+    "L",
+    "S",
+    "V"
+   ],
+   "alphabet_j": [
+    "E",
+    "K",
+    "R"
+   ],
+   "allowed": [
+    {
+     "pair": "GR",
+     "count": 1
+    },
+    {
+     "pair": "IR",
+     "count": 13
+    },
+    {
+     "pair": "LR",
+     "count": 6
+    },
+    {
+     "pair": "SR",
+     "count": 2
+    },
+    {
+     "pair": "VE",
+     "count": 278
+    },
+    {
+     "pair": "VK",
+     "count": 1
+    }
+   ],
+   "forbidden": [
+    "GE",
+    "GK",
+    "IE",
+    "IK",
+    "LE",
+    "LK",
+    "SE",
+    "SK",
+    "VR"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "I",
+     "at": "i",
+     "then": "R",
+     "support": 13,
+     "counterexamples": 0
+    },
+    {
+     "if": "L",
+     "at": "i",
+     "then": "R",
+     "support": 6,
+     "counterexamples": 0
+    },
+    {
+     "if": "E",
+     "at": "j",
+     "then": "V",
+     "support": 278,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 6,
+     "n_primes": 9,
+     "n_cover": 5,
+     "n_essential": 5,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 9,
+     "n_primes": 11,
+     "n_cover": 7,
+     "n_essential": 7,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  },
+  {
+   "columns": [
+    488,
+    495
+   ],
+   "wuhan": [
+    486,
+    493
+   ],
+   "wuhan_ref": [
+    "F",
+    "Q"
+   ],
+   "n_sequences": 1297,
+   "n_unique_sequences": 299,
+   "alphabet_i": [
+    "F",
+    "P",
+    "V"
+   ],
+   "alphabet_j": [
+    "Q",
+    "R"
+   ],
+   "allowed": [
+    {
+     "pair": "FQ",
+     "count": 20
+    },
+    {
+     "pair": "FR",
+     "count": 1173
+    },
+    {
+     "pair": "PQ",
+     "count": 2
+    },
+    {
+     "pair": "VQ",
+     "count": 102
+    }
+   ],
+   "forbidden": [
+    "PR",
+    "VR"
+   ],
+   "violations_of_allowed": 0,
+   "sequences_with_forbidden": 0,
+   "implications": [
+    {
+     "if": "V",
+     "at": "i",
+     "then": "Q",
+     "support": 102,
+     "counterexamples": 0
+    },
+    {
+     "if": "R",
+     "at": "j",
+     "then": "F",
+     "support": 1173,
+     "counterexamples": 0
+    }
+   ],
+   "circuit": {
+    "standard": {
+     "n_on": 4,
+     "n_primes": 8,
+     "n_cover": 4,
+     "n_essential": 4,
+     "sound": true,
+     "complete": true
+    },
+    "flipped": {
+     "n_on": 2,
+     "n_primes": 6,
+     "n_cover": 2,
+     "n_essential": 2,
+     "sound": true,
+     "complete": true
+    },
+    "unique_minimum": true,
+    "matches_recount": true
+   }
+  }
+ ],
+ "totals": {
+  "pairs": 10,
+  "allowed": 41,
+  "forbidden": 35,
+  "implications": 23,
+  "violations": 0,
+  "all_sound_complete": true,
+  "all_unique_minimum": true,
+  "all_match_recount": true
+ },
+ "sequence_circuits": {
+  "sequences": null,
+  "all_lossless": true,
+  "all_sound": true,
+  "all_complete": true
+ }
+}
