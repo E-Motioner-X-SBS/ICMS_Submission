@@ -1,16 +1,43 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Is KMAP possible?</title>
-<style>
-  :root { --ink:#14304F; --flip:#E8871E; }
-  body { margin:0; min-height:100svh; display:grid; place-items:center; background:#fff; color:var(--ink);
-         font:18px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; padding:24px; box-sizing:border-box; }
-  main { max-width:34rem; }
-  h1 { font-size:1.9rem; line-height:1.15; margin:0 0 .6rem; }
-  .gc { font-family: ui-monospace, monospace; color:#7B8A99; } .gc b { color:var(--flip); }
-</style></head>
-<body><main>
-  <p class="gc">00<b>1</b></p>
-  <h1>Is KMAP possible?</h1>
-  <p>The interactive demo for the ICMS 2026 poster (abstract ICMS2026-F-8) is being published here: pick any protein, DNA or RNA from the Protein Data Bank and watch each Lean-checked step run on it.</p>
-</main></body></html>
+<meta name="description" content="Pick any protein, DNA or RNA from the Protein Data Bank and watch it become bits, a Karnaugh map and a minimal Boolean circuit, with every step re-checked against its Lean 4 theorem.">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1824" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Is KMAP possible? Lean-checked Karnaugh maps of biomolecules">
+<meta property="og:description" content="The interactive companion to ICMS 2026 poster ICMS2026-F-8.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Crect x=%221%22 y=%221%22 width=%228%22 height=%228%22 rx=%221.5%22 fill=%22none%22 stroke=%22%2314304F%22 stroke-width=%221.6%22/%3E%3Crect x=%2211%22 y=%221%22 width=%228%22 height=%228%22 rx=%221.5%22 fill=%22%23E8871E%22/%3E%3Crect x=%221%22 y=%2211%22 width=%228%22 height=%228%22 rx=%221.5%22 fill=%22%23E8871E%22/%3E%3Crect x=%2211%22 y=%2211%22 width=%228%22 height=%228%22 rx=%221.5%22 fill=%22none%22 stroke=%22%2314304F%22 stroke-width=%221.6%22/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/Archivo-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js", "three/addons/OrbitControls.js": "./vendor/OrbitControls.js" } }</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the chapter</a>
+<header class="top">
+  <a class="brand" href="#/" aria-label="Start over">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="1" y="1" width="8" height="8" rx="1.5"/><rect x="11" y="1" width="8" height="8" rx="1.5" class="on"/><rect x="1" y="11" width="8" height="8" rx="1.5" class="on"/><rect x="11" y="11" width="8" height="8" rx="1.5"/></svg>
+    <span>Is KMAP possible?</span>
+  </a>
+  <button class="chip" id="entry-chip" type="button" hidden></button>
+</header>
+
+<main id="main" tabindex="-1">
+  <div class="chapter-head" id="chapter-head" aria-live="polite"></div>
+  <article id="chapter" class="chapter"></article>
+</main>
+
+<nav class="bottom" id="bottom-nav" aria-label="Chapters">
+  <button class="nav-btn" id="prev" type="button" aria-label="Previous chapter"><span aria-hidden="true">←</span></button>
+  <ol class="dots" id="dots"></ol>
+  <button class="nav-btn next" id="next" type="button"><span class="next-label" id="next-label">Next</span><span aria-hidden="true">→</span></button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<noscript><p class="noscript">This demo runs its checks in your browser, so it needs JavaScript. The poster and all code are at github.com/E-Motioner-X-SBS/ICMS_Submission.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
