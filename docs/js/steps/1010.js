@@ -1,6 +1,6 @@
 // 1010 What it all means: the visitor's results with their provenance, the takeaways,
 // and the full theorem inventory, re-checkable here.
-import { h, theoremBlock, tags, css, add } from "../ui.js";
+import { h, theoremBlock, tags, css, add, dataTable } from "../ui.js";
 import { STATS, THEOREMS, runAll, LEAN_FILES, REPO, TRUST_TEXT } from "../core/lean.js";
 import { encodeSequence, alphabet } from "../core/encoding.js";
 import { int, pct, ms } from "../core/format.js";
@@ -24,8 +24,9 @@ export default {
       runBtn.disabled = false;
     });
 
-    let X = null;
+    let X = null, P = null;
     try { X = await (await fetch(new URL("../../data/exact_summary.json", import.meta.url))).json(); } catch { /* offline: the dataset section is skipped */ }
+    try { P = await (await fetch(new URL("../../data/psicov_table.json", import.meta.url))).json(); } catch { /* table skipped */ }
     if (!alive) return;
     const card = (title, lines, tagList) => h("div.takeaway", h("h3", title), h("ul.checks", lines.map((l) => h("li", l))), tags(tagList));
     const datasets = X ? [
@@ -55,6 +56,26 @@ export default {
         `Each rule has support: a formed in ≥ ${X.sbm.thresholds.min_support_frames} frames, t broken in ≥ ${X.sbm.thresholds.min_broken_frames}.`],
         [["data", "0 counterexample frames"]]),
     ] : [];
+    const yes = (v) => h("span", { style: { color: v ? "var(--ok)" : "var(--bad)", fontWeight: 700 } }, v ? "✓" : "✗");
+    const tables = [];
+    if (P) tables.push(
+      h("h3", "All 150 PSICOV proteins"),
+      h("p.small", "Every row is exact. Open runs the demo on the deposited PDB entry, whose modelled residues can differ slightly from PSICOV's prepared chain."),
+      dataTable([
+        { key: "t", label: "protein" }, { key: "L", label: "residues", num: true }, { key: "c", label: "contacts", num: true, fmt: (v) => int(v) },
+        { key: "g", label: "AND gates", num: true }, { key: "r", label: "rules", num: true }, { key: "b", label: "in blocks", num: true, title: "contacts inside block rules" },
+        { key: "a", label: "anti", num: true, title: "antiparallel strand pairs" }, { key: "p", label: "par", num: true, title: "parallel strand pairs" },
+        { key: "h", label: "hairpins", num: true }, { key: "x", label: "exact", fmt: yes }], P,
+        { sortKey: "c", desc: true, pageSize: 10, action: { label: "Open", run: (r) => ctx.go("0100", { id: r.pdb, chainId: r.chain }) } }));
+    if (X) tables.push(
+      h("h3", "The Spike rules, pair by pair"),
+      dataTable([
+        { key: "pos", label: "positions" }, { key: "cols", label: "alignment columns", title: "1-based columns of the 1,276-column alignment" }, { key: "n", label: "sequences", num: true, fmt: (v) => int(v) },
+        { key: "allowed", label: "occur" }, { key: "forbidden", label: "never occur" }, { key: "imp", label: "implications (every sequence)" }],
+        X.spike.pairsTable.map((q) => ({ pos: `${q.at[0] ?? "ins"} × ${q.at[1] ?? "ins"}`, cols: (q.cols || []).join(" × "), n: q.n, allowed: q.allowed.join(" "), forbidden: q.forbidden.join(" "),
+          imp: q.implications.map((i) => (i.at === "i" ? `${i.if}${q.at[0] ?? ""} ⇒ ${i.then}${q.at[1] ?? ""}` : `${i.if}${q.at[1] ?? ""} ⇒ ${i.then}${q.at[0] ?? ""}`) + ` (${int(i.support)})`).join("; ") })),
+        { sortKey: "n", desc: true, pageSize: 10 }),
+      h("p.small", "Positions use Wuhan-Hu-1 numbering, mapped from the alignment; near the insertion at 214 that mapping is approximate, so the alignment columns, which the rules are about, are given too; “ins” is an inserted column with no Wuhan position. A combination that never occurs is one whose two residues each occur at their positions, but never together."));
 
     add(el, 
       h("h1", "What it all means"),
@@ -62,6 +83,7 @@ export default {
       h("h2", `Your structure: ${ctx.structure.id}, chain ${chain.id}`),
       yours,
       ...datasets,
+      ...tables,
       h("h2", "Takeaways"),
       h("div.takeaway", h("h3", "A verified foundation"), h("p", "131 Lean theorems, none left unproved, fix the encodings, the K-map geometry and the meaning of every cube: an unbroken segment, never padding. On that foundation every circuit is exact, checked on all its inputs.")),
       h("div.takeaway", h("h3", "Rules that are true, not likely"), h("p", "Read from exact circuits, a rule holds for every case it names: every contact of a structure, every sequence of a species, every frame of a trajectory. Inferences such as strand direction and register follow by counting.")),

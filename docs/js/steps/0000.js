@@ -1,6 +1,7 @@
 // 0000 Pick a structure: search the PDB, or tap an offline example; choose a chain.
 import { h, add } from "../ui.js";
 import { EXAMPLES, search, normalizeId } from "../core/rcsb.js";
+import { CHAPTERS } from "../app.js";
 
 const KIND = { protein: "protein", dna: "DNA", rna: "RNA" };
 
@@ -31,7 +32,9 @@ export default {
 
     add(el, 
       h("h1", "Every molecule is a Boolean function"),
-      h("p.hook", "Pick a protein, DNA or RNA. Step by step it becomes bits, a Karnaugh map, an exact circuit, rules and inferences, and every step is re-checked in your browser against the Lean 4 theorem that proves it."),
+      h("p.hook", "Pick a protein, DNA or RNA. Step by step it becomes bits, a Karnaugh map, an exact circuit, rules and inferences. Every step is checked in your browser: against the statement of its Lean 4 theorem, or by running the result on every case."),
+      h("ol.flow", { "aria-label": "The chapters" }, CHAPTERS.slice(1).map((c) => h("li", h("button", { type: "button",
+        on: { click: () => ctx.go(c.id, ctx.structure ? {} : { id: EXAMPLES[0].id, chainId: EXAMPLES[0].chain }) } }, h("span.mono", c.id), " ", c.short)))),
       input, results,
       h("h2", "Or start from an example"),
       h("p.small", "These five work offline, useful on conference Wi-Fi."),

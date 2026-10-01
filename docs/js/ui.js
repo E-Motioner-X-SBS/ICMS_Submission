@@ -136,3 +136,33 @@ export function add(parent, ...kids) {
   parent.append(...kids.flat(Infinity).filter((k) => k !== null && k !== undefined && k !== false).map((k) => (k instanceof Node ? k : String(k))));
   return parent;
 }
+
+/** A sortable, paged table. columns: [{key, label, num?, fmt?(v,row), title?}], rows: objects.
+ *  opts: {pageSize, sortKey, desc, action?: {label, run(row)}, caption}. */
+export function dataTable(columns, rows, { pageSize = 12, sortKey = null, desc = true, action = null, caption = "" } = {}) {
+  let key = sortKey, down = desc, page = 0, filter = "";
+  const tbody = h("tbody"), pager = h("div.row.table-pager"), head = h("tr");
+  const search = h("input", { type: "search", placeholder: "Filter", "aria-label": "Filter rows" });
+  search.addEventListener("input", () => { filter = search.value.trim().toLowerCase(); page = 0; draw(); });
+  const view = () => {
+    let rs = filter ? rows.filter((r) => columns.some((c) => String(r[c.key]).toLowerCase().includes(filter))) : rows.slice();
+    if (key) rs.sort((a, b) => { const x = a[key], y = b[key]; const d = typeof x === "number" ? x - y : String(x).localeCompare(String(y)); return down ? -d : d; });
+    return rs;
+  };
+  function draw() {
+    const rs = view(), pages = Math.max(1, Math.ceil(rs.length / pageSize));
+    page = Math.min(page, pages - 1);
+    head.replaceChildren(...columns.map((c) => h("th", { scope: "col", class: c.num ? "num" : "", "aria-sort": key === c.key ? (down ? "descending" : "ascending") : "none" },
+      h("button", { type: "button", title: c.title || `Sort by ${c.label}`, on: { click: () => { if (key === c.key) down = !down; else { key = c.key; down = !!c.num; } draw(); } } },
+        c.label, key === c.key ? (down ? " ↓" : " ↑") : ""))), action ? h("th", { scope: "col" }, "") : null);
+    tbody.replaceChildren(...rs.slice(page * pageSize, (page + 1) * pageSize).map((r) => h("tr",
+      columns.map((c) => h(c.num ? "td.num" : "td", c.fmt ? c.fmt(r[c.key], r) : r[c.key])),
+      action ? h("td", h("button.btn.small.ghost", { type: "button", on: { click: () => action.run(r) } }, action.label)) : null)));
+    pager.replaceChildren(
+      h("button.btn.small.ghost", { type: "button", disabled: page === 0, on: { click: () => { page--; draw(); } } }, "←"),
+      h("span.small", rs.length ? `${page * pageSize + 1}–${Math.min(rs.length, (page + 1) * pageSize)} of ${rs.length}` : "no rows"),
+      h("button.btn.small.ghost", { type: "button", disabled: page >= pages - 1, on: { click: () => { page++; draw(); } } }, "→"));
+  }
+  draw();
+  return h("div.datatable", search, h("div.scrollx", { "data-noswipe": "" }, h("table", caption ? h("caption", caption) : null, h("thead", head), tbody)), pager);
+}

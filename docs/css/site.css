@@ -292,3 +292,28 @@ sup { font-size: 0.7em; line-height: 0; }
 .dots { gap: 2px; }
 .dots button { width: 10px; }
 @media (max-width: 400px) { .dots button { width: 8px; } .dots button::before { width: 6px; height: 6px; } }
+
+/* ── data tables ─────────────────────────────────────────────────────────── */
+.datatable { margin: 10px 0 16px; }
+.datatable input[type="search"] { margin-bottom: 8px; }
+.datatable table { width: 100%; border-collapse: collapse; font: 500 14px/1.3 var(--sans); font-variant-numeric: tabular-nums; }
+.datatable caption { text-align: left; font: 500 13px/1.3 var(--sans); color: var(--ink-2); padding-bottom: 6px; }
+.datatable th { text-align: left; border-bottom: 1.5px solid var(--ink); padding: 0; white-space: nowrap; }
+.datatable th button { border: 0; background: none; font: 700 13px/1.2 var(--sans); color: var(--ink); padding: 8px 6px; min-height: 40px; cursor: pointer; width: 100%; text-align: inherit; }
+.datatable th.num, .datatable td.num { text-align: right; }
+.datatable td { border-bottom: 1px solid var(--rule); padding: 6px; white-space: nowrap; }
+.datatable td .btn.small { min-height: 32px; padding: 4px 10px; font-size: 13px; }
+.datatable tr:hover td { background: var(--wash); }
+.table-pager { justify-content: space-between; margin-top: 6px; }
+.tt { font: 500 13.5px/1.5 var(--mono); }
+.tt td, .tt th { padding: 3px 8px; }
+.tt tr.on td { background: var(--teal-wash); }
+.tt tr.sel td { background: var(--flip-wash); box-shadow: inset 0 2px var(--flip), inset 0 -2px var(--flip); }
+
+/* ── home: the chapters as a flow ────────────────────────────────────────── */
+.flow { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; }
+.flow li { display: inline-flex; align-items: center; }
+.flow li + li::before { content: "→"; color: var(--ink-3); margin: 0 4px 0 2px; font: 600 14px var(--sans); }
+.flow button { border: 1px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 5px 10px; min-height: 34px; font: 600 13.5px/1 var(--sans); color: var(--ink); cursor: pointer; }
+.flow button .mono { color: var(--ink-3); font-size: 11.5px; }
+.flow li:nth-child(n+6):nth-child(-n+9) button { border-color: var(--teal); background: var(--teal-wash); }

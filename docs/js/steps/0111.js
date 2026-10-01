@@ -24,7 +24,34 @@ export default {
     const readout = h("div.readout", { "aria-live": "polite" });
     const minterm = h("div.eq", { style: { whiteSpace: "pre" } });
 
+    // the truth table itself: either every 1-cell (the minterms), or the full row of one residue
+    let ttMode = "row", ttPage = 0, selJ = null;
+    const TT_PER = 16;
+    const ttBody = h("tbody"), ttPager = h("div.row.table-pager");
+    const ttSeg = h("div.seg", { role: "group", "aria-label": "Truth table rows" },
+      [["row", "Row of the selected residue"], ["ones", "Every 1-cell"]].map(([k, label]) => h("button", { type: "button", "aria-pressed": String(k === ttMode),
+        on: { click: (e) => { ttMode = k; ttPage = 0; [...ttSeg.children].forEach((b) => b.setAttribute("aria-pressed", String(b === e.currentTarget))); drawTT(); } } }, label)));
+    const ttRows = () => {
+      if (ttMode === "ones") return f.on.map((m) => [m >>> p, m & ((1 << p) - 1)]).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      return Array.from({ length: L }, (_, j) => [sel ?? 0, j]);
+    };
+    function drawTT(jump = false) {
+      const rs = ttRows(), pages = Math.max(1, Math.ceil(rs.length / TT_PER));
+      if (jump && selJ !== null) { const k = rs.findIndex(([i, j]) => i === sel && j === selJ); if (k >= 0) ttPage = Math.floor(k / TT_PER); }
+      ttPage = Math.min(ttPage, pages - 1);
+      ttBody.replaceChildren(...rs.slice(ttPage * TT_PER, (ttPage + 1) * TT_PER).map(([i, j]) => {
+        const on = i !== j && cm.has(i, j);
+        return h(`tr${on ? ".on" : ""}${i === sel && j === selJ ? ".sel" : ""}`, { style: { cursor: "pointer" }, on: { click: () => choose(i, j) } },
+          h("td.num", String(i)), h("td.num", String(j)), h("td", bits(i, p)), h("td", bits(j, p)), h("td", h("b", on ? "1" : "0")), h("td", { style: { fontFamily: "var(--sans)" } }, on ? `${resLabel(i)}–${resLabel(j)}` : ""));
+      }));
+      ttPager.replaceChildren(
+        h("button.btn.small.ghost", { type: "button", disabled: ttPage === 0, on: { click: () => { ttPage--; drawTT(); } } }, "←"),
+        h("span.small", `rows ${ttPage * TT_PER + 1}–${Math.min(rs.length, (ttPage + 1) * TT_PER)} of ${int(rs.length)}${ttMode === "row" ? ` (i = ${sel ?? 0})` : " 1-cells"}`),
+        h("button.btn.small.ghost", { type: "button", disabled: ttPage >= pages - 1, on: { click: () => { ttPage++; drawTT(); } } }, "→"));
+    }
+
     function choose(i, j = null) {
+      if (i !== sel) ttPage = 0;
       sel = i;
       map?.paint(i);
       const nb = cm.neighbours(i);
@@ -33,6 +60,7 @@ export default {
       readout.replaceChildren(h("b", `Residue ${resLabel(i)}`), ` (position ${i}) touches ${nb.length} ${nb.length === 1 ? "residue" : "residues"}`,
         nb.length ? `: ${nb.slice(0, 12).map(resLabel).join(", ")}${nb.length > 12 ? ", …" : ""}` : "", ".");
       const jj = j ?? nb[0];
+      selJ = jj ?? null; drawTT(true);
       if (jj === undefined) { minterm.textContent = `C(${i}, j) = 0 for every j`; return; }
       const on = cm.has(i, jj) ? 1 : 0;
       minterm.textContent = `i = ${String(i).padStart(3)} → ${bits(i, p)}\nj = ${String(jj).padStart(3)} → ${bits(jj, p)}\nC(${bits(i, p)} ${bits(jj, p)}) = ${on}`;
@@ -62,6 +90,11 @@ export default {
       h("h2", "One cell of the truth table"),
       minterm,
       h("p.small", "Each 1-cell is a minterm: a full assignment of all input bits. Positions are plain binary here, which the next chapter needs."),
+      h("h2", "The truth table"),
+      h("p", `The contact map is a table of ${int(4 ** p)} rows, one for every value of the ${2 * p} input bits; ${int(f.on.length)} of them are 1. Browse one residue's row, or every 1-cell; tap a row to see it on the map and in 3D.`),
+      ttSeg,
+      h("div.scrollx", { style: { marginTop: "8px" }, "data-noswipe": "" }, h("table.tt", h("thead", h("tr", h("th", "i"), h("th", "j"), h("th", "i bits"), h("th", "j bits"), h("th", "C"), h("th", ""))), ttBody)),
+      ttPager,
       h("div.stats",
         h("div.stat", h("div.v", int(L)), h("div.l", "positions")),
         h("div.stat", h("div.v", int(cm.n)), h("div.l", "contacts")),
@@ -85,7 +118,7 @@ export default {
     choose(busiest);
     viewer = await createViewer(viewBox, chain, { onPick: (i) => choose(i) });
     if (!alive) { viewer?.dispose(); return; }
-    choose(sel ?? busiest);
+    choose(sel ?? busiest, selJ);
   },
   unmount() { this._off?.(); },
 };
