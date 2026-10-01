@@ -10,11 +10,11 @@
 // permutation: same 16 values, moved. Measured: cophenetic r identical on the
 // 120 protein dipeptide maps (data/gray_vs_lex.json).
 //
-// Bottom: what Gray does change. Hamming distance d between the 5-bit codes of
-// the two residues of each native contact vs a background of non-contacts from
-// the same protein and separation bin (data/path_e_gray_adjacency.json). d = 1 is
-// the one-bit case, so it alone is orange.
-import { mount, el, g, pt, gray, popcount, bits, NUC_RAW, COLORS, FONT, NS, loadJSON } from "../lib.js";
+// Bottom: what Gray does change. The Hamming distance between the 5-bit codes of the
+// 400 ordered amino-acid pairs, d = 0..5, exactly as ContactCircuits.lean cc_he_dist_counts
+// proves it (recomputed here; the build stops if it differs). d = 1 is the one-bit case, so it
+// alone is orange.
+import { mount, el, g, pt, gray, popcount, bits, ham, NUC_RAW, AA_ORDER, AA_CODE, COLORS, FONT, NS, loadJSON } from "../lib.js";
 
 // poster.css sets `svg text { font-family; fill }`, which beats presentation
 // attributes, so family, fill and width go into the inline style.
@@ -77,16 +77,11 @@ export default async function build(host, { w, h }) {
   const cStr = (v) => v.toFixed(6);
   if (cStr(cg) !== cStr(cl)) throw new Error("gf2: cophenetic r differ");
 
-  const pe = await loadJSON("path_e_gray_adjacency.json");
-  const obs = pe.observed_h_distribution, bg = pe.background_h_distribution;
-  const nObs = obs.reduce((a, b) => a + b, 0), nBg = bg.reduce((a, b) => a + b, 0);
-  if (nObs !== pe.n_contacts || nBg !== pe.n_contacts) throw new Error("gf2: distribution totals");
-  if (Math.abs(obs[1] / nObs - pe.observed_h1_rate) > 1e-12 || Math.abs(bg[1] / nBg - pe.background_h1_rate) > 1e-12) throw new Error("gf2: h1 rates");
-  const pObs = obs.map((v) => (100 * v) / nObs), pBg = bg.map((v) => (100 * v) / nBg);
-  const f1 = (v) => v.toFixed(1);
-  const enr = (pe.observed_h1_rate / pe.background_h1_rate).toFixed(2);
-  if (enr !== pe.enrichment_h1.toFixed(2)) throw new Error("gf2: enrichment");
-
+  // what Gray does change: Hamming distance between the codes of the 400 ordered amino-acid pairs
+  // (ContactCircuits.lean cc_he_dist_counts: 20, 80, 132, 112, 48, 8 for d = 0..5), recomputed here
+  const dist = [0, 0, 0, 0, 0, 0];
+  for (const a of AA_ORDER) for (const b of AA_ORDER) dist[ham(AA_CODE[a], AA_CODE[b])]++;
+  if (dist.join() !== "20,80,132,112,48,8") throw new Error(`gf2: ordered distance counts ${dist} differ from cc_he_dist_counts`);
   await Promise.all(["500 semi-condensed 20px Archivo", "700 semi-condensed 20px Archivo", "italic 500 semi-condensed 20px Archivo", '400 20px "Plex Mono"']
     .map((f) => document.fonts.load(f).catch(() => null)));
   const M = makeMeasure();
@@ -183,35 +178,24 @@ export default async function build(host, { w, h }) {
     const bTop = topH + h * 0.035;                                   // hairline divider y
     svg.appendChild(el("line", { x1: inset, y1: bTop, x2: w - inset, y2: bTop, stroke: COLORS.rule, "stroke-width": 0.3 }));
     const titleY = bTop + fsH * 1.02;
-    svg.appendChild(S(inset, titleY, [["What Gray changes: pairs one bit apart ("], ["d", { italic: true }], [" = 1)"]], { size: fsH, weight: 700 }));
+    svg.appendChild(S(inset, titleY, [["What Gray changes: code distance "], ["d", { italic: true }], [", 400 residue pairs"]], { size: fsH, weight: 700 }));
 
-    // the one comparison that matters: pairs exactly one bit apart (d = 1)
-    const bars = [
-      { p: pObs[1], name: "native contacts", fill: ORANGE },
-      { p: pBg[1], name: "background pairs", fill: ORANGE_LT },
-    ];
-    const valW = Math.max(...bars.map((b) => M(`${f1(b.p)}%`, { size: fs, weight: 700 })));
-    const nameW = Math.max(...bars.map((b) => M(b.name, { size: fs, fill: COLORS.ink2 })));
-    const hero = `${enr}×`;
-    const heroSize = pt(30);
-    const heroW = M(hero, { size: heroSize, weight: 700 });
-    const bx0 = inset, bxMax = w - inset - heroW - 4;                 // bars stop before the hero number
-    const rowTop = titleY + lineH * 0.55, rowH = (h - inset - rowTop) / 2;
-    const scale = (bxMax - bx0 - valW - 1.5 - nameW - 1.2) / Math.max(...bars.map((b) => b.p));
-    const barT = Math.min(rowH * 0.42, 3.6);
-    const chart = g({ "aria-label": `Native contacts one bit apart: ${f1(pObs[1])}% versus ${f1(pBg[1])}% of background pairs` });
-    bars.forEach((b, k) => {
-      const cy = rowTop + rowH * (k + 0.5), len = b.p * scale;
-      const r = Math.min(0.7, barT / 2);
-      chart.appendChild(el("path", { d: `M${bx0},${cy - barT / 2} H${bx0 + len - r} Q${bx0 + len},${cy - barT / 2} ${bx0 + len},${cy - barT / 2 + r} V${cy + barT / 2 - r} Q${bx0 + len},${cy + barT / 2} ${bx0 + len - r},${cy + barT / 2} H${bx0} Z`, fill: b.fill }));
-      chart.appendChild(T(bx0 + len + 1.5, cy + fs * 0.34, `${f1(b.p)}%`, { size: fs, weight: 700 }));
-      chart.appendChild(T(bx0 + len + 1.5 + valW + 1.2, cy + fs * 0.34, b.name, { size: fs, fill: COLORS.ink2 }));
+    // all 400 ordered pairs by distance d = 0..5; d = 1 (one bit) in orange; counts proved in Lean
+    const rowTop = titleY + lineH * 0.2, chartH = h - inset - rowTop - fs * 1.05;
+    const heroSize = pt(30), hero = "80 / 400";
+    const heroW = Math.max(M(hero, { size: heroSize, weight: 700 }), M("pairs one bit apart", { size: fsS }));
+    const cx0 = inset, cx1 = w - inset - heroW - 4, bw = (cx1 - cx0) / 6;
+    const maxV = Math.max(...dist);
+    const chart = g({ "aria-label": `Ordered amino-acid pairs by code distance: ${dist.map((v, d) => `d ${d}: ${v}`).join(", ")}` });
+    dist.forEach((v, d) => {
+      const bh = (v / maxV) * (chartH - fs * 1.1), x = cx0 + d * bw + bw * 0.16, y = rowTop + fs * 1.1 + (chartH - fs * 1.1 - bh);
+      chart.appendChild(el("rect", { x, y, width: bw * 0.68, height: bh, rx: 0.6, fill: d === 1 ? ORANGE : COLORS.ink200 }));
+      chart.appendChild(T(x + bw * 0.34, y - fs * 0.3, String(v), { size: fs, weight: d === 1 ? 700 : 500, anchor: "middle" }));
+      chart.appendChild(T(x + bw * 0.34, rowTop + chartH + fs * 1.0, `d = ${d}`, { size: fsS, anchor: "middle", fill: COLORS.ink2 }));
     });
-    chart.appendChild(el("line", { x1: bx0, y1: rowTop + rowH * 0.12, x2: bx0, y2: rowTop + rowH * 1.88, stroke: COLORS.ink3, "stroke-width": 0.35 }));
     svg.appendChild(chart);
-    // the ratio, and what it is a ratio of
-    const hx = w - inset;
-    svg.appendChild(T(hx, rowTop + rowH + heroSize * 0.36, hero, { size: heroSize, weight: 700, anchor: "end" }));
-  }, `Top: the dinucleotide counts of CGCGAATTCGCG (PDB 1BNA, one strand) on a lexicographic and a Gray 4 by 4 map; Gray reindexes rows and columns i to g(i), a permutation of the same 16 cells, so cophenetic r on ${gvl.n_sequences} protein maps is ${cStr(cl)} for both. Bottom: Hamming distance between the codes of contacting residues, d = 0 to 5, native contacts vs background; one bit apart: ${f1(pObs[1])}% vs ${f1(pBg[1])}%, ${enr} times.`);
+    svg.appendChild(T(w - inset, rowTop + chartH * 0.55, hero, { size: heroSize, weight: 700, anchor: "end" }));
+    svg.appendChild(T(w - inset, rowTop + chartH * 0.55 + fs * 1.25, "pairs one bit apart", { size: fsS, anchor: "end", fill: COLORS.ink2 }));
+  }, `Top: the dinucleotide counts of CGCGAATTCGCG (PDB 1BNA, one strand) on a lexicographic and a Gray 4 by 4 map; Gray reindexes rows and columns i to g(i), a permutation of the same 16 cells, so cophenetic r on ${gvl.n_sequences} protein maps is ${cStr(cl)} for both. Bottom: the 400 ordered amino-acid pairs by the Hamming distance of their codes, d = 0 to 5: ${dist.join(', ')}; exactly 80 are one bit apart (proved in Lean).`);
   M.done();
 }

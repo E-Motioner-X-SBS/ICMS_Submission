@@ -13,6 +13,7 @@
   <div class="tpl crop logo-icms"><img src="assets/icms2026.png" alt="ICMS 2026 logo"></div>
   <div class="tpl abstract-no">Abstract No.<br><b>ICMS2026-F-8</b><div class="track">Theory and Methodology</div></div>
   <div class="tpl conference">The 7th International Conference on Molecular Simulation<br>4-8 October, 2026<br>Indian Institute of Science, Bengaluru</div>
+  <div class="tpl logo-iiserk"><img src="assets/iiserk.png" alt="IISER Kolkata logo"></div>
   <div class="tpl crop logo-iisc"><img src="assets/iisc.png" alt="Indian Institute of Science logo"></div>
   <div class="tpl crop logo-sacm"><img src="assets/sacm.jpg" alt="Society for Atomistic and Continuum Modeling logo"></div>
 
@@ -29,15 +30,15 @@
     <section class="band band-a sec" data-fit="band A">
       <div class="a-left">
         <div class="sec-h"><span class="gc">000</span><h2>The finding</h2></div>
-        <p class="finding">We formalised in Lean&nbsp;4 the mathematics that turns DNA, RNA and protein sequences into Karnaugh maps: 131 machine-checked theorems, none left unproved. On this verified foundation, exact Boolean minimisation reads a protein's contact map as blocks of touching chain segments, and the same logic uncovers local cooperativity in simulated folding.</p>
-        <p class="why">Gray-coded grids of sequences, from Petoukhov's genetic Karnaugh matrices<sup>1</sup> to chaos-game maps (FCGR)<sup>2,3</sup>, are usually taken on trust. Here each step is a checked theorem, and every claim says how it is known.</p>
-        <div class="legend-a"><span class="tag lean"><span class="g">⊢</span>theorem</span> proved in Lean&nbsp;4 <span class="tag data"><span class="g">◆</span>n, p</span> measured on data <span class="tag paper"><span class="g">✎</span>theorem</span> proved on paper, not yet in Lean</div>
+        <p class="finding">We formalised in Lean&nbsp;4 the mathematics that turns DNA, RNA and protein sequences into Karnaugh maps: 131 machine-checked theorems, none left unproved. On this foundation every structure becomes an exact Boolean circuit whose rules hold without exception, for proteins, a viral species and folding simulations.</p>
+        <p class="why">Gray-coded grids of sequences, from Petoukhov's genetic Karnaugh matrices<sup>1</sup> to chaos-game maps (FCGR)<sup>2,3</sup>, are usually taken on trust. Here the encodings are theorems and every circuit and rule is checked on every case.</p>
+        <div class="legend-a"><span class="tag lean"><span class="g">⊢</span>theorem</span> proved in Lean&nbsp;4 <span class="tag data"><span class="g">◆</span>n / n</span> counted on data, every case checked, no exception</div>
         <figure><div class="fig" id="pipeline" data-w="474" data-h="82"></div></figure>
       </div>
       <div class="a-right">
         <figure class="hero">
           <div class="fig" id="hero3d" data-w="300" data-h="160"></div>
-          <figcaption><b>Fibronectin type-III domain (PSICOV 1fnaA, 91 residues).</b> Its minimised contact map is made of blocks, chain segments touching segments; each colour is one strand pair built from them.</figcaption>
+          <figcaption><b>Fibronectin type-III domain (PSICOV 1fnaA, 91 residues).</b> Its exact contact circuit, read as rules: block rules that continue one another are strand pairs, one colour each.</figcaption>
         </figure>
         <div class="qrcard"><div class="fig" id="qrcard" data-w="98" data-h="126"></div></div>
       </div>
@@ -79,7 +80,7 @@
           <div class="sec-h"><span class="gc"><span class="fb">1</span>10</span><h2>Contacts as a Boolean function</h2></div>
           <div class="pair">
             <div class="txt">
-              <p>A contact map is a Boolean function: <i>C</i>(<i>i</i>,<i>j</i>)&nbsp;=&nbsp;1 when residues <i>i</i> and <i>j</i> lie within 8&nbsp;Å. Quine–McCluskey<sup>5</sup> merges 1-cells one bit apart into ever larger cubes; the cubes that cannot grow, the prime implicants, describe the map most briefly. For an 8-residue example Lean proves the map symmetric, and that no two of its contacts can merge.</p>
+              <p>A contact map is a Boolean function: <i>C</i>(<i>i</i>,<i>j</i>)&nbsp;=&nbsp;1 when residues <i>i</i> and <i>j</i> lie within 8&nbsp;Å. Quine–McCluskey<sup>5</sup> merges 1-cells one bit apart into ever larger cubes; the cubes that cannot grow are the prime implicants, and a cover of them is a two-level circuit equal to the map. For an 8-residue example Lean proves the map symmetric and that no two of its contacts can merge.</p>
             </div>
             <figure><div class="fig" id="qm" data-w="190" data-h="84"></div></figure>
           </div>
@@ -125,48 +126,48 @@
           <div class="pair">
             <div class="txt">
               <h3>What the encoding can and cannot change</h3>
-              <p>Since <i>g</i>(<i>x</i>&nbsp;⊕&nbsp;<i>y</i>)&nbsp;=&nbsp;<i>g</i>(<i>x</i>)&nbsp;⊕&nbsp;<i>g</i>(<i>y</i>), a Gray-ordered map is a lexicographic (FCGR) map with its cells permuted: every distance-based statistic is identical. The code acts on Hamming distance, where native contacts are one bit apart 1.18× more often than background (<i>z</i>&nbsp;=&nbsp;2.5 against random residue-to-code assignments).</p>
+              <p>Since <i>g</i>(<i>x</i>&nbsp;⊕&nbsp;<i>y</i>)&nbsp;=&nbsp;<i>g</i>(<i>x</i>)&nbsp;⊕&nbsp;<i>g</i>(<i>y</i>), a Gray-ordered map is a lexicographic (FCGR) map with its cells permuted: every statistic of the cell values is identical. The code changes only distances between letters: of the 400 ordered amino-acid pairs, exactly 80 are one bit apart.</p>
             </div>
             <figure><div class="fig" id="gf2" data-w="172" data-h="84"></div></figure>
           </div>
-          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_gf2_linear</span><span class="tag lean"><span class="g">⊢</span>sc_gray_changes_hamming</span><span class="tag data"><span class="g">◆</span>47,430 contacts, p = 10⁻⁷⁷</span></div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_gray_gf2_linear</span><span class="tag lean"><span class="g">⊢</span>cc_he_dist_counts</span><span class="tag data"><span class="g">◆</span>120 / 120 maps: same cell values</span></div>
         </section>
 
         <section class="sec" data-fit="sbm">
           <div class="pair">
             <div class="txt">
-              <h3>The same minimiser on simulations</h3>
-              <p>Run on contact states along structure-based-model<sup>8</sup> trajectories instead of sequences, Boolean rules link contacts that are neighbours on the contact map: local folding cooperativity, found without being told.</p>
+              <h3>Rules that hold in every frame of a folding run</h3>
+              <p>In structure-based-model<sup>8</sup> trajectories every native contact is formed or broken in every frame. Rules “whenever <i>a</i> is formed, so is <i>t</i>” that no frame breaks join neighbouring contacts; in ten long 8,000-frame runs, all of them do.</p>
             </div>
             <figure><div class="fig" id="sbm" data-w="172" data-h="66"></div></figure>
           </div>
-          <div class="tags"><span class="tag data"><span class="g">◆</span>480 proteins, 18,714 rules, 478 above random</span></div>
+          <div class="tags"><span class="tag data"><span class="g">◆</span>9,986 rules, 0 counterexample frames</span><span class="tag data"><span class="g">◆</span>479 trajectories, 48,385 frames</span></div>
         </section>
       </div>
     </div>
 
-    <!-- ═════════ 100 · structure ═════════ -->
+    <!-- ═════════ 100 · exact rules ═════════ -->
     <section class="band band-d sec" data-fit="100">
-      <div class="sec-h"><span class="gc"><span class="fb">1</span>00</span><h2>What it means for protein structure</h2></div>
+      <div class="sec-h"><span class="gc"><span class="fb">1</span>00</span><h2>Rules with no exception, from exact circuits</h2></div>
       <div class="d-grid">
         <div class="d1">
-          <p>With plain position bits, a prime implicant of a contact map is a block: every residue of one chain segment touches every residue of another, the Boolean signature of a β-ladder or a helix packing.</p>
+          <p>Each PSICOV<sup>7</sup> protein becomes a circuit equal to its contact map. Its AND gates are rules; block rules that continue one another give strand pairs, direction and register, by counting.</p>
           <figure><div class="fig" id="contact" data-w="250" data-h="96"></div></figure>
-          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_contact_cube_is_block</span><span class="tag data"><span class="g">◆</span>150 proteins, 86× shuffles, p = 10⁻²⁵</span></div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_contact_cube_is_block</span><span class="tag data"><span class="g">◆</span>150 / 150 proteins</span><span class="tag data"><span class="g">◆</span>112 / 112 chains</span></div>
         </div>
         <div class="d2">
-          <p>How far residue identity can go, as a bound: a predictor that sees only (residue&nbsp;<i>i</i>, residue&nbsp;<i>j</i>, separation) scores every pair in a cell alike, so cell purity bounds its precision. Coupling features raise the bound.</p>
-          <figure><div class="fig" id="ceiling" data-w="292" data-h="90"></div></figure>
-          <div class="tags"><span class="tag paper"><span class="g">✎</span>ceiling theorem</span><span class="tag data"><span class="g">◆</span>150 PSICOV proteins<sup>7</sup></span></div>
+          <p>One species: in 1,299 SARS-CoV-2 Spike sequences, exact circuits list which residue pairs occur at co-evolving positions and which never do. No sequence breaks a rule.</p>
+          <figure><div class="fig" id="spike" data-w="292" data-h="90"></div></figure>
+          <div class="tags"><span class="tag data"><span class="g">◆</span>1,299 / 1,299 sequences obey every rule</span><span class="tag data"><span class="g">◆</span>unique minimum covers</span></div>
         </div>
         <div class="d3">
           <h3>Takeaways</h3>
           <ul class="short">
-            <li><b>A verified foundation.</b> Every step from sequence to minimised circuit is a machine-checked theorem; analyses built on it inherit its guarantees.</li>
-            <li><b>One language for sequence, structure and dynamics.</b> Exact minimisation reads k-mer maps, contact maps and simulated contact states alike.</li>
-            <li><b>Proof-carrying science.</b> Each result states how it is known; the approach extends to any finite encoding that can be stated and checked.</li>
+            <li><b>A verified foundation.</b> Lean fixes the encodings and what every cube means; every circuit is exact on all inputs.</li>
+            <li><b>Rules that are true, not likely.</b> Each holds for every contact, sequence or frame it names.</li>
+            <li><b>One language for sequence, structure and dynamics.</b> Any finite encoding can be checked the same way.</li>
           </ul>
-          <p class="repo">Poster, demo and data:<br><b>github.com/E-Motioner-X-SBS/ICMS_Submission</b></p>
+          <p class="repo">Try any PDB entry, from file to circuit, rules and inferences:<br><b>e-motioner-x-sbs.github.io/ICMS_Submission</b></p>
         </div>
       </div>
     </section>

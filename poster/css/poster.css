@@ -71,6 +71,9 @@ body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .logo-iisc  { left: 707.72mm; top: 0.77mm; width: 64.27mm; height: 71.21mm; }
 .logo-iisc img { width: 112.34mm; height: 79.03mm; left: -25.12mm; top: -7.824mm; }
 .logo-sacm  { left: 772.59mm; top: 4.49mm; width: 55mm; height: 55mm; }
+/* IISER Kolkata (the authors' institute), left of IISc; same visual height as the IISc emblem */
+.logo-iiserk { left: 648mm; top: 4.2mm; width: 52.4mm; height: 55mm; }
+.logo-iiserk img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .logo-sacm img { width: 55mm; height: 55mm; left: 0; top: 0; }
 .abstract-no {
   left: 81.96mm; top: 17.63mm; width: 95.44mm; height: 33.34mm;

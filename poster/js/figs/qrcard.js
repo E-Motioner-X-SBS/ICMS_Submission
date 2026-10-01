@@ -26,9 +26,9 @@ export default async function build(host, { w, h }) {
     svg.appendChild(el("rect", { x: 0.35, y: 0.35, width: w - 0.7, height: h - 0.7, rx: 5, fill: COLORS.paper, stroke: COLORS.ink, "stroke-width": 0.5 }));
     // headline
     let y = pad + fsHead * 0.82;
-    svg.appendChild(T(pad, y, "Run the proofs", { size: fsHead, weight: 700 }));
+    svg.appendChild(T(pad, y, "Turn any protein", { size: fsHead, weight: 700 }));
     y += fsHead * 1.08;
-    svg.appendChild(T(pad, y, "on any protein", { size: fsHead, weight: 700 }));
+    svg.appendChild(T(pad, y, "into a circuit", { size: fsHead, weight: 700 }));
 
     // QR with a 4-module quiet zone, framed by Gray-coded axis labels
     const labW = fsLab * 2.2;                                 // room for the left labels
@@ -68,7 +68,7 @@ export default async function build(host, { w, h }) {
 
     // subline and URL
     let sy = qy + side + fsSub * 1.05;
-    const sub = ["Pick any structure from the PDB", "and watch each step run."];
+    const sub = ["Any PDB entry, step by step,", "to its rules and inferences."];
     for (const s of sub) { svg.appendChild(T(pad, sy, s, { size: fsSub, fill: COLORS.ink2 })); sy += fsSub * 1.2; }
   }, `Scan to run the proofs on any protein: ${qr.url}`);
 }

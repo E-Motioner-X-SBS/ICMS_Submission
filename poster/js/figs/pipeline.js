@@ -296,7 +296,7 @@ export default async function build(host, { w, h }) {
   const hops = [
     { x1: X1 + W1 + 2.0 * s, x2: X2 - 2.0 * s, verb: "encode", thm: ["encode_injective"], gloss: "one code per residue" },
     { x1: X2 + W2 + 2.0 * s, x2: X3 - 2.0 * s, verb: "pair up", thm: ["gray_hamming_one"], gloss: "touching cells differ in one bit" },
-    { x1: gx3 + G + 2.4 * s, x2: X4 - 2.0 * s, verb: "minimise", thm: ["cc_cover_complete", "cc_off_avoiding"], gloss: "every 1 covered, no 0 covered" },
+    { x1: gx3 + G + 2.4 * s, x2: X4 - 2.0 * s, verb: "minimise", thm: ["cc_cover_complete", "cc_off_avoiding"], gloss: "the cover check, proved on a worked table" },
     { x1: gx4 + G + 2.4 * s, x2: X5 - 2.0 * s, verb: "decode", thm: ["sc_contact_cube_is_block"], gloss: "the cube is a segment × segment block" },
   ];
   for (const hp of hops) {

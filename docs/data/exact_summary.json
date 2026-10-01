@@ -635,7 +635,17 @@
      "if_formed": 4995,
      "then_formed": 6510,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       4995,
+       0
+      ],
+      [
+       1515,
+       1490
+      ]
+     ]
     }
    },
    {
@@ -656,7 +666,17 @@
      "if_formed": 6398,
      "then_formed": 7365,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       6398,
+       0
+      ],
+      [
+       967,
+       635
+      ]
+     ]
     }
    },
    {
@@ -677,7 +697,17 @@
      "if_formed": 4931,
      "then_formed": 6587,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       4931,
+       0
+      ],
+      [
+       1656,
+       1413
+      ]
+     ]
     }
    },
    {
@@ -698,7 +728,17 @@
      "if_formed": 6804,
      "then_formed": 7570,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       6804,
+       0
+      ],
+      [
+       766,
+       430
+      ]
+     ]
     }
    },
    {
@@ -719,7 +759,17 @@
      "if_formed": 6080,
      "then_formed": 7113,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       6080,
+       0
+      ],
+      [
+       1033,
+       887
+      ]
+     ]
     }
    },
    {
@@ -740,7 +790,17 @@
      "if_formed": 5207,
      "then_formed": 6435,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       5207,
+       0
+      ],
+      [
+       1228,
+       1565
+      ]
+     ]
     }
    },
    {
@@ -761,7 +821,17 @@
      "if_formed": 5429,
      "then_formed": 6687,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       5429,
+       0
+      ],
+      [
+       1258,
+       1313
+      ]
+     ]
     }
    },
    {
@@ -782,7 +852,17 @@
      "if_formed": 6289,
      "then_formed": 7599,
      "frames": 8000,
-     "counterexamples": 0
+     "counterexamples": 0,
+     "table": [
+      [
+       6289,
+       0
+      ],
+      [
+       1310,
+       401
+      ]
+     ]
     }
    }
   ]

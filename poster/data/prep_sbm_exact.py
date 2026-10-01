@@ -106,6 +106,9 @@ def analyse(target, traj_root="trajectories_v2"):
             "if": [int(x) + 1 for x in pairs[a]], "then": [int(x) + 1 for x in pairs[t]], "l1": l1,      # 1-based residues
             "if_formed": int(S[:, a].sum()), "then_formed": int(S[:, t].sum()), "frames": int(F),
             "counterexamples": check_rule_by_loop(S, a, t),
+            # frames by (a formed?, t formed?): [[a&t, a&!t], [!a&t, !a&!t]]; a&!t is the counterexample cell
+            "table": [[int(((S[:, a] == 1) & (S[:, t] == 1)).sum()), int(((S[:, a] == 1) & (S[:, t] == 0)).sum())],
+                      [int(((S[:, a] == 0) & (S[:, t] == 1)).sum()), int(((S[:, a] == 0) & (S[:, t] == 0)).sum())]],
         }
     return row
 
