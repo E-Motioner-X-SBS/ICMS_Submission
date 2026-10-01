@@ -18,7 +18,7 @@ export default {
     // pick the busiest residue to start with
     let busiest = 0; for (let i = 0; i < L; i++) if (cm.neighbours(i).length > cm.neighbours(busiest).length) busiest = i;
 
-    const viewBox = h("div.viewer", { "aria-label": "3D backbone. Drag to turn, tap a residue." }, h("span.hint", "drag to turn · tap a residue"));
+    const viewBox = h("div.viewer", { "aria-label": "3D backbone. Drag to turn, tap a residue." }, h("span.hint", "drag sideways to turn · tap a residue"));
     const mapStage = h("section.stage.white", { "aria-label": "Contact map" });
     let canvas = h("canvas");
     mapStage.append(canvas);

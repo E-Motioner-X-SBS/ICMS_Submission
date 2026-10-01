@@ -90,7 +90,7 @@ export default {
     const summary = inf.length
       ? `${int(inf.length)} strand ${inf.length === 1 ? "pair" : "pairs"}: ${n("antiparallel")} antiparallel, ${n("parallel")} parallel${n("short") + n("mixed") ? `, ${n("short") + n("mixed")} too short or mixed` : ""}${inf.some((c) => c.hairpin) ? `; ${inf.filter((c) => c.hairpin).length} ${inf.filter((c) => c.hairpin).length === 1 ? "hairpin" : "hairpins"}` : ""}.`
       : cm.n ? "No block rules here, so no strand pairs to read: this structure's contacts are isolated rather than segment against segment." : "This chain has no contacts under the definition, so there are no rules to read inferences from.";
-    const viewBox = h("div.viewer", { "aria-label": "3D backbone coloured by strand pair direction" }, h("span.hint", "drag to turn"));
+    const viewBox = h("div.viewer", { "aria-label": "3D backbone coloured by strand pair direction" }, h("span.hint", "drag sideways to turn"));
 
     add(el,
       h("div.stats",

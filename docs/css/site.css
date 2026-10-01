@@ -67,8 +67,8 @@ a { color: var(--teal); text-underline-offset: 3px; }
 .top {
   position: fixed; inset: 0 0 auto 0; height: var(--top-h); z-index: 20;
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 0 max(14px, env(safe-area-inset-left)); background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule);
+  padding: 0 max(14px, env(safe-area-inset-left)); background: color-mix(in srgb, var(--paper) 97%, transparent);
+  border-bottom: 1px solid var(--rule);
 }
 .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); font: 700 16px/1 var(--sans); font-stretch: 90%; min-height: 44px; }
 .brand svg { width: 22px; height: 22px; }
@@ -200,7 +200,7 @@ input[type="range"] { width: 100%; accent-color: var(--flip); min-height: 36px; 
 .note { border-left: 0; background: var(--wash); border-radius: 12px; padding: 10px 12px; font-size: 15px; color: var(--ink-2); margin: 10px 0 14px; }
 
 /* ── 3D viewer ───────────────────────────────────────────────────────────── */
-.viewer { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius); background: var(--wash); overflow: hidden; touch-action: none; }
+.viewer { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius); background: var(--wash); overflow: hidden; touch-action: pan-y; }
 .viewer canvas { width: 100% !important; height: 100% !important; display: block; }
 .viewer .hint { position: absolute; left: 10px; bottom: 8px; font: 500 12px/1 var(--sans); color: var(--ink-3); pointer-events: none; }
 
@@ -208,8 +208,8 @@ input[type="range"] { width: 100%; accent-color: var(--flip); min-height: 36px; 
 .bottom {
   position: fixed; inset: auto 0 0 0; z-index: 20; height: calc(var(--bottom-h) + env(safe-area-inset-bottom));
   padding: 10px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));
-  display: flex; align-items: center; gap: 10px; background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 10px; background: color-mix(in srgb, var(--paper) 97%, transparent);
+  border-top: 1px solid var(--rule);
 }
 .nav-btn { min-width: 48px; min-height: 48px; border-radius: 14px; border: 1px solid var(--rule); background: var(--paper); cursor: pointer; font: 700 18px/1 var(--sans); }
 .nav-btn.next { flex: 0 1 auto; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; background: var(--ink); color: var(--paper); border-color: var(--ink); font-size: 15.5px; max-width: 46vw; }

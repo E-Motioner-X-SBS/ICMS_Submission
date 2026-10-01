@@ -25,7 +25,7 @@ export async function createViewer(container, chain, { onPick } = {}) {
   const radius = Math.max(...pts.map((p) => p.length()));
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));   // sharp on phones, without a 3x framebuffer
   container.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, radius * 20);
@@ -90,18 +90,31 @@ export async function createViewer(container, chain, { onPick } = {}) {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.enablePan = false; controls.minDistance = radius * 1.2; controls.maxDistance = radius * 8;
   controls.autoRotate = !reducedMotion(); controls.autoRotateSpeed = 0.9;
+  // phones: a vertical swipe scrolls the page, a horizontal drag turns the molecule, two fingers zoom
+  renderer.domElement.style.touchAction = "pan-y";
   renderer.domElement.addEventListener("pointerdown", () => { controls.autoRotate = false; });
-  let raf = 0, alive = true, needs = true;
-  function request() { needs = true; if (!raf && alive) raf = requestAnimationFrame(loop); }
+
+  // One render loop at most. controls.update() fires "change" while the loop runs; that must not
+  // schedule a second frame, or the number of pending frames doubles every frame. The loop also
+  // sleeps while the viewer is off screen or the tab is hidden.
+  let raf = 0, alive = true, needs = true, inLoop = false, visible = true;
+  const running = () => alive && visible && !document.hidden;
+  function request() { needs = true; if (!raf && !inLoop && running()) raf = requestAnimationFrame(loop); }
   function loop() {
     raf = 0;
+    inLoop = true;
     const moved = controls.update();
+    inLoop = false;
     if (needs || moved || controls.autoRotate) { renderer.render(scene, camera); needs = false; }
-    if (alive && (moved || controls.autoRotate)) raf = requestAnimationFrame(loop);
+    if (!raf && running() && (moved || controls.autoRotate)) raf = requestAnimationFrame(loop);
   }
   controls.addEventListener("change", request);
   const ro = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); request(); });
   ro.observe(container);
+  const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) request(); else if (raf) { cancelAnimationFrame(raf); raf = 0; } });
+  io.observe(container);
+  const onVis = () => { if (!document.hidden) request(); };
+  document.addEventListener("visibilitychange", onVis);
 
   // tap a residue: nearest projected backbone point
   if (onPick) renderer.domElement.addEventListener("click", (e) => {
@@ -115,6 +128,6 @@ export async function createViewer(container, chain, { onPick } = {}) {
   return {
     setColors(fn) { colorOf = fn; applyColors(); },
     setRungs,
-    dispose() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); controls.dispose(); pieces.forEach((p) => p.geo.dispose()); mat.dispose(); rungs.children.forEach((l) => { l.geometry.dispose(); l.material.dispose(); }); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); },
+    dispose() { alive = false; cancelAnimationFrame(raf); raf = 0; ro.disconnect(); io.disconnect(); document.removeEventListener("visibilitychange", onVis); controls.dispose(); pieces.forEach((p) => p.geo.dispose()); mat.dispose(); rungs.children.forEach((l) => { l.geometry.dispose(); l.material.dispose(); }); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); },
   };
 }

@@ -88,7 +88,7 @@ export default {
     const arcHolder = h("div", { "data-noswipe": "" });
     const mapStage = h("section.stage.white", { "aria-label": "Blocks on the contact map" });
     let canvas = h("canvas"); mapStage.append(canvas);
-    const viewBox = h("div.viewer", { "aria-label": "3D backbone coloured by strand pair" }, h("span.hint", "drag to turn"));
+    const viewBox = h("div.viewer", { "aria-label": "3D backbone coloured by strand pair" }, h("span.hint", "drag sideways to turn"));
     const list = h("div.blocks-list");
     function paintAll() {
       const on = (k) => sel === null || sel === k;

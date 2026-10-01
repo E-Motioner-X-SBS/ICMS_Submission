@@ -12,7 +12,7 @@ const OUT = process.env.OUT || "/tmp/claude-1000/-store-shuvam-E-motioner-X-SBS/
 fs.mkdirSync(OUT, { recursive: true });
 const views = { phone: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, desk: { viewport: { width: 1440, height: 900 } } };
 const browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome", args: ["--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"] });
-const ctx = await browser.newContext({ ...views[VIEW], reducedMotion: "reduce", acceptDownloads: true, colorScheme: process.env.DARK ? "dark" : "light" });
+const ctx = await browser.newContext({ ...views[VIEW], reducedMotion: process.env.MOTION ? "no-preference" : "reduce", acceptDownloads: true, colorScheme: process.env.DARK ? "dark" : "light" });
 const page = await ctx.newPage();
 const logs = [];
 page.on("pageerror", (e) => logs.push(`pageerror: ${e.message}`));
