@@ -108,7 +108,7 @@ export default {
         h(`li${irr ? "" : ".bad"}`, "Irreflexive: no residue touches itself."),
         h(`li${sepOK ? "" : ".bad"}`, chain.strands ? `Every contact within a strand is at least ${cm.def.minSep} apart in sequence.` : `Every contact is at least ${cm.def.minSep} apart in sequence.`),
         h(`li${inj ? "" : ".bad"}`, `Injective cells: ${int(f.on.length)} ordered pairs give ${int(cells.size)} distinct ${2 * p}-bit codes.`)),
-      tags([["lean", "contactMap8_symmetric (8-residue example)"], ["lean", "contactCell_injective"], ["data", `your map: ${int(cm.n)} contacts, 4 checks`]]),
+      tags([["lean", "the 8-residue example map is symmetric"], ["lean", "one cell per residue pair"], ["data", `your map: ${int(cm.n)} contacts, 4 checks`]]),
       h("p", "These properties hold by the way the map is built; the browser confirms them for your map. Lean proves them for a fixed 8-residue example map, and proves the cell encoding injective for every pair of 3-bit positions."),
       theoremBlock("0111", ["ContactMapCompleteness.contactMap8_symmetric", "ContactMapCompleteness.contactMap8_irreflexive", "ContactMapCompleteness.contactCell_injective", "ContactMapCompleteness.contactMap8_min_separation"]),
       nextStep(ctx, "A Boolean function can be minimised. On a contact map, the pieces that survive turn out to be structure."));

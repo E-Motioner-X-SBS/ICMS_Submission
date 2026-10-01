@@ -113,7 +113,7 @@ function hamming(ctx) {
           { label: "any two residues", value: 0.2, color: "var(--rule)" }], { width: 340, max: 0.4 }) }),
         h("div.cap", h("b", "Share of pairs whose codes differ in one bit. "), `Your chain: ${int(cn)} contacts, ${int(bn)} non-contact pairs at the same minimum separation. Any two residues: 80 of 400 ordered pairs, proved.`)),
       h("p", `In this chain, ${int(c1)} of ${int(cn)} contacts and ${int(b1)} of ${int(bn)} non-contact pairs are one bit apart. Exactly 80 of the 400 ordered pairs of amino acids are one bit apart under this code; a different labelling of the residues would change all three numbers, while leaving every count on the K-map unchanged.`),
-      tags([["lean", "cc_he_dist1_ordered_eq_80"], ["lean", "sc_gray_changes_hamming"], ["data", `your chain: ${int(cn)} contacts, counted`]]));
+      tags([["lean", "80 of 400 pairs one bit apart"], ["lean", "Gray coding changes some distances"], ["data", `your chain: ${int(cn)} contacts, counted`]]));
   }
   // nucleotides: distance between contact partners under the raw labelling and after relabelling
   const T = type === "rna" ? "U" : "T", rawOf = (l) => NUC_RAW[l], grOf = (l) => NUC_GRAYNAT[l];
@@ -130,7 +130,7 @@ function hamming(ctx) {
         { label: `${d} bit${d === 1 ? "" : "s"}, raw`, value: hr[d] / N, color: "var(--ink-3)" },
         { label: `${d} bit${d === 1 ? "" : "s"}, relabelled`, value: hg[d] / N, color: d === 1 ? "var(--flip)" : "var(--teal)" }]), { width: 340, max: 1 }) }),
       h("div.cap", `Code distance between the two bases of each of the ${int(n)} contacts of chain ${ctx.chain.id}, under each labelling.`)),
-    tags([["lean", "sc_gray_changes_hamming"], ["lean", "encode_complement_AT, CG"], ["data", `your chain: ${int(n)} contacts`]]));
+    tags([["lean", "Gray coding changes some distances"], ["lean", "A–T and C–G differ in both bits"], ["data", `your chain: ${int(n)} contacts`]]));
 }
 
 export default {
@@ -141,7 +141,7 @@ export default {
       h("h1", "What the code can and cannot see"),
       h("p.hook", "The Gray code is linear over GF(2): g(x ⊕ y) = g(x) ⊕ g(y). So it is a relabelling, not a new measurement, and knowing exactly what it can change tells you which results depend on it."),
       linearity(),
-      tags([["lean", "sc_gray_gf2_linear: all x, y < 32"], ["lean", "sc_gray_bijective_on_5bits"]]),
+      tags([["lean", "g(x ⊕ y) = g(x) ⊕ g(y) for all x, y < 32"], ["lean", "the Gray code is a bijection on 5 bits"]]),
       h("h2", "A Gray map is a permuted lexicographic map"),
       h("p", "Because g is a bijection, a Gray-ordered K-map and the lexicographic map used by chaos-game representations (FCGR) hold exactly the same cells, moved. Any statistic that depends only on the cell values or the distances between maps is identical."),
       perm.stage,
@@ -152,7 +152,7 @@ export default {
       hamming(ctx),
       h("h2", "Segments under either numbering"),
       h("p", "Gray-coded positions also turn low-free-bit cubes into unbroken chain segments, but they name different segments than plain binary. Lean proves both facts, so an analysis must fix one numbering and never mix them; this demo uses plain binary for positions throughout."),
-      tags([["lean", "sc_gray_cube_is_also_interval"], ["lean", "sc_gray_relabels_segments"]]),
+      tags([["lean", "a Gray cube is still a segment"], ["lean", "but not the same segment"]]),
       theoremBlock("1110", ["SequenceCircuits.sc_gray_gf2_linear", "SequenceCircuits.sc_gray_bijective_on_5bits", "SequenceCircuits.sc_gray_changes_hamming", "SequenceCircuits.sc_gray_cube_is_also_interval"]),
       nextStep(ctx, "What all of this adds up to."));
     // the 120-map measurement, read from the same summary the poster uses

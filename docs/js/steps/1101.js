@@ -109,7 +109,7 @@ export default {
           ev: c.register ? `${c.register.kind} = ${c.register.lo}–${c.register.hi}` : "", n: c.nPairs, r: c.blocks.length })), { sortKey: "n", desc: true, pageSize: 10 })) : null,
       na ? h("h2", "Cross-check: base pairs from geometry") : null,
       na ? h("div", { id: "bp" }) : null,
-      tags([["lean", "sc_contact_cube_is_block"], ["lean", "contactMap8_symmetric"], ["data", `your structure: ${int(inf.length)} pairs from ${int(rules.filter((r) => r.kind === "block").length)} block rules`]]),
+      tags([["lean", "a contact cube is a segment × segment block"], ["lean", "the 8-residue example map is symmetric"], ["data", `your structure: ${int(inf.length)} pairs from ${int(rules.filter((r) => r.kind === "block").length)} block rules`]]),
       h("p", "Each inference rests on rules that hold for every pair they name, and on the segment lemma that makes a block rule a pair of unbroken segments. The words antiparallel and hairpin describe the counted geometry; naming it a β-sheet or a stem is the reader's interpretation."),
       theoremBlock("1101", ["SequenceCircuits.sc_contact_cube_is_block", "ContactMapCompleteness.contactMap8_symmetric", "ContactMapCompleteness.contactCell_symmetric"]),
       nextStep(ctx, "Back to the sequence: minimised the same way, it must come back unchanged."));

@@ -1,0 +1,485 @@
+# The mathematical statement of every theorem, as shown on the site (LaTeX, rendered to MathML by
+# tools/render-math.py). Each statement says exactly what its Lean theorem proves, written in the
+# notation below instead of Lean code.
+#
+#   == notation      key: text with $inline math$
+#   == theorems      @ Module.theorem | notation keys used
+#                    one line per piece of the statement; the pieces wrap as words do on a phone
+
+== notation
+range: $[n] = \{0, 1, \ldots, n-1\}$
+xor: $\oplus$ is bitwise exclusive or
+gray: $g(n) = n \oplus \lfloor n/2 \rfloor$ is the Gray code
+graydec: $\bar{g}(m) = \bigoplus_{k=0}^{7} \lfloor m/2^k \rfloor$ is the 8-bit Gray decoder
+ham: $d(a, b)$ is the number of bits in which $a$ and $b$ differ
+pow2: $2^{\mathbb{N}} = \{1, 2, 4, 8, \ldots\}$, so $a \oplus b \in 2^{\mathbb{N}}$ says that $a$ and $b$ differ in exactly one bit
+nuc: $\mathcal{N} = \{A, C, G, T\}$, with codes $e(A) = 0$, $e(C) = 1$, $e(G) = 3$, $e(T) = 2$ (binary 00, 01, 11, 10)
+rc: $r(x)$ and $c(x)$ are the row and column of letter $x$ on the 2 × 2 map: $r(A) = r(C) = 0$, $r(G) = r(T) = 1$, $c(A) = c(T) = 0$, $c(C) = c(G) = 1$
+kmer: $E_k(x_1 \cdots x_k) = \sum_{i=1}^{k} 4^{\,k-i}\, e(x_i)$ is the cell of a $k$-mer; $R(xy) = e(x)$ and $C(xy) = e(y)$ are the row and column of a dinucleotide
+aa: $\mathcal{A}$ is the 20 amino acids in group order A V L I F Y W M C P G S T N Q D E H K R; $e(a) \in [20]$ is the position of $a$ in that order and $\gamma(a) = g(e(a))$ its 5-bit code
+delta: $\delta(a, b) = d(\gamma(a), \gamma(b))$ is the distance between the codes of amino acids $a$ and $b$
+rho: $\rho(a) = a$ is the raw group-order index of amino acid number $a \in [20]$
+c8: $C_8$ is the 8-residue example map: $C_8(i, j) = 1$ for $(i, j) = (0,3), (1,4), (2,5), (0,5)$ and their mirror images, $0$ otherwise
+cij: $c_{ij} = 8\,g(i) + g(j)$ is the Gray-indexed cell of the residue pair $(i, j)$
+P: $P = \{c_{03}, c_{14}, c_{25}, c_{05}\}$ is the set of cells holding the example's contacts
+Nk: $N_k = \#\{(a, b) \in [20]^2 \mid a \ne b,\ d(g(a), g(b)) = k\}$ counts the ordered pairs of amino-acid codes at distance $k$
+sigma: $\sigma(s)$ is the separation bin of residues $s$ apart: $0$ for $s \le 10$, $1$ for $11 \le s \le 20$, $2$ for $21 \le s \le 30$, $3$ for $s \ge 31$
+cube: $Q_w(v, m)$ is the set of $c \in [2^w]$ that agree with $v$ on every bit not set in $m$: the cube with fixed bits $v$ and free bits $m$
+toy: $T$ is a worked table on two bits, $T(0) = T(1) = 1$ and $T(2) = T(3) = 0$, covered by the single cube $Q_2(0, 1)$
+div: $2^u \mid v$ says that $v$ is a multiple of $2^u$
+
+== theorems
+@ KmapProofs.gray_bound | range gray
+\forall\, n \in [256]:\ g(n) < 256
+
+@ KmapProofs.gray_adjacent | range gray pow2
+\forall\, n \in [255]:\ g(n) \oplus g(n+1) \in 2^{\mathbb{N}}
+
+@ KmapProofs.gray_hamming_one | range gray ham
+\forall\, n \in [255]:\ d\big(g(n),\, g(n+1)\big) = 1
+
+@ KmapProofs.gray_injective | range gray
+\forall\, a, b \in [256]:\ g(a) = g(b) \Rightarrow a = b
+
+@ KmapProofs.gray_involution | range gray graydec
+\forall\, n \in [256]:\ \bar{g}\big(g(n)\big) = n
+
+@ KmapProofs.encode_injective | nuc
+\forall\, x, y \in \mathcal{N}:\ e(x) = e(y) \Rightarrow x = y
+
+@ KmapProofs.encode_complement_AT | nuc gray
+g\big(e(A)\big) \oplus g\big(e(T)\big) = 3
+
+@ KmapProofs.encode_complement_CG | nuc gray
+g\big(e(C)\big) \oplus g\big(e(G)\big) = 3
+
+@ KmapProofs.gray_cycle_AC | nuc pow2
+e(A) \oplus e(C) \in 2^{\mathbb{N}}
+
+@ KmapProofs.gray_cycle_CG | nuc pow2
+e(C) \oplus e(G) \in 2^{\mathbb{N}}
+
+@ KmapProofs.gray_cycle_GT | nuc pow2
+e(G) \oplus e(T) \in 2^{\mathbb{N}}
+
+@ KmapProofs.gray_cycle_TA | nuc pow2
+e(T) \oplus e(A) \in 2^{\mathbb{N}}
+
+@ KmapProofs.transition_AG | nuc gray pow2
+g\big(e(A)\big) \oplus g\big(e(G)\big) \in 2^{\mathbb{N}}
+
+@ KmapProofs.transition_CT | nuc gray pow2
+g\big(e(C)\big) \oplus g\big(e(T)\big) \in 2^{\mathbb{N}}
+
+@ KmapProofs.transversion_AC | nuc gray ham
+d\big(g(e(A)),\, g(e(C))\big) = 1
+
+@ KmapProofs.encode_all_distinct | nuc
+e(A) \ne e(C),\ \ e(A) \ne e(G),\ \ e(A) \ne e(T),
+e(C) \ne e(G),\ \ e(C) \ne e(T),\ \ e(G) \ne e(T)
+
+@ KmerIndexing.grayNat_bound_2bit | range gray
+\forall\, n \in [4]:\ g(n) < 4
+
+@ KmerIndexing.grayNat_injective_2bit | range gray
+\forall\, a, b \in [4]:\ g(a) = g(b) \Rightarrow a = b
+
+@ KmerIndexing.grayNat_oneBitDiff | range gray pow2
+\forall\, n \in [3]:\ g(n) \oplus g(n+1) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.grayNat_cyclic | gray pow2
+g(3) \oplus g(0) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.encode_injective | nuc
+\forall\, x, y \in \mathcal{N}:\ e(x) = e(y) \Rightarrow x = y
+
+@ KmerIndexing.encode_val_injective | nuc
+\forall\, x, y \in \mathcal{N}:\ e(x) = e(y) \Rightarrow x = y
+
+@ KmerIndexing.gray_cycle_AC | nuc pow2
+e(A) \oplus e(C) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.gray_cycle_CG | nuc pow2
+e(C) \oplus e(G) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.gray_cycle_GT | nuc pow2
+e(G) \oplus e(T) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.gray_cycle_TA | nuc pow2
+e(T) \oplus e(A) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.transition_AG | nuc gray pow2
+g\big(e(A)\big) \oplus g\big(e(G)\big) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.transition_CT | nuc gray pow2
+g\big(e(C)\big) \oplus g\big(e(T)\big) \in 2^{\mathbb{N}}
+
+@ KmerIndexing.complement_AT | nuc gray
+g\big(e(A)\big) \oplus g\big(e(T)\big) = 3
+
+@ KmerIndexing.complement_CG | nuc gray
+g\big(e(C)\big) \oplus g\big(e(G)\big) = 3
+
+@ KmerIndexing.nucCell_injective | nuc rc
+\forall\, x, y \in \mathcal{N}:
+2r(x) + c(x) = 2r(y) + c(y) \Rightarrow x = y
+
+@ KmerIndexing.nucRow_Col_determine | nuc rc
+\forall\, x, y \in \mathcal{N}:
+r(x) = r(y) \wedge c(x) = c(y) \Rightarrow x = y
+
+@ KmerIndexing.nucCell_adj_AC | rc
+r(A) = r(C) \ \wedge\ c(A) + 1 = c(C)
+
+@ KmerIndexing.nucCell_adj_CG | rc
+r(C) + 1 = r(G) \ \wedge\ c(C) = c(G)
+
+@ KmerIndexing.nucCell_adj_GT | rc
+r(G) = r(T) \ \wedge\ c(G) = c(T) + 1
+
+@ KmerIndexing.nucCell_adj_TA | rc
+r(T) = r(A) + 1 \ \wedge\ c(T) = c(A)
+
+@ KmerIndexing.dinucEncode_eq | nuc kmer
+\forall\, xy \in \mathcal{N}^2:\ E_2(xy) = 4\,R(xy) + C(xy)
+
+@ KmerIndexing.dinucEncode_injective | nuc kmer
+\forall\, u, v \in \mathcal{N}^2:\ E_2(u) = E_2(v) \Rightarrow u = v
+
+@ KmerIndexing.dinucEncode_bound | nuc kmer
+\forall\, u \in \mathcal{N}^2:\ E_2(u) < 16
+
+@ KmerIndexing.dinucRow_bound | nuc kmer
+\forall\, u \in \mathcal{N}^2:\ R(u) < 4
+
+@ KmerIndexing.dinucCol_bound | nuc kmer
+\forall\, u \in \mathcal{N}^2:\ C(u) < 4
+
+@ KmerIndexing.dinucRow_cycle_diff_firstPos | nuc kmer
+\forall\, x \in \mathcal{N}:
+R(Cx) - R(Ax) = 1,
+R(Gx) - R(Cx) = 2,
+R(Ax) + 4 - R(Tx) = 2
+
+@ KmerIndexing.dinucCol_cycle_diff_secondPos | nuc kmer
+\forall\, x \in \mathcal{N}:
+C(xC) - C(xA) = 1,
+C(xG) - C(xC) = 2,
+C(xA) + 4 - C(xT) = 2
+
+@ KmerIndexing.dinucRow_Col_injective | nuc kmer
+\forall\, u, v \in \mathcal{N}^2:
+R(u) = R(v) \wedge C(u) = C(v) \Rightarrow u = v
+
+@ KmerIndexing.trinucEncode_injective | nuc kmer
+\forall\, u, v \in \mathcal{N}^3:\ E_3(u) = E_3(v) \Rightarrow u = v
+
+@ KmerIndexing.trinucEncode_bound | nuc kmer
+\forall\, t \in \mathcal{N}^3:\ E_3(t) < 64
+
+@ KmerIndexing.tetranucEncode_injective | nuc kmer
+\forall\, u, v \in \mathcal{N}^4:\ E_4(u) = E_4(v) \Rightarrow u = v
+
+@ KmerIndexing.tetranucEncode_bound | nuc kmer
+\forall\, t \in \mathcal{N}^4:\ E_4(t) < 256
+
+@ KmerIndexing.gray_code_preserves_adjacency | nuc gray ham
+\forall\, x, y \in \mathcal{N},\ x \ne y:
+1 \le d\big(g(e(x)),\, g(e(y))\big) \le 2
+
+@ KmerIndexing.complement_distance_2 | nuc gray ham
+d\big(g(e(A)),\, g(e(T))\big) = 2 \ \wedge
+d\big(g(e(C)),\, g(e(G))\big) = 2
+
+@ KmerIndexing.transition_distance_1 | nuc gray ham
+d\big(g(e(A)),\, g(e(G))\big) = 1 \ \wedge
+d\big(g(e(C)),\, g(e(T))\big) = 1
+
+@ AminoAcidEncoding.encode_injective | aa
+\forall\, a, b \in \mathcal{A}:\ e(a) = e(b) \Rightarrow a = b
+
+@ AminoAcidEncoding.encode_in_range | aa
+\forall\, a \in \mathcal{A}:\ e(a) < 32
+
+@ AminoAcidEncoding.group_hydrophobic_hamming_le_2 | aa delta
+\delta(A,V),\ \delta(A,L),\ \delta(A,I),
+\delta(V,L),\ \delta(V,I),\ \delta(L,I) \le 2
+
+@ AminoAcidEncoding.group_aromatic_hamming_le_2 | aa delta
+\delta(F,Y),\ \delta(F,W),\ \delta(Y,W) \le 2
+
+@ AminoAcidEncoding.group_sulfur_hamming_eq_1 | aa delta
+\delta(M, C) = 1
+
+@ AminoAcidEncoding.group_structure_breaking_hamming_eq_1 | aa delta
+\delta(P, G) = 1
+
+@ AminoAcidEncoding.group_polar_uncharged_hamming_le_3 | aa delta
+\delta(S,T),\ \delta(S,N),\ \delta(S,Q),
+\delta(T,N),\ \delta(T,Q),\ \delta(N,Q) \le 3
+
+@ AminoAcidEncoding.group_negative_charged_hamming_eq_1 | aa delta
+\delta(D, E) = 1
+
+@ AminoAcidEncoding.group_positive_charged_hamming_le_2 | aa delta
+\delta(H,K),\ \delta(H,R),\ \delta(K,R) \le 2
+
+@ AminoAcidEncoding.charge_adjacency_DE | aa delta
+\delta(D, E) = 1
+
+@ AminoAcidEncoding.charge_adjacency_HK | aa delta
+\delta(H, K) = 1
+
+@ AminoAcidEncoding.charge_adjacency_KR | aa delta
+\delta(K, R) = 1
+
+@ AminoAcidEncoding.charge_adjacency_HR | aa delta
+\delta(H, R) = 2
+
+@ AminoAcidEncoding.polar_group_chain | aa delta
+\delta(S,T) = \delta(T,N) = \delta(N,Q) = 1
+
+@ AminoAcidEncoding.polar_group_max_distance | aa delta
+\delta(S, Q) = 3
+
+@ AminoAcidEncoding.aromatic_vs_sulfur | aa delta
+\delta(F,M) = 1,\ \ \delta(F,C) = 2,\ \ \delta(Y,M) = 2,
+\delta(Y,C) = 3,\ \ \delta(W,M) = 1,\ \ \delta(W,C) = 2
+
+@ AminoAcidEncoding.max_distance_FH | aa delta
+\delta(F, H) = 5
+
+@ AminoAcidEncoding.max_distance_YE | aa delta
+\delta(Y, E) = 5
+
+@ AminoAcidEncoding.max_distance_WR | aa delta
+\delta(W, R) = 5
+
+@ AminoAcidEncoding.max_distance_MK | aa delta
+\delta(M, K) = 5
+
+@ AminoAcidEncoding.hydrophobic_vs_positive | aa delta
+\delta(A,K) \ge 4,\ \ \delta(V,H) \ge 2,\ \ \delta(L,R) \ge 3
+
+@ AminoAcidEncoding.hydrophobic_vs_negative | aa delta
+\delta(A,D) = 1,\ \ \delta(V,E) = 3,\ \ \delta(I,D) = 2
+
+@ AminoAcidEncoding.within_group_distance_1 | aa delta
+\delta(a, b) = 1\ \text{ for }\ (a, b) =
+(A,V),\ \ (A,I),\ \ (V,L),\ \ (L,I),\ \ (F,Y),
+(Y,W),\ \ (M,C),\ \ (P,G),\ \ (S,T),\ \ (T,N),
+(N,Q),\ \ (D,E),\ \ (H,K),\ \ (K,R)
+
+@ AminoAcidEncoding.cross_group_distance_1_aliphatic | aa delta
+\delta(a, b) = 1\ \text{ for }\ (a, b) =
+(A,M),\ \ (A,D),\ \ (V,W),\ \ (V,Q),
+(L,Y),\ \ (L,N),\ \ (I,F),\ \ (I,T)
+
+@ AminoAcidEncoding.cross_group_distance_1_aromatic | aa delta
+\delta(a, b) = 1\ \text{ for }\ (a, b) =
+(F,M),\ \ (F,S),\ \ (Y,G),\ \ (W,M),\ \ (W,P)
+
+@ AminoAcidEncoding.cross_group_distance_1_charged | aa delta
+\delta(a, b) = 1\ \text{ for }\ (a, b) =
+(C,P),\ \ (C,S),\ \ (C,D),\ \ (E,H),\ \ (E,R)
+
+@ AminoAcidEncoding.cross_group_distance_1_polar | aa delta
+\delta(a, b) = 1\ \text{ for }\ (a, b) =
+(S,G),\ \ (G,N),\ \ (P,Q),\ \ (T,D),
+(T,R),\ \ (N,K),\ \ (Q,D),\ \ (Q,H)
+
+@ ContactMapCompleteness.contactMap8_symmetric | range c8
+\forall\, i, j \in [8]:\ C_8(i, j) = C_8(j, i)
+
+@ ContactMapCompleteness.contactMap8_irreflexive | range c8
+\forall\, i \in [8]:\ C_8(i, i) = 0
+
+@ ContactMapCompleteness.contactMap8_unique_contacts | c8
+C_8(0,3) = C_8(1,4)
+= C_8(2,5) = C_8(0,5) = 1
+
+@ ContactMapCompleteness.contactCell_bound | range
+\forall\, i, j \in [8]:\ 8i + j < 64
+
+@ ContactMapCompleteness.contactCell_injective | range
+\forall\, i_1, j_1, i_2, j_2 \in [8]:
+8i_1 + j_1 = 8i_2 + j_2 \Rightarrow i_1 = i_2 \wedge j_1 = j_2
+
+@ ContactMapCompleteness.contactCell_symmetric | range
+\forall\, i, j \in [8],\ i \ne j:\ 8i + j \ne 8j + i
+
+@ ContactMapCompleteness.residueGray_bound | range gray
+\forall\, i \in [8]:\ g(i) < 8
+
+@ ContactMapCompleteness.residueGray_injective | range gray
+\forall\, i, j \in [8]:\ g(i) = g(j) \Rightarrow i = j
+
+@ ContactMapCompleteness.contactGrayCell_bound | range gray
+\forall\, i, j \in [8]:\ 8\,g(i) + g(j) < 64
+
+@ ContactMapCompleteness.contactGrayCell_injective | range gray
+\forall\, i_1, j_1, i_2, j_2 \in [8]:
+8\,g(i_1) + g(j_1) = 8\,g(i_2) + g(j_2)
+\Rightarrow i_1 = i_2 \wedge j_1 = j_2
+
+@ ContactMapCompleteness.contactGrayCell_differs_from_raw | range gray
+\exists\, i, j \in [8]:\ 8\,g(i) + g(j) \ne 8i + j
+
+@ ContactMapCompleteness.contactGrayCell_contact_pairs | cij gray
+c_{03} = 2,\ \ c_{14} = 14,\ \ c_{25} = 31,\ \ c_{05} = 7
+
+@ ContactMapCompleteness.contactGrayCell_symmetric_pairs_distinct | cij gray
+c_{03} \ne c_{30},\ \ c_{14} \ne c_{41},\ \ c_{25} \ne c_{52},\ \ c_{05} \ne c_{50}
+
+@ ContactMapCompleteness.contactBool_true_entries | c8
+C_8(i, j) = 1\ \text{ for }\ (i, j) =
+(0,3),\ \ (3,0),\ \ (1,4),\ \ (4,1),
+(2,5),\ \ (5,2),\ \ (0,5),\ \ (5,0)
+
+@ ContactMapCompleteness.contactBool_all_entries_classified | range c8
+\forall\, i, j \in [8]:\ C_8(i, j) = 1 \Leftrightarrow
+(i, j) \in \{(0,3), (3,0), (1,4), (4,1),
+(2,5), (5,2), (0,5), (5,0)\}
+
+@ ContactMapCompleteness.contactMap8_min_separation | range c8
+\forall\, i, j \in [8]:\ C_8(i, j) = 1 \Rightarrow |i - j| \ge 3
+
+@ ContactMapCompleteness.contactMap8_max_separation | range c8
+\forall\, i, j \in [8]:\ C_8(i, j) = 1 \Rightarrow i - j \le 5 \ \vee\ j - i \le 5
+
+@ ContactMapCompleteness.contactMap_no_groupable_minterms | P cij gray ham
+\forall\, p, q \in P,\ p \ne q:\ d(p, q) \ge 2
+
+@ ContactMapCompleteness.contactMap_pairwise_hamming | cij gray ham
+d(c_{03}, c_{14}) = 2,\ \ d(c_{03}, c_{25}) = 4,\ \ d(c_{03}, c_{05}) = 2,
+d(c_{14}, c_{25}) = 2,\ \ d(c_{14}, c_{05}) = 2,\ \ d(c_{25}, c_{05}) = 2
+
+@ ContactMapCompleteness.residue_gray_adjacent | gray ham
+d\big(g(k),\, g(k+1)\big) = 1\ \text{ for }\ k = 0, 1, \ldots, 6
+
+@ KmapEncodingEquiv.rawEncodingInjective | range rho
+\forall\, a, b \in [20]:\ \rho(a) = \rho(b) \Rightarrow a = b
+
+@ KmapEncodingEquiv.distanceDistributionCurrent | Nk gray ham
+N_1 = 80,\ \ N_2 = 132,\ \ N_3 = 112,
+N_4 = 48,\ \ N_5 = 8
+
+@ KmapEncodingEquiv.unorderedDistanceDistribution | Nk gray ham
+\tfrac{1}{2}N_1 = 40,\ \ \tfrac{1}{2}N_2 = 66,\ \ \tfrac{1}{2}N_3 = 56,
+\tfrac{1}{2}N_4 = 24,\ \ \tfrac{1}{2}N_5 = 4
+
+@ KmapEncodingEquiv.degreeOfFiveBitHypercube | range ham
+\forall\, n \in [32]:\ \#\{m \in [32] \mid d(n, m) = 1\} = 5
+
+@ KmapEncodingEquiv.currentEncodingBound | Nk gray ham
+\tfrac{1}{2}N_1 \le 50
+
+@ KmapEncodingEquiv.total_Q5_edges | range ham
+\tfrac{1}{2}\,\#\{(p, q) \in [32]^2 \mid
+p \ne q,\ d(p, q) = 1\} = 80
+
+@ KmapEncodingEquiv.encoding_edge_coverage | Nk range gray ham
+100 \cdot \tfrac{1}{2}N_1 \,/\, E = 50,\ \ \text{where}
+E = \tfrac{1}{2}\,\#\{(p, q) \in [32]^2 \mid
+p \ne q,\ d(p, q) = 1\}
+
+@ KmapEncodingEquiv.consecutive_gray_adjacency | range gray ham
+\forall\, i \in [19]:\ d\big(g(i),\, g(i+1)\big) = 1
+
+@ ContactCircuits.cc_gray_consecutive_adj | range gray ham
+\forall\, x \in [31]:\ d\big(g(x),\, g(x+1)\big) = 1
+
+@ ContactCircuits.cc_hd_symm | range gray ham
+\forall\, a, b \in [32]:\ d\big(g(a),\, g(b)\big) = d\big(g(b),\, g(a)\big)
+
+@ ContactCircuits.cc_he_dist1_ordered_eq_80 | range gray ham
+\#\{(a, b) \in [20]^2 \mid
+d\big(g(a),\, g(b)\big) = 1\} = 80
+
+@ ContactCircuits.cc_he_dist_counts | range gray ham
+\Big(\#\{(a, b) \in [20]^2 \mid
+d\big(g(a),\, g(b)\big) = k\}\Big)_{k=0}^{5}
+= (20, 80, 132, 112, 48, 8)
+
+@ ContactCircuits.cc_sep_bin_edges | sigma
+\sigma(6) = \sigma(10) = 0,\ \ \sigma(11) = \sigma(20) = 1,
+\sigma(21) = \sigma(30) = 2,\ \ \sigma(31) = \sigma(266) = 3
+
+@ ContactCircuits.cc_sep_bin_mono | sigma
+\forall\, a, b \in \mathbb{N}:\ a \le b \Rightarrow \sigma(a) \le \sigma(b)
+
+@ ContactCircuits.cc_level1_bounded | range
+\forall\, g_i, g_j \in [8],\ s \in [4]:\ 4(8g_i + g_j) + s < 256
+
+@ ContactCircuits.cc_level1_injective | range
+\forall\, g_i, g_j, g_i', g_j' \in [8],\ s, s' \in [4]:
+4(8g_i + g_j) + s = 4(8g_i' + g_j') + s'
+\Rightarrow g_i = g_i' \wedge g_j = g_j' \wedge s = s'
+
+@ ContactCircuits.cc_cover_complete | toy cube range
+\forall\, c \in [4]:\ T(c) = 1 \Rightarrow c \in Q_2(0, 1)
+
+@ ContactCircuits.cc_off_avoiding | toy cube range
+\forall\, c \in [4]:\ T(c) = 0 \Rightarrow c \notin Q_2(0, 1)
+
+@ ContactCircuits.cc_fixed_match_unique | cube range
+\forall\, v, r \in [32],\ c \in [1024]:
+c \in Q_{10}(32v + r,\, 0) \Leftrightarrow c = 32v + r
+
+@ ContactCircuits.cc_padding_safety | cube range
+\forall\, v, r \in [20],\ c \in [1024]:
+c \in Q_{10}(32v + r,\, 0) \Rightarrow
+\lfloor c/32 \rfloor < 20 \ \wedge\ c \bmod 32 < 20
+
+@ SequenceCircuits.sc_low_free_is_interval | cube range div
+\forall\, u \in [9],\ v, i \in [256]\ \text{ with }\ 2^u \mid v:
+i \in Q_8(v,\, 2^u - 1) \Leftrightarrow v \le i < v + 2^u
+
+@ SequenceCircuits.sc_interval_span | cube range div
+\forall\, u \in [9],\ v \in [256]\ \text{ with }\ 2^u \mid v,\ \ v + 2^u \le 256:
+\#\{i \in [256] \mid
+i \in Q_8(v,\, 2^u - 1)\} = 2^u
+
+@ SequenceCircuits.sc_contact_cube_is_block | cube range div
+\forall\, u, w \in [5],\ v_i, v_j, i, j \in [16]
+\text{with }\ 2^u \mid v_i,\ 2^w \mid v_j:
+16i + j \in Q_8\big(16v_i + v_j,
+16(2^u - 1) + 2^w - 1\big)
+\Leftrightarrow v_i \le i < v_i + 2^u \ \wedge\ v_j \le j < v_j + 2^w
+
+@ SequenceCircuits.sc_gray_cube_is_also_interval | cube range gray div
+\forall\, u \in [5],\ v \in [16]\ \text{ with }\ 2^u \mid v:
+\exists\, s \in [16],\ 2^u \mid s:
+\{i \in [16] \mid g(i) \in Q_4(v,\, 2^u - 1)\}
+= \{i \in [16] \mid s \le i < s + 2^u\}
+
+@ SequenceCircuits.sc_gray_relabels_segments | cube range gray
+\exists\, v \in [16]\ \text{ with }\ 4 \mid v:
+\{i \in [16] \mid g(i) \in Q_4(v, 3)\}
+\ne \{i \in [16] \mid i \in Q_4(v, 3)\}
+
+@ SequenceCircuits.sc_cell_injective | range
+\forall\, i, i' \in [64],\ a, a' \in [32]:
+32i + a = 32i' + a' \Rightarrow i = i' \wedge a = a'
+
+@ SequenceCircuits.sc_no_cross_residue_merge | range ham
+\forall\, i, i', a, a' \in [32],\ i \ne i',\ a \ne a':
+d(32i + a,\ 32i' + a') \ge 2
+
+@ SequenceCircuits.sc_residue_field_fixed | range xor
+\forall\, i, a \in [32],\ k \in [5]:\ 32i + a \ne 32i + (a \oplus 2^k)
+
+@ SequenceCircuits.sc_gray_gf2_linear | range gray
+\forall\, x, y \in [32]:\ g(x \oplus y) = g(x) \oplus g(y)
+
+@ SequenceCircuits.sc_gray_xor_closed | range gray
+\forall\, x, y \in [32]:\ g(x) \oplus g(y) = g(x \oplus y)
+
+@ SequenceCircuits.sc_gray_low_bit_commutes | range gray
+\forall\, x \in [32]:\ g(x \oplus 1) = g(x) \oplus 1
+
+@ SequenceCircuits.sc_gray_changes_hamming | range gray ham
+\exists\, x, y \in [32]:\ d(x, y) \ne d\big(g(x),\, g(y)\big)
+
+@ SequenceCircuits.sc_gray_bijective_on_5bits | range gray
+\forall\, x, y \in [32]:\ g(x) = g(y) \Rightarrow x = y

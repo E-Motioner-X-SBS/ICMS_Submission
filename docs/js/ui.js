@@ -1,6 +1,6 @@
 // Small DOM toolkit shared by the chapters: an element builder, Lean syntax tinting,
 // theorem cards with live re-checks, evidence tags, and canvas sizing.
-import { byChapter, get, TRUST_TEXT, sourceLabel } from "./core/lean.js";
+import { byChapter, get, TRUST_TEXT, TRUST_SHORT, NOTATION } from "./core/lean.js";
 import { int, ms } from "./core/format.js";
 
 /** h("div.cls#id", {attrs, on: {click}}, children...) */
@@ -22,19 +22,6 @@ export function h(spec, attrs = {}, ...kids) {
 }
 export const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-/** Lean source with light tinting: keywords, the theorem name, comments, tactics. */
-export function leanHTML(src, name) {
-  const KW = /\b(theorem|lemma|def|by|fun|let|if|then|else|match|with|∀|∃|in|at|have|show|from|Fin|Nat|Bool|true|false)\b|∀|∃|→|↔|∧|∨|¬/g;
-  return String(src).split("\n").map((line) => {
-    const ci = line.indexOf("--");
-    const code = ci >= 0 ? line.slice(0, ci) : line, comment = ci >= 0 ? line.slice(ci) : "";
-    let out = esc(code).replace(KW, (m) => `<span class="k">${m}</span>`)
-      .replace(/\b(native_decide|decide|omega|simp|rfl|intro|cases|exact|trivial|norm_num|induction)\b/g, '<span class="t">$1</span>');
-    if (name) out = out.replace(new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`), `<span class="n">${name}</span>`);
-    return out + (comment ? `<span class="c">${esc(comment)}</span>` : "");
-  }).join("\n");
-}
-
 export const tag = (kind, text) => h(`span.tag.${kind}`, text);
 
 const SCOPE_NOTE = {
@@ -44,7 +31,8 @@ const SCOPE_NOTE = {
   bounded: () => "Lean proves it for all numbers; the browser checks a bounded range",
 };
 
-/** One theorem: name, meaning, verbatim statement, trust, live check. */
+/** One theorem: its mathematical statement, the notation it uses, its meaning, what the proof
+ *  trusts, and a live re-check. No Lean code is shown. */
 export function theoremCard(t, { compact = false } = {}) {
   if (typeof t === "string") t = get(t);
   if (!t) return null;
@@ -62,10 +50,12 @@ export function theoremCard(t, { compact = false } = {}) {
     btn.disabled = false; btn.textContent = "Run again";
   });
   const trust = TRUST_TEXT[t.trust] || "";
-  return h("section.thm", { "aria-label": `Theorem ${t.name}` },
-    h("header", h("span.name", t.name), h("span.file", sourceLabel(t))),
+  const where = t.where.length ? h("p.where", { html: `where ${t.where.map((k) => NOTATION[k]).join("; ")}` }) : null;
+  return h(`section.thm${compact ? ".compact" : ""}`, { "aria-label": `Theorem: ${t.meaning}` },
+    h("header", h("span.proved", "Proved in Lean 4"), h("span.kind", TRUST_SHORT[t.trust] || "")),
+    h("div.stmt", { html: t.statement }),
+    where,
     h("p.meaning", t.meaning),
-    compact ? null : h("pre", { html: leanHTML(t.statement, t.name) }),
     h("footer", btn, result, h("span.trust", `${SCOPE_NOTE[t.scope]?.(t) ?? ""}. ${trust}`)));
 }
 
@@ -128,7 +118,7 @@ export function nextStep(ctx, text) {
     `Next: ${ctx.next.title}`, h("span", { "aria-hidden": "true" }, " →")));
 }
 
-/** Evidence tags row: [["lean","gray_hamming_one"],["data","your chain"]] */
+/** Evidence tags row: [["lean","what was proved"],["data","your chain"]] */
 export const tags = (list) => h("div.tags", list.map(([k, t]) => tag(k, `${k === "lean" ? "⊢ " : k === "data" ? "◆ " : "✎ "}${t}`)));
 
 /** parent.append that skips null/false/undefined (plain append would print "null"). */

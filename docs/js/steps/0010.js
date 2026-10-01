@@ -109,9 +109,9 @@ export default {
       h("details.thm-more", h("summary", "All one-bit neighbours of the selected cell"), neighbourList),
       h("h2", "Why the fold matters"),
       h("p", "Two k-mers that differ in a single bit of their code sit next to each other or, on axes of three or more bits, at mirrored positions. So a pattern that ignores one bit is a pair of one-bit neighbours, and one that ignores two bits a 2 × 2 group: the cubes that minimisation (chapter 0101) finds."),
-      isProt ? h("p.note", "Lean proves the nucleotide k-mer encodings injective and the 2 × 2 layout (KmerIndexing.lean). The protein map uses the same Gray-ordered construction on the 5-bit amino-acid codes, whose encoding is proved in AminoAcidEncoding.lean. The 12 unused codewords stay empty.") : null,
-      tags(isProt ? [["lean", "AminoAcidEncoding.encode_injective"], ["lean", "gray_code_preserves_adjacency"], ["data", "your chain's k-mer counts"]]
-        : [["lean", "dinucEncode_injective"], ["lean", "tetranucEncode_injective"], ["lean", "gray_code_preserves_adjacency"], ["data", "your chain's k-mer counts"]]),
+      isProt ? h("p.note", "Lean proves the nucleotide k-mer encodings injective and the 2 × 2 layout. The protein map uses the same Gray-ordered construction on the 5-bit amino-acid codes, whose encoding is proved too. The 12 unused codewords stay empty.") : null,
+      tags(isProt ? [["lean", "20 residues, 20 distinct codes"], ["lean", "one substitution changes 1 or 2 bits"], ["data", "your chain's k-mer counts"]]
+        : [["lean", "16 dinucleotides, 16 cells"], ["lean", "256 tetranucleotides, 256 cells"], ["lean", "one substitution changes 1 or 2 bits"], ["data", "your chain's k-mer counts"]]),
       theoremBlock("0010", ["KmerIndexing.dinucEncode_injective", "KmerIndexing.nucCell_adj_AC", "KmerIndexing.tetranucEncode_injective", "KmerIndexing.gray_code_preserves_adjacency"]),
       nextStep(ctx, isProt ? "The protein code puts 20 residues on a five-dimensional cube. Which ones are neighbours?" : "Where do complementary and transition pairs sit on the code's square?"));
     build();

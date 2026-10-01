@@ -23,7 +23,8 @@
 <link rel="modulepreload" href="js/core/contacts.js">
 <link rel="modulepreload" href="js/ui.js">
 <link rel="modulepreload" href="js/core/lean.js">
-<link rel="modulepreload" href="js/core/lean-source.js">
+<link rel="modulepreload" href="js/core/theorem-meta.js">
+<link rel="modulepreload" href="js/core/statements.js">
 <script>(function () {
   var p = location.hash.replace(/^#\/?/, "").split("/"), id = null, st = "0000", four = /^[01]{4}$/;
   if (p[0]) { if (four.test(p[0])) st = p[0]; else { try { id = decodeURIComponent(p[0]).toUpperCase(); } catch (e) { return; } st = four.test(p[2] || "") ? p[2] : p.length === 2 && four.test(p[1]) ? p[1] : "0001"; } }

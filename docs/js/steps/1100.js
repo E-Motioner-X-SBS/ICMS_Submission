@@ -88,7 +88,7 @@ export default {
       h("p.small", "A rule names positions, counted from 0 as in the bits; residues are labelled as in the PDB file, letter and residue number."),
       seg, h("div", { style: { marginTop: "10px" } }, list), pager,
       detail, mapStage,
-      tags([["lean", "sc_low_free_is_interval"], ["lean", "sc_contact_cube_is_block"], ["lean", "cc_padding_safety"], ["data", `your structure: ${int(rules.length)} rules, 0 exceptions`]]),
+      tags([["lean", "low free bits = an unbroken segment"], ["lean", "a contact cube is a segment × segment block"], ["lean", "rules never fire on padding"], ["data", `your structure: ${int(rules.length)} rules, 0 exceptions`]]),
       h("p", "Why the ranges are honest: with plain binary positions, free low bits mean an unbroken run of 2^u positions (proved for every position and run length up to 256), so a block rule really is one segment against another, not a scatter of cells. Rules about real positions never fire on the padding beyond the chain."),
       theoremBlock("1100", ["SequenceCircuits.sc_low_free_is_interval", "SequenceCircuits.sc_interval_span", "SequenceCircuits.sc_contact_cube_is_block", "ContactCircuits.cc_padding_safety"]),
       nextStep(ctx, "Rules that line up tell you how the chain is folded."));

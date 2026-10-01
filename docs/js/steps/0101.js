@@ -119,7 +119,7 @@ export default {
       h("p", "With plain binary positions, a cube whose free bits are the lowest ones of a field covers an unbroken run of positions. If both fields are like that, the cube is a rectangle on the map: every residue of one chain segment touches every residue of another. Lean proves this segment lemma for every cube on 4-bit positions; on your map every block is also checked, cell by cell."),
       example,
       ex ? h("p.small", `One of your blocks. Positions count from 0, as in the bits. ${blocks.length} such blocks cover ${int(inBlocks)} of the ${int(cm.n)} contacts.`) : h("p.note", cm.n ? "This map has no block of four or more cells: its contacts are isolated rather than segment against segment. Try a protein with β-sheets such as 1FNA." : "This chain has no contacts under the definition, so there are no blocks. Try a larger chain or one of the examples."),
-      tags([["lean", "sc_contact_cube_is_block"], ["lean", "sc_low_free_is_interval"], ["data", `your map: ${blocks.length} ${blocks.length === 1 ? "block" : "blocks"}`]]),
+      tags([["lean", "a contact cube is a segment × segment block"], ["lean", "low free bits = an unbroken segment"], ["data", `your map: ${blocks.length} ${blocks.length === 1 ? "block" : "blocks"}`]]),
       clusters.length ? h("h2", "Blocks line up into strand pairs") : null,
       clusters.length ? h("p", `Neighbouring blocks that continue each other along both segments belong to one pair of touching strands or helices. Your ${blocks.length} blocks form ${clusters.length} such ${clusters.length === 1 ? "pair" : "pairs"}: the minimised circuit recovers the chain's packing without being told what a β-sheet is.`) : null,
       clusters.length ? h("section.stage.white", { "aria-label": "Arc diagram of strand pairs" }, arcHolder, h("div.cap", "The chain drawn as a line; each band joins two segments that touch. Tap a pair below to isolate it in every view.")) : null,
@@ -130,8 +130,8 @@ export default {
       h("p", "Shuffle the contacts while keeping how far apart along the chain each one is (the same number of contacts at every separation), then minimise again. Blocks need neighbours touching neighbours; random contacts rarely line up."),
       h("div", { id: "shuffles" }, h("div.loading", h("span.spinner"), "Minimising 5 shuffled maps…")),
       h("p", "Across the 150 PSICOV proteins, every circuit is exact (150 of 150 sound and complete), and 9,260 of the 47,430 native contacts (19.5%) lie inside block rules, in 145 of the 150 proteins."),
-      tags([["data", "150 / 150 exact circuits, 47,430 contacts"], ["lean", "cc_cover_complete"], ["lean", "cc_off_avoiding"]]),
-      h("p.small", "The soundness and completeness checks above are the executable versions of cc_off_avoiding and cc_cover_complete, which Lean proves on a worked example; the browser runs them on your cover."),
+      tags([["data", "150 / 150 exact circuits, 47,430 contacts"], ["lean", "covers every 1 (worked table)"], ["lean", "covers no 0 (worked table)"]]),
+      h("p.small", "The soundness and completeness checks above are the executable versions of the two cover theorems, which Lean proves on a worked example; the browser runs them on your cover."),
       theoremBlock("0101", ["SequenceCircuits.sc_contact_cube_is_block", "SequenceCircuits.sc_low_free_is_interval", "ContactCircuits.cc_cover_complete", "ContactCircuits.cc_off_avoiding"]),
       nextStep(ctx, "The same minimiser, run on the sequence itself, must give the sequence back."));
     paintAll();

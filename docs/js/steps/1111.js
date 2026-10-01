@@ -65,7 +65,7 @@ export default {
         h(`li${r.sound && r.complete ? "" : ".bad"}`, "The cover is sound and complete, checked as in chapter 0101."),
         h(`li${r.residueFree === 0 ? "" : ".bad"}`, `No cube frees a letter bit: 0 of ${int(r.nCover)}.`),
         h(`li${r.lossless ? "" : ".bad"}`, `Every one of the ${int(codes.length)} positions decodes to its original letter.`)),
-      tags([["lean", "sc_residue_field_fixed"], ["lean", "sc_no_cross_residue_merge"], ["lean", "sc_cell_injective"], ["data", `your chain: ${int(codes.length)} positions read back`]]),
+      tags([["lean", "one residue bit changes the cell"], ["lean", "no merge across residues"], ["lean", "(position, residue) packing is lossless"], ["data", `your chain: ${int(codes.length)} positions read back`]]),
       h("p", "This is why the encoding can be trusted as a representation: minimisation merges positions, never letters, and the read-back above confirms, position by position, that nothing about which letter sits where is lost."),
       theoremBlock("1111", ["SequenceCircuits.sc_residue_field_fixed", "SequenceCircuits.sc_no_cross_residue_merge", "SequenceCircuits.sc_cell_injective"]),
       nextStep(ctx, "Gray code or plain binary: what does the choice of code actually change?"));

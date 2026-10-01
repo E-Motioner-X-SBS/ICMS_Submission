@@ -80,7 +80,7 @@ export default {
       h("p.small", "The formula is linear over GF(2), the algebra of XOR, and it can be undone. Both facts come back in chapter 1110."),
       h("h2", "On your chain"),
       h("p", L < 2 ? `Chain ${ctx.chain.id} has ${int(L)} position, so there is no step to count.` : `Chain ${ctx.chain.id} has ${int(L)} positions, so a position needs ${p} bits. Counting positions in binary, the worst step is ${worstAt - 1} → ${worstAt}, which flips ${worstBin} ${worstBin === 1 ? "bit" : "bits"}. Counted in Gray code, all ${int(L - 1)} steps flip exactly one.`),
-      tags([["lean", "gray_hamming_one: every n < 255"], ["data", `your chain: ${int(Math.max(0, L - 1))} of ${int(Math.max(0, L - 1))} Gray steps are one bit`]]),
+      tags([["lean", "consecutive codes one bit apart, every n < 255"], ["data", `your chain: ${int(Math.max(0, L - 1))} of ${int(Math.max(0, L - 1))} Gray steps are one bit`]]),
       ctx.chain.entityType === "protein" ? null : h("p", `The nucleotide codes are a Gray cycle themselves: A 00 → C 01 → G 11 → ${T} 10 → A 00, one bit per step.`),
       grayOK ? null : h("div.error", "A Gray step flipped more than one bit. This should be impossible; please report it."),
       theoremBlock("0011", ["KmapProofs.gray_hamming_one", "KmapProofs.gray_injective", "KmapProofs.gray_involution", "KmerIndexing.grayNat_cyclic"]),

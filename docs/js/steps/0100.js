@@ -179,7 +179,7 @@ export default {
       h("p", "Tap any cell of the contact map: its two positions become the circuit's input bits, the gates that fire light up above, and the output is compared with the structure. The selected gate's cells are orange."),
       mapStage, probeOut,
       h("div", { style: { marginTop: "14px" } }, verifyBtn), verifyOut,
-      tags([["lean", "cc_cover_complete"], ["lean", "cc_off_avoiding"], ["lean", "cc_fixed_match_unique"], ["data", `your circuit: ${int(terms.length)} gates, checked on ${int(4 ** p)} inputs`]]),
+      tags([["lean", "covers every 1 (worked table)"], ["lean", "covers no 0 (worked table)"], ["lean", "a fully fixed rule fires on one cell"], ["data", `your circuit: ${int(terms.length)} gates, checked on ${int(4 ** p)} inputs`]]),
       h("p", "How exactness is established: the minimiser checks every cover for soundness (no gate covers a 0) and completeness (every 1 covered), the button above re-runs the finished circuit on every possible input, and Lean proves on a worked table that these two checks say what they claim."),
       h("h2", "Take the circuit with you"),
       h("div.row",

@@ -1,5 +1,5 @@
 // 0110 The geometry of the code: amino acids on the 5-cube (4 × 8 K-map), or the
-// nucleotide square in the grayNat labelling.
+// nucleotide square with Gray-coded labels.
 import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, add } from "../ui.js";
 import { Q5_SHAPE, kmapCode, kmapCell, CODE_AA, AA_CODE, AA_GROUP, AA_NAMES, GROUPS, ham, bits, gray, aaPairHistogram,
   neighbourDistanceHistogram, encodeSequence, NUC_GRAYNAT, NA_SQUARE, nucRelation, UNUSED_AA_CODES, letterVar } from "../core/encoding.js";
@@ -69,7 +69,7 @@ function proteinCube(el, ctx) {
     h("section.stage", { "aria-label": "Distance distribution" }, h("div", { html: bars }),
       h("div.cap", h("b", "Grey: "), "share of the 190 residue pairs at each distance (proved). ", h("b", "Colour: "), `share of the ${int(nAlong)} consecutive residue pairs of chain ${ctx.chain.id} (measured).`)),
     h("p", `Along your chain, ${pct(along[1] / nAlong)} of neighbouring residues are one bit apart, against ${pct(40 / 190)} of all residue pairs. Because the full distance table is proved, any such comparison rests on exact numbers rather than on a hand-built table.`),
-    tags([["lean", "unorderedDistanceDistribution"], ["lean", "max_distance_FH … MK"], ["lean", "encoding_edge_coverage"], ["data", `your chain: ${int(nAlong)} steps`]]),
+    tags([["lean", "190 pairs: 40, 66, 56, 24, 4 at distance 1–5"], ["lean", "F–H, Y–E, W–R, M–K differ in all 5 bits"], ["lean", "the code uses 40 of the cube's 80 edges"], ["data", `your chain: ${int(nAlong)} steps`]]),
     theoremBlock("0110", ["KmapEncodingEquiv.unorderedDistanceDistribution", "AminoAcidEncoding.max_distance_FH", "AminoAcidEncoding.charge_adjacency_DE", "KmapEncodingEquiv.encoding_edge_coverage"]),
     nextStep(ctx, "Sequence was the warm-up. Next: the chain's 3D contacts, as a Boolean function."));
   draw();
@@ -146,14 +146,14 @@ function nucleotideSquare(el, ctx) {
   add(el, 
     h("h1", "The geometry of the code"),
     h("p.hook", `Two bits make a square. Relabelled by the Gray code, the four bases sit at its corners so that chemistry becomes distance: transitions (A↔G, C↔${T}) are one bit apart, Watson–Crick partners (A–${T}, C–G) two.`),
-    h("p", `This page uses the relabelled codes grayNat(encode n): A = 00, C = 01, G = 10, ${T} = 11. Both labellings are proved in the Lean files; the other chapters keep the raw codes A = 00, C = 01, G = 11, ${T} = 10.`),
+    h("p", `This page uses the Gray-coded labels g(e(x)): A = 00, C = 01, G = 10, ${T} = 11. Both labellings are proved; the other chapters keep the raw codes A = 00, C = 01, G = 11, ${T} = 10.`),
     stage, readout,
     h("div.legend", h("span", h("i", { style: { background: "var(--flip)" } }), "transition, 1 bit"), h("span", h("i", { style: { background: "var(--ink-3)" } }), "transversion, 1 bit"), h("span", h("i", { style: { background: "var(--teal)" } }), "complement, 2 bits (diagonal)")),
     h("p", `Complementary bases always XOR to 11: flipping both bits turns a strand into its complement. In the square, that is the jump across a diagonal.`),
     h("h2", `Along chain ${ctx.chain.id}`),
     h("section.stage", { "aria-label": "Steps between consecutive bases" }, h("div", { html: bars }),
       h("div.cap", `${int(n)} steps between consecutive bases${ctx.chain.strands ? ", within each strand" : ""}, by their relation on the square.`)),
-    tags([["lean", "encode_complement_AT, CG"], ["lean", "transition_AG, CT"], ["lean", "complement_distance_2"], ["data", `your chain: ${int(n)} steps`]]),
+    tags([["lean", "A–T and C–G differ in both bits"], ["lean", "transitions flip one bit"], ["lean", "Watson–Crick partners two bits apart"], ["data", `your chain: ${int(n)} steps`]]),
     theoremBlock("0110", ["KmapProofs.encode_complement_AT", "KmapProofs.transition_AG", "KmerIndexing.complement_distance_2", "KmerIndexing.transition_distance_1"]),
     nextStep(ctx, "Sequence was the warm-up. Next: the molecule's 3D contacts, as a Boolean function."));
   draw();

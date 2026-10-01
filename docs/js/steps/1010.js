@@ -1,7 +1,7 @@
 // 1010 What it all means: the visitor's results with their provenance, the takeaways,
 // and the full theorem inventory, re-checkable here.
 import { h, theoremBlock, tags, css, add, dataTable } from "../ui.js";
-import { STATS, THEOREMS, runAll, LEAN_FILES, REPO, TRUST_TEXT } from "../core/lean.js";
+import { STATS, THEOREMS, runAll, TOPIC_LIST, REPO, TRUST_TEXT } from "../core/lean.js";
 import { encodeSequence, alphabet } from "../core/encoding.js";
 import { int, pct, ms } from "../core/format.js";
 
@@ -32,19 +32,19 @@ export default {
     const datasets = X ? [
       h("h2", "Exact, on whole datasets"),
       h("p", "The same pipeline, run on every structure, sequence and frame of four datasets. Each line is a count with no exception: every circuit was re-run on all its inputs, every rule against every case it names."),
-      card("150 proteins (PSICOV)", [
+      card("150 proteins (PSICOV, 150 Pfam families)", [
         `${X.psicov.exact} of ${X.psicov.proteins} contact circuits exact on all ${int(X.psicov.inputs)} inputs; ${int(X.psicov.contacts)} contacts.`,
         `${int(X.psicov.rules)} rules, ${X.psicov.exceptions} exceptions, ${X.psicov.missed} contacts missed.`,
         `${int(X.psicov.contactsInBlocks)} contacts lie in ${int(X.psicov.ruleKinds.block)} block rules, in ${X.psicov.proteinsWithBlocks} proteins.`,
         `Read from the rules: ${X.psicov.antiparallel} antiparallel and ${X.psicov.parallel} parallel strand pairs, ${X.psicov.hairpins} hairpins.`,
         `${X.psicov.sequencesLossless} of ${X.psicov.proteins} sequences read back exactly from their circuits.`],
-        [["data", "150 / 150 exact"], ["lean", "sc_contact_cube_is_block"]]),
+        [["data", "150 / 150 exact"], ["lean", "a contact cube is a segment × segment block"]]),
       card(`${X.curated.chains} high-resolution chains (protein, DNA, RNA)`, [
         `All ${X.curated.chains} circuits exact: ${int(X.curated.totals.contacts)} contacts, ${int(X.curated.totals.rules)} rules, ${X.curated.totals.exceptions} exceptions.`,
         `${X.curated.byType.protein.structures} protein, ${X.curated.byType.dna.structures} DNA and ${X.curated.byType.rna.structures} RNA chains (X-ray, ≤ 1.5 Å).`,
         `DNA: ${X.curated.byType.dna.basePairs.watsonCrick} of ${X.curated.byType.dna.basePairs.n} base pairs found by geometry are Watson–Crick.`],
         [["data", `${X.curated.chains} / ${X.curated.chains} exact`]]),
-      card(`One species: ${int(X.spike.sequences)} SARS-CoV-2 Spike sequences`, [
+      card(`One species: ${int(X.spike.sequences)} SARS-CoV-2 Omicron Spike sequences`, [
         `${X.spike.pairs} co-evolving position pairs: ${X.spike.allowed} allowed and ${X.spike.forbidden} forbidden residue combinations, ${X.spike.violations} violations in any sequence.`,
         `Example, positions ${X.spike.showcase.at[0]} and ${X.spike.showcase.at[1]}: ${X.spike.showcase.implications.map((i) => `${i.if} at ${i.at === "i" ? X.spike.showcase.at[0] : X.spike.showcase.at[1]} ⇒ ${i.then} at ${i.at === "i" ? X.spike.showcase.at[1] : X.spike.showcase.at[0]} (${int(i.support)} of ${int(i.support)})`).join("; ")}.`,
         `${X.spike.implications} such implications in all; every circuit is the unique minimum cover.`,
@@ -93,15 +93,15 @@ export default {
       theoremBlock("1010", ["ContactCircuits.cc_padding_safety", "ContactCircuits.cc_fixed_match_unique"], { title: "The padding theorems" }),
       h("h2", "The whole proof, re-checked here"),
       h("div.stats",
-        h("div.stat", h("div.v", int(STATS.theorems)), h("div.l", `theorems in ${STATS.files} Lean files`)),
-        h("div.stat.ok", h("div.v", "0"), h("div.l", "sorry; no axiom of our own")),
-        h("div.stat", h("div.v", int(STATS.nativeDecide)), h("div.l", "depend on native_decide")),
+        h("div.stat", h("div.v", int(STATS.theorems)), h("div.l", `theorems, in ${STATS.topics} topics`)),
+        h("div.stat.ok", h("div.v", "0"), h("div.l", "steps left unproved; no axiom of our own")),
+        h("div.stat", h("div.v", int(STATS.compiled)), h("div.l", "proved by a compiled check of every case")),
         h("div.stat", h("div.v", int(STATS.kernelOnly + STATS.noAxioms)), h("div.l", "checked by the kernel alone"))),
       h("p", `Your browser can run the finite check behind every theorem: up to ${int(STATS.totalCases)} cases, fewer when a search for a witness stops at the first one. This does not replace Lean's proof; it shows the statements say what the pages claim.`),
       h("div.checkall", runBtn, h("div.bar", bar), status),
       h("p.small", `${TRUST_TEXT.compiler} ${TRUST_TEXT.kernel}`),
-      h("ul.checks", { style: { fontSize: "14px" } }, LEAN_FILES.map((f) => h("li", h("span.mono", f), ` ${THEOREMS.filter((t) => t.file === f).length} theorems`))),
-      h("p.small", "The theorem statements are shown verbatim on every chapter; the proofs are kept in the project's Lean development."),
+      h("ul.checks", { style: { fontSize: "14px" } }, TOPIC_LIST.map((tp) => h("li", h("b", tp.title), ` ${THEOREMS.filter((t) => t.topic === tp.key).length} theorems`))),
+      h("p.small", "Every chapter shows its theorems as mathematical statements; the Lean development itself, statements and proofs, is kept private."),
       h("h2", "Go further"),
       h("div.row",
         h("a.btn", { href: `${REPO}/blob/main/SBS_ICMS2026_Poster.pdf`, target: "_blank", rel: "noopener" }, "The poster (PDF)"),
@@ -112,7 +112,7 @@ export default {
     // the visitor's own results, with provenance
     const rows = [];
     const enc = encodeSequence(chain.seq, chain.entityType);
-    rows.push(h("li", `${int(enc.codes.length - enc.unknown)} letters encoded in ${alphabet(chain.entityType).bits} bits each, no two letters sharing a code`, " ", h("span.tag.lean", "⊢ encode_injective")));
+    rows.push(h("li", `${int(enc.codes.length - enc.unknown)} letters encoded in ${alphabet(chain.entityType).bits} bits each, no two letters sharing a code`, " ", h("span.tag.lean", "⊢ distinct codes")));
     rows.push(h("li", `${int(cm.n)} contacts, a Boolean function of ${2 * Math.max(1, Math.ceil(Math.log2(Math.max(cm.L, 2))))} bits`, " ", h("span.tag.data", "◆ your map")));
     yours.replaceChildren(...rows, h("li.wait", "Minimising…"));
     try {
@@ -121,7 +121,7 @@ export default {
       yours.lastChild.remove();
       add(yours, 
         h(`li${a.sound && a.complete ? "" : ".bad"}`, `${int(a.nPrimes)} prime implicants; a cover of ${int(a.nCover)}, sound and complete`, " ", h("span.tag.data", "◆ checked on every input")),
-        h("li", `${int(a.contactsInBlocks)} of ${int(cm.n)} contacts in ${a.blocks.length} ${a.blocks.length === 1 ? "block" : "blocks"} of touching segments`, " ", h("span.tag.lean", "⊢ sc_contact_cube_is_block"), " ", h("span.tag.data", "◆ your map")));
+        h("li", `${int(a.contactsInBlocks)} of ${int(cm.n)} contacts in ${a.blocks.length} ${a.blocks.length === 1 ? "block" : "blocks"} of touching segments`, " ", h("span.tag.lean", "⊢ segment × segment block"), " ", h("span.tag.data", "◆ your map")));
     } catch (e) { if (alive) { yours.lastChild.remove(); add(yours, h(e?.kind === "too-long" ? "li.wait" : "li.bad", e.message)); } }
   },
   unmount() { this._off?.(); },

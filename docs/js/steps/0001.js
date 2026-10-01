@@ -106,7 +106,7 @@ export default {
       enc.unknown || chain.notes?.length ? h("p.note", [
         enc.unknown ? `${enc.unknown} ${enc.unknown === 1 ? "residue has" : "residues have"} no standard letter and no code; they are shown grey and skipped by counts. ` : "",
         ...(chain.notes || []).map((n) => (n.one ? `${n.name} was read as ${n.one} (${n.count}×). ` : `${n.name} is not a standard residue and is left out (${n.count}×). `))].join("")) : null,
-      tags([["lean", isProt ? "AminoAcidEncoding.encode_injective" : "KmapProofs.encode_injective"], ["data", `your chain: ${int(enc.codes.length - enc.unknown)} letters encoded, none shared by two letters`]]),
+      tags([["lean", isProt ? "20 residues, 20 distinct codes" : "4 letters, 4 distinct codes"], ["data", `your chain: ${int(enc.codes.length - enc.unknown)} letters encoded, none shared by two letters`]]),
       h("p", "Injectivity is what makes the rest possible: no two letters share a codeword, so everything built from bits can be read back as sequence."),
       theoremBlock("0001", isProt ? ["AminoAcidEncoding.encode_injective", "AminoAcidEncoding.encode_in_range", "KmapEncodingEquiv.rawEncodingInjective"] : ["KmapProofs.encode_injective", "KmapProofs.gray_cycle_AC", "KmapProofs.encode_all_distinct"]),
       nextStep(ctx, "Why this particular order? Because a Gray code changes one bit at a time."));
