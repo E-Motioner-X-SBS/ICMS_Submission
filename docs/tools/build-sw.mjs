@@ -44,8 +44,9 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
-    if (req.mode === "navigate") {              // the page itself: network first, so a new deploy shows at once
-      e.respondWith(fetch(req).catch(() => caches.match(new URL("./", self.location).href)));
+    if (req.mode === "navigate") {              // the page itself, from the same versioned cache as its scripts,
+      e.respondWith(caches.open(SHELL).then((c) => c.match(new URL("./", self.location).href)   // so page and modules always match;
+        .then((hit) => hit || fetch(req))));    // a new deploy installs a new worker, used from the next load
       return;
     }
     e.respondWith(caches.open(SHELL).then((c) => c.match(req, { ignoreSearch: true })

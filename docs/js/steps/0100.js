@@ -92,7 +92,7 @@ export default {
     this._off = () => { alive = false; ro?.disconnect(); };
     const status = h("div.loading", h("span.spinner"), "Minimising the contact function…");
     add(el, h("h1", "The structure as a circuit"),
-      h("p.hook", `The whole PDB entry is now one Boolean function, and its minimised cover is a circuit: one AND gate per term, one OR gate collecting them. Feed it the bits of two positions and it answers, exactly, whether those ${chain.entityType === "protein" ? "residues" : "nucleotides"} touch.`),
+      h("p.hook", `This chain is now one Boolean function, and its minimised cover is a circuit: one AND gate per term, one OR gate collecting them. Feed it the bits of two positions and it answers, exactly, whether those ${chain.entityType === "protein" ? "residues" : "nucleotides"} touch.`),
       status);
     let a;
     try { a = await ctx.derived.analysis(); } catch (e) { status.replaceChildren(failBox(e)); return; }
@@ -176,7 +176,7 @@ export default {
       mapStage, probeOut,
       h("div", { style: { marginTop: "14px" } }, verifyBtn), verifyOut,
       tags([["lean", "cc_cover_complete"], ["lean", "cc_off_avoiding"], ["lean", "cc_fixed_match_unique"], ["data", `your circuit: ${int(terms.length)} gates, checked on ${int(4 ** p)} inputs`]]),
-      h("p", "Exactness is not a claim about this circuit in particular: the minimiser only keeps a cover that passes the soundness and completeness checks, whose definitions Lean verifies, and the button above re-runs the finished circuit on every possible input."),
+      h("p", "How exactness is established: the minimiser checks every cover for soundness (no gate covers a 0) and completeness (every 1 covered), the button above re-runs the finished circuit on every possible input, and Lean proves on a worked table that these two checks say what they claim."),
       h("h2", "Take the circuit with you"),
       h("div.row",
         h("button.btn.small.ghost", { type: "button", on: { click: () => download(`${name}.pla`, toPLA(terms, p, name)) } }, "Download .pla (Espresso)"),

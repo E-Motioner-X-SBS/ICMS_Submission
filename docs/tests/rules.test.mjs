@@ -19,7 +19,7 @@ function run(label, chain) {
   const kinds = rules.reduce((m, r) => ((m[r.kind] = (m[r.kind] || 0) + 1), m), {});
   console.log(`   kinds ${JSON.stringify(kinds)}; terms ${terms.length}; literals ${terms.reduce((n, t) => n + t.literals, 0)}`);
   const inf = inferences(rules, chain, cm.has);
-  for (const c of inf) console.log(`   pair ${c.i0}-${c.i1 - 1} x ${c.j0}-${c.j1 - 1}: ${c.orientation} (r=${c.r.toFixed(2)}) ${c.register ? `${c.register.kind} in [${c.register.lo}, ${c.register.hi}]` : ""} gap ${c.gap}${c.basePairs ? ` bp ${c.watsonCrick}/${c.basePairs.length} WC ${c.basePairs.map((q) => q[2]).join(" ")}` : ""}`);
+  for (const c of inf) console.log(`   pair ${c.i0}-${c.i1 - 1} x ${c.j0}-${c.j1 - 1}: ${c.orientation} (i+j ${c.sumRange.lo}-${c.sumRange.hi}, j-i ${c.diffRange.lo}-${c.diffRange.hi}) gap ${c.gap}${c.hairpin ? " hairpin" : ""}`);
   ok(toPLA(terms, a.p).split("\n").filter((l) => /^[01-]+ 1$/.test(l)).length === terms.length, `${label}: PLA has ${terms.length} rows`);
   ok(/assign C = /.test(toVerilog(terms, a.p)), `${label}: Verilog emitted`);
   const [i, j] = cm.pairs[0]; ok(evaluate(terms, a.p, i, j).out && evaluate(terms, a.p, j, i).out, `${label}: evaluate(${i}, ${j}) fires both orders`);

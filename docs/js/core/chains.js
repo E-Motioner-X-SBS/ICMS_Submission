@@ -9,7 +9,7 @@ export function chainOptions(structure) {
       const residues = cs.flatMap((c) => c.residues);
       const merged = { ...cs[0], uid: `${structure.id}/${cs.map((c) => c.id).join("+")}`, id: cs.map((c) => c.id).join("+"),
         residues, seq: cs.map((c) => c.seq).join(""), seqCanonical: cs.map((c) => c.seqCanonical ?? c.seq).join(""), length: residues.length,
-        strands: cs.map((c) => ({ id: c.id, length: c.length })), notes: [] };
+        strands: cs.map((c) => ({ id: c.id, length: c.length })), notes: cs.flatMap((c) => c.notes || []) };
       opts.unshift({ id: merged.id, chain: merged, label: `${merged.id}`, sub: `all ${type === "dna" ? "DNA" : "RNA"} strands, ${merged.length}` });
     }
   }

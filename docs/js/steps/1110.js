@@ -3,6 +3,7 @@
 import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, reducedMotion, add } from "../ui.js";
 import { gray, bits, ham, encodeSequence, kmerCounts, AA_ORDER, AA_RAW, NUC_RAW, NUC_GRAYNAT, letterVar, alphabet } from "../core/encoding.js";
 import { barsSVG } from "../viz/maps.js";
+import { chainSegments } from "../core/contacts.js";
 import { int, pct } from "../core/format.js";
 
 function linearity() {
@@ -45,10 +46,11 @@ function permutation(ctx) {
     const LEX = ["A", "C", "G", type === "rna" ? "U" : "T"];
     const seq = ctx.chain.seq;
     const counts = new Map();
-    for (let i = 0; i + 1 < seq.length; i++) { const d = seq.slice(i, i + 2); if (LEX.includes(d[0]) && LEX.includes(d[1])) counts.set(d, (counts.get(d) || 0) + 1); }
+    const { breaks } = chainSegments(ctx.chain);
+    for (let i = 0; i + 1 < seq.length; i++) { if (breaks.has(i + 1)) continue; const d = seq.slice(i, i + 2); if (LEX.includes(d[0]) && LEX.includes(d[1])) counts.set(d, (counts.get(d) || 0) + 1); }
     R = 4; C = 4; items = [];
     LEX.forEach((X, i) => LEX.forEach((Y, j) => items.push({ label: X + Y, n: counts.get(X + Y) || 0, lex: 4 * i + j, gry: 4 * gray(i) + gray(j) })));
-    lexArr = items.map((t) => t.n); grayArr = [...kmerCounts(seq, 2, type).counts];              // the pipeline's own Gray map
+    lexArr = items.map((t) => t.n); grayArr = [...kmerCounts(seq, 2, type, breaks).counts];              // the pipeline's own Gray map
     rowsOf = (addr) => addr >> 2; colsOf = (addr) => addr & 3;
   }
   const max = Math.max(1, ...items.map((t) => t.n));
@@ -144,8 +146,8 @@ export default {
       h("p", "Because g is a bijection, a Gray-ordered K-map and the lexicographic map used by chaos-game representations (FCGR) hold exactly the same cells, moved. Any statistic that depends only on the cell values or the distances between maps is identical."),
       perm.stage,
       h("ul.checks", h(`li${perm.same ? "" : ".bad"}`, `Your map, built twice (plain addresses here, Gray addresses by the K-map pipeline of chapter 0010), holds the same multiset of ${perm.n} counts.`)),
-      h("p.small", "Measured on 120 protein dipeptide maps: hierarchical clustering gives cophenetic correlation 0.9767 under both orderings, and the sorted cell values are identical."),
-      tags([["data", "120 maps, Δ cophenetic = 0"], ["data", `your chain: ${perm.n} cells`]]),
+      h("p.small#gvl", ""),
+      tags([["data", "120 maps, same cell values"], ["data", `your chain: ${perm.n} cells`]]),
       h("h2", "What it does change"),
       hamming(ctx),
       h("h2", "Segments under either numbering"),
@@ -153,6 +155,11 @@ export default {
       tags([["lean", "sc_gray_cube_is_also_interval"], ["lean", "sc_gray_relabels_segments"]]),
       theoremBlock("1110", ["SequenceCircuits.sc_gray_gf2_linear", "SequenceCircuits.sc_gray_bijective_on_5bits", "SequenceCircuits.sc_gray_changes_hamming", "SequenceCircuits.sc_gray_cube_is_also_interval"]),
       nextStep(ctx, "What all of this adds up to."));
+    // the 120-map measurement, read from the same summary the poster uses
+    fetch(new URL("../../data/exact_summary.json", import.meta.url)).then((r) => r.json()).then((X) => {
+      const g = X.grayVsLex, box = el.querySelector("#gvl");
+      if (g && box) box.textContent = `On ${g.maps} protein dipeptide maps, the sorted cell values are ${g.sortedValuesIdentical ? "identical" : "not identical"} under both orderings, and hierarchical clustering gives the same cophenetic correlation, ${g.copheneticGray.toFixed(4)} and ${g.copheneticLex.toFixed(4)}.`;
+    }).catch(() => { /* offline without the summary: the sentence stays empty */ });
   },
   unmount() { this._off?.(); },
 };

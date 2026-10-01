@@ -2,6 +2,7 @@
 import { h, theoremBlock, tags, nextStep, css, stageWidth, reducedMotion, add } from "../ui.js";
 import { kmerCounts, kmapCode, kmapCell, kmerString, gray, bits, alphabet, oneBitNeighbours, neighbourPlacement, CODE_AA, encodeSequence, kmerCode } from "../core/encoding.js";
 import { kmapGrid } from "../viz/maps.js";
+import { chainSegments } from "../core/contacts.js";
 import { int } from "../core/format.js";
 
 const PLACE = { side: "next to it", wrap: "across the wrapped edge", mirror: "mirrored, not drawn adjacent" };
@@ -13,6 +14,7 @@ export default {
     let k = isProt ? 1 : 2, grid = null, km = null, sel = null, timer = null, alive = true, win = -1;
     this._stop = () => { alive = false; clearTimeout(timer); };
     const enc = encodeSequence(chain.seq, type);
+    const { breaks } = chainSegments(chain);                   // strand junctions and gaps: no k-mer spans them
 
     let canvas = h("canvas", { role: "img", "aria-label": "K-map of k-mer counts" });
     const readout = h("div.readout", { "aria-live": "polite" });
@@ -33,7 +35,7 @@ export default {
       });
     }
     function build() {
-      km = kmerCounts(chain.seq, k, type);
+      km = kmerCounts(chain.seq, k, type, breaks);
       const sh = km.shape;
       const values = Array.from({ length: sh.rows }, (_, y) => Array.from({ length: sh.cols }, (_, x) => km.counts[kmapCode(x, y, sh)]));
       const letterAxes = sh.rowBits % A.bits === 0 && sh.colBits % A.bits === 0;
@@ -80,7 +82,8 @@ export default {
       playBtn.textContent = "Pause";
       const t = () => {
         if (!alive) return;
-        win = (win + 1) % Math.max(1, enc.codes.length - k + 1);
+        let guard = 0;
+        do { win = (win + 1) % Math.max(1, enc.codes.length - k + 1); } while (++guard < enc.codes.length && [...Array(k - 1)].some((_, t) => breaks.has(win + 1 + t)));
         const w = enc.codes.slice(win, win + k);
         showWindow(win);
         if (!w.some((c) => c === null)) select(kmerCode(w, A.bits));
@@ -105,8 +108,8 @@ export default {
       windowLine, readout, axisNote, stats,
       h("details.thm-more", h("summary", "All one-bit neighbours of the selected cell"), neighbourList),
       h("h2", "Why the fold matters"),
-      h("p", "Two k-mers that differ in a single bit of their code sit next to each other, so a pattern that ignores one bit shows up as a pair of touching cells, and a pattern that ignores two bits as a 2 × 2 square. Minimisation (chapter 0101) finds exactly these rectangles."),
-      isProt ? h("p.note", "Lean proves the k-mer geometry for nucleotides (KmerIndexing.lean). The protein map uses the same Gray-ordered construction on the 5-bit amino-acid codes, whose encoding is proved in AminoAcidEncoding.lean. The 12 unused codewords stay empty.") : null,
+      h("p", "Two k-mers that differ in a single bit of their code sit next to each other or, on axes of three or more bits, at mirrored positions. So a pattern that ignores one bit is a pair of one-bit neighbours, and one that ignores two bits a 2 × 2 group: the cubes that minimisation (chapter 0101) finds."),
+      isProt ? h("p.note", "Lean proves the nucleotide k-mer encodings injective and the 2 × 2 layout (KmerIndexing.lean). The protein map uses the same Gray-ordered construction on the 5-bit amino-acid codes, whose encoding is proved in AminoAcidEncoding.lean. The 12 unused codewords stay empty.") : null,
       tags(isProt ? [["lean", "AminoAcidEncoding.encode_injective"], ["lean", "gray_code_preserves_adjacency"], ["data", "your chain's k-mer counts"]]
         : [["lean", "dinucEncode_injective"], ["lean", "tetranucEncode_injective"], ["lean", "gray_code_preserves_adjacency"], ["data", "your chain's k-mer counts"]]),
       theoremBlock("0010", ["KmerIndexing.dinucEncode_injective", "KmerIndexing.nucCell_adj_AC", "KmerIndexing.tetranucEncode_injective", "KmerIndexing.gray_code_preserves_adjacency"]),

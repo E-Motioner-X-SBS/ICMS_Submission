@@ -46,6 +46,12 @@ function qmWorker() {
     else if (type === "done") { pending.delete(id); p.resolve(e.data.result); }
     else if (type === "error") { pending.delete(id); p.reject(new Error(e.data.message)); }
   };
+  const fail = (ev) => {
+    const err = new Error(`The minimiser could not run in this browser${ev?.message ? ` (${ev.message})` : ""}. Reload the page to try again.`);
+    for (const p of pending.values()) p.reject(err);
+    pending.clear(); worker?.terminate(); worker = null;
+  };
+  worker.onerror = fail; worker.onmessageerror = fail;
   return worker;
 }
 function runJob(msg, onRound) {
@@ -55,7 +61,11 @@ function runJob(msg, onRound) {
 export const MAX_QM_RESIDUES = 2048;                 // 11 position bits; a 972-residue chain minimises in ~0.3 s
 function memo(key, make) {
   const k = `${state.chain?.uid}|${key}`;
-  if (!state.derived.has(k)) state.derived.set(k, make());
+  if (!state.derived.has(k)) {
+    const v = make();
+    state.derived.set(k, v);
+    if (v && typeof v.then === "function") v.catch(() => { if (state.derived.get(k) === v) state.derived.delete(k); });   // a failure may be retried
+  }
   return state.derived.get(k);
 }
 // For the bundled examples the slow results are precomputed (data/examples/, same engine); a
@@ -89,18 +99,25 @@ const derived = {
 
 // ── routing ──────────────────────────────────────────────────────────────────
 function parseHash() {
-  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
-  if (!parts.length) return { step: "0000" };
+  const raw = location.hash.replace(/^#\/?/, "");
+  if (!raw) return { step: "0000" };
+  const parts = raw.split("/");                            // keep empty segments: "#/1UBQ//0011" has no chain
+  const dec = (x) => { try { return decodeURIComponent(x); } catch { return null; } };
   if (/^[01]{4}$/.test(parts[0])) return { step: parts[0] };
-  const id = normalizeId(decodeURIComponent(parts[0]));
-  if (!id) return { bad: decodeURIComponent(parts[0]), step: "0000" };
-  return { id, chainId: parts[1] ? decodeURIComponent(parts[1]) : null, step: /^[01]{4}$/.test(parts[2] || "") ? parts[2] : "0001" };
+  const first = dec(parts[0]);
+  const id = first === null ? null : normalizeId(first);
+  if (!id) return { bad: first ?? parts[0], step: "0000" };
+  let chainPart = parts[1] ?? "", stepPart = parts[2] ?? "";
+  if (parts.length === 2 && /^[01]{4}$/.test(chainPart)) { stepPart = chainPart; chainPart = ""; }   // "#/1UBQ/0101"
+  const chainId = chainPart ? dec(chainPart) : null;
+  return { id, chainId: chainId || null, step: /^[01]{4}$/.test(stepPart) ? stepPart : "0001" };
 }
 export function go(step, { id = state.id, chainId = state.chainId } = {}) {
   const target = id ? `#/${id}/${encodeURIComponent(chainId || "")}/${step}` : `#/${step}`;
   if (location.hash !== target) location.hash = target; else route();
 }
-export async function loadEntry(id, chainId) {
+let routeGen = 0;                                          // a newer route() supersedes an older one
+export async function loadEntry(id, chainId, gen = routeGen) {
   const norm = normalizeId(id);
   if (!norm) throw new Error(`"${id}" is not a PDB ID. PDB IDs have four characters, like 1UBQ.`);
   if (state.id === norm && state.structure) {
@@ -109,11 +126,13 @@ export async function loadEntry(id, chainId) {
     return state.structure;
   }
   const s = await fetchEntry(norm);
+  if (gen !== routeGen) return s;                          // the visitor has moved on: do not switch under them
   state.id = norm; state.structure = s; state.chain = pickChain(s, chainId); state.chainId = state.chain.id;
   return s;
 }
 
 async function route() {
+  const gen = ++routeGen;
   const r = parseHash();
   const step = CHAPTERS.some((c) => c.id === r.step) ? r.step : "0000";
   const main = document.getElementById("chapter");
@@ -125,18 +144,24 @@ async function route() {
   try {
     if (r.id && (r.id !== state.id || (r.chainId && r.chainId !== state.chainId))) {
       main.replaceChildren(h("div.loading", h("span.spinner"), `Loading ${r.id} from the Protein Data Bank…`));
-      await loadEntry(r.id, r.chainId);
+      await loadEntry(r.id, r.chainId, gen);
     } else if (!state.structure && step !== "0000") {
-      const ex = EXAMPLES[0]; await loadEntry(ex.id, ex.chain);
+      const ex = EXAMPLES[0]; await loadEntry(ex.id, ex.chain, gen);
     }
   } catch (e) {
+    if (gen !== routeGen) return;
     main.replaceChildren(h("div.error", e.userMessage || e.message), h("p", h("a", { href: "#/0000" }, "Pick another structure")));
     return;
   }
-  await mountChapter(step);
+  if (gen !== routeGen) return;
+  if (r.id && r.chainId && state.chainId !== r.chainId) {   // a chain the entry does not have: say so, fix the URL
+    toast(`${r.id} has no chain ${r.chainId}; showing chain ${state.chainId}.`);
+    history.replaceState(null, "", `#/${state.id}/${encodeURIComponent(state.chainId)}/${step}`);
+  }
+  await mountChapter(step, gen);
 }
 
-async function mountChapter(step) {
+async function mountChapter(step, gen = routeGen) {
   const main = document.getElementById("chapter");
   try { state.mounted?.unmount?.(); } catch { /* ignore */ }
   state.step = step;
@@ -147,6 +172,7 @@ async function mountChapter(step) {
   let mod;
   try { mod = (await import(`./steps/${step}.js`)).default; }
   catch (e) { main.replaceChildren(h("div.error", `This chapter could not load: ${e.message}`)); return; }
+  if (gen !== routeGen) return;                            // superseded while the module loaded
   const el = h("div");
   main.replaceChildren(el);
   main.classList.remove("chapter"); void main.offsetWidth; main.classList.add("chapter");

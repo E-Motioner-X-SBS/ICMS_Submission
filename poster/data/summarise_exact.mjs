@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const J = (f) => JSON.parse(fs.readFileSync(path.join(HERE, f), "utf8"));
+const gvl = J("gray_vs_lex.json");
 const ps = J("psicov_exact.json").totals, ds = J("exact_dataset.json"), sp = J("spike_rules.json"), sb = J("sbm_exact.json");
 const f1 = J("psicov_exact.json").rows.find((r) => r.target === "1fnaA");
 const showSpike = sp.pairs.find((p) => p.wuhan[0] === 371 && p.wuhan[1] === 376);
@@ -20,6 +21,7 @@ const s = {
     violations: sp.totals.violations, uniqueMinimum: sp.totals.all_unique_minimum, lossless: sp.sequence_circuits.all_lossless,
     showcase: { at: showSpike.wuhan, ref: showSpike.wuhan_ref, n: showSpike.n_sequences, allowed: showSpike.allowed, forbidden: showSpike.forbidden, implications: showSpike.implications },
     pairsTable: sp.pairs.map((p) => ({ at: p.wuhan, cols: p.columns.map((c) => c + 1), n: p.n_sequences, allowed: p.allowed.map((a) => a.pair), forbidden: p.forbidden, implications: p.implications.map((i) => ({ if: i.if, at: i.at, then: i.then, support: i.support })) })) },
+  grayVsLex: { maps: gvl.n_sequences, copheneticGray: gvl.part_a_invariance.cophenetic_gray, copheneticLex: gvl.part_a_invariance.cophenetic_lex, sortedValuesIdentical: gvl.part_a_invariance.sorted_cell_values_identical },
   sbm: { runs: sb.all_runs, unique: sb.unique_ids, dense: sb.dense.totals, thresholds: sb.thresholds, definition: sb.definition,
     denseExamples: sb.dense.rows.filter((r) => r.example).map((r) => ({ target: r.target, frames: r.frames, rules: r.implications, neighbour: r.neighbour_implications, example: r.example })) },
 };

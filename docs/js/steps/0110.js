@@ -4,6 +4,7 @@ import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, add } from "..
 import { Q5_SHAPE, kmapCode, kmapCell, CODE_AA, AA_CODE, AA_GROUP, AA_NAMES, GROUPS, ham, bits, gray, aaPairHistogram,
   neighbourDistanceHistogram, encodeSequence, NUC_GRAYNAT, NA_SQUARE, nucRelation, UNUSED_AA_CODES, letterVar } from "../core/encoding.js";
 import { barsSVG } from "../viz/maps.js";
+import { chainSegments } from "../core/contacts.js";
 import { int, pct } from "../core/format.js";
 
 const NS = "http://www.w3.org/2000/svg";
@@ -51,7 +52,7 @@ function proteinCube(el, ctx) {
 
   // distance histograms: proven over the alphabet vs measured along the chain
   const proven = aaPairHistogram();                     // [0, 40, 66, 56, 24, 4]
-  const along = neighbourDistanceHistogram(enc.codes, 5);
+  const along = neighbourDistanceHistogram(enc.codes, 5, chainSegments(ctx.chain).breaks);   // neighbours in the chain only
   const nAlong = along.reduce((a, b) => a + b, 0) || 1;
   const bars = barsSVG([1, 2, 3, 4, 5].map((d) => ({ label: `${d} bit${d > 1 ? "s" : ""}: all pairs`, value: proven[d] / 190, color: "var(--ink-3)" }))
     .flatMap((b, i) => [b, { label: `along chain ${ctx.chain.id}`, value: along[i + 1] / nAlong, color: i === 0 ? "var(--flip)" : "var(--teal)" }]),
@@ -128,7 +129,7 @@ function nucleotideSquare(el, ctx) {
 
   // relations between consecutive bases along the chain (within each strand)
   const counts = { identical: 0, transition: 0, transversion: 0, complement: 0 };
-  const cuts = new Set(); let acc = 0; for (const st of ctx.chain.strands || []) { acc += st.length; cuts.add(acc); }
+  const cuts = chainSegments(ctx.chain).breaks;              // strand junctions and gaps
   for (let i = 0; i + 1 < enc.letters.length; i++) {
     if (cuts.has(i + 1)) continue;
     const a = enc.letters[i], b = enc.letters[i + 1];

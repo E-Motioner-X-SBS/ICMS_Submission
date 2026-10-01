@@ -12,7 +12,7 @@ import { sentenceCase, species, method as methodName } from "./format.js";
 export const EXAMPLES = Object.freeze([
   { id: "1FNA", chain: "A", kind: "protein", name: "Fibronectin domain", blurb: "β-sandwich, 91 residues. The poster's protein." },
   { id: "1UBQ", chain: "A", kind: "protein", name: "Ubiquitin", blurb: "Small and famous, 76 residues." },
-  { id: "2CI2", chain: "I", kind: "protein", name: "Chymotrypsin inhibitor 2", blurb: "A classic folding model, 64 residues modelled." },
+  { id: "2CI2", chain: "I", kind: "protein", name: "Chymotrypsin inhibitor 2", blurb: "A classic folding model, 65 residues modelled." },
   { id: "1BNA", chain: "A", kind: "dna", name: "B-DNA dodecamer", blurb: "Two strands of 12 bases." },
   { id: "1EHZ", chain: "A", kind: "rna", name: "Transfer RNA (Phe)", blurb: "76 nucleotides folded into an L." },
 ].map(Object.freeze));

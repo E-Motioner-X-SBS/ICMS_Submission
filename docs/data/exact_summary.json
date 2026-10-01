@@ -19,10 +19,10 @@
   "contactsInBlocks": 9260,
   "proteinsWithBlocks": 145,
   "strandPairs": 1142,
-  "antiparallel": 352,
-  "parallel": 198,
-  "hairpins": 99,
-  "proteinsWithAntiparallel": 116,
+  "antiparallel": 378,
+  "parallel": 215,
+  "hairpins": 104,
+  "proteinsWithAntiparallel": 120,
   "sequencesLossless": 150,
   "campaignMatch": {
    "primes": 150,
@@ -116,24 +116,24 @@
   ]
  },
  "curated": {
-  "chains": 112,
-  "exact": 112,
+  "chains": 121,
+  "exact": 121,
   "byType": {
    "protein": {
     "structures": 81,
-    "contacts": 27553,
-    "rules": 16559,
+    "contacts": 27562,
+    "rules": 16563,
     "exceptions": 0,
     "inputs": 5971968,
     "basePairs": null,
-    "antiparallel": 185,
-    "parallel": 72,
-    "hairpins": 59
+    "antiparallel": 216,
+    "parallel": 76,
+    "hairpins": 68
    },
    "dna": {
     "structures": 25,
-    "contacts": 489,
-    "rules": 347,
+    "contacts": 499,
+    "rules": 355,
     "exceptions": 0,
     "inputs": 29440,
     "basePairs": {
@@ -145,11 +145,11 @@
     "hairpins": 0
    },
    "rna": {
-    "structures": 6,
-    "contacts": 54,
-    "rules": 39,
+    "structures": 15,
+    "contacts": 63,
+    "rules": 48,
     "exceptions": 0,
-    "inputs": 2112,
+    "inputs": 2688,
     "basePairs": {
      "n": 15,
      "watsonCrick": 12
@@ -160,14 +160,14 @@
    }
   },
   "totals": {
-   "contacts": 28096,
-   "inputs": 6003520,
-   "gates": 32686,
-   "rules": 16945,
+   "contacts": 28124,
+   "inputs": 6004096,
+   "gates": 32726,
+   "rules": 16966,
    "exceptions": 0,
    "missed": 0
   },
-  "skipped": 42
+  "skipped": 33
  },
  "spike": {
   "sequences": 1299,
@@ -614,6 +614,12 @@
     ]
    }
   ]
+ },
+ "grayVsLex": {
+  "maps": 120,
+  "copheneticGray": 0.9767467827324525,
+  "copheneticLex": 0.9767467827324525,
+  "sortedValuesIdentical": true
  },
  "sbm": {
   "runs": {

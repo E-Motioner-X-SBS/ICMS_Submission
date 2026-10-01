@@ -3,6 +3,7 @@ import { h, theoremBlock, tags, nextStep, css, stageWidth, add, residueLabel } f
 import { contactMapCanvas } from "../viz/maps.js";
 import { createViewer } from "../viz/structure3d.js";
 import { contactFunction } from "../core/qm.js";
+import { chainSegments } from "../core/contacts.js";
 import { bits } from "../core/encoding.js";
 import { int, pct } from "../core/format.js";
 
@@ -74,7 +75,8 @@ export default {
 
     // checks on the visitor's map, computed here and now
     let sym = true, irr = true, sepOK = true;
-    for (const [i, j] of cm.pairs) { if (!cm.has(j, i)) sym = false; if (i === j) irr = false; if (Math.abs(i - j) < cm.def.minSep) sepOK = false; }
+    const seg = chainSegments(chain);
+    for (const [i, j] of cm.pairs) { if (!cm.has(j, i)) sym = false; if (i === j) irr = false; if (seg.strand[i] === seg.strand[j] && seg.seq[j] - seg.seq[i] < cm.def.minSep) sepOK = false; }
     const cells = new Set(f.on); const inj = cells.size === f.on.length && f.on.length === 2 * cm.n;
     const density = f.on.length / 2 ** f.nVars;
 
@@ -104,10 +106,10 @@ export default {
       h("ul.checks",
         h(`li${sym ? "" : ".bad"}`, `Symmetric: C(i, j) = C(j, i) for all ${int(cm.n)} contacts.`),
         h(`li${irr ? "" : ".bad"}`, "Irreflexive: no residue touches itself."),
-        h(`li${sepOK ? "" : ".bad"}`, `Every contact is at least ${cm.def.minSep} apart along the chain.`),
+        h(`li${sepOK ? "" : ".bad"}`, chain.strands ? `Every contact within a strand is at least ${cm.def.minSep} apart in sequence.` : `Every contact is at least ${cm.def.minSep} apart in sequence.`),
         h(`li${inj ? "" : ".bad"}`, `Injective cells: ${int(f.on.length)} ordered pairs give ${int(cells.size)} distinct ${2 * p}-bit codes.`)),
       tags([["lean", "contactMap8_symmetric (8-residue example)"], ["lean", "contactCell_injective"], ["data", `your map: ${int(cm.n)} contacts, 4 checks`]]),
-      h("p", "Lean proves these properties for a fixed 8-residue example map and proves the cell encoding injective for every pair of 3-bit positions. For your structure the browser checks the same properties directly; the proofs fix the definitions the checks test."),
+      h("p", "These properties hold by the way the map is built; the browser confirms them for your map. Lean proves them for a fixed 8-residue example map, and proves the cell encoding injective for every pair of 3-bit positions."),
       theoremBlock("0111", ["ContactMapCompleteness.contactMap8_symmetric", "ContactMapCompleteness.contactMap8_irreflexive", "ContactMapCompleteness.contactCell_injective", "ContactMapCompleteness.contactMap8_min_separation"]),
       nextStep(ctx, "A Boolean function can be minimised. On a contact map, the pieces that survive turn out to be structure."));
 

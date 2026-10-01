@@ -48,7 +48,7 @@ export default {
     add(el, 
       h("h1", "Minimisation finds blocks"),
       h("p.hook", "Quine–McCluskey merges 1-cells that differ in one bit into cubes, then cubes into bigger cubes, until nothing can grow. The cubes that cannot grow are the prime implicants; a cover built from them (every essential prime, then a greedy choice of the rest) describes the map exactly, with far fewer terms than cells."),
-      h("p", `Running it now on the ${int(cm.n)} contacts of chain ${chain.id}, in your browser, exactly: no heuristics, no sampling.`),
+      h("p", cm.n ? `For the ${int(cm.n)} contacts of chain ${chain.id}: every prime implicant is found exactly; the cover keeps every essential one and completes the rest greedily, so it is exact (sound and complete) though not certified minimal.` : `Chain ${chain.id} has no contacts under the definition, so there is nothing to merge.`),
       h("section.stage", { "aria-label": "Minimisation progress" }, rounds, summary),
       results);
 
@@ -72,7 +72,7 @@ export default {
     summary.replaceChildren(h("div.stats", { style: { marginTop: "12px" } },
       h("div.stat", h("div.v", int(res.nPrimes)), h("div.l", "prime implicants")),
       h("div.stat", h("div.v", int(res.nCover)), h("div.l", `in the cover (${int(res.nEssential)} essential)`)),
-      h("div.stat", h("div.v", `${num(res.compression, 1)}×`), h("div.l", "fewer terms than 1-cells")),
+      res.nCover ? h("div.stat", h("div.v", `${num(res.compression, 1)}×`), h("div.l", "fewer terms than 1-cells")) : h("div.stat", h("div.v", "—"), h("div.l", "no terms: the constant 0")),
       h("div.stat.ok", h("div.v", pct(res.fracContactsInBlocks)), h("div.l", `of contacts inside blocks (${int(res.contactsInBlocks)} of ${int(cm.n)})`))),
       h("ul.checks",
         h(`li${res.sound ? "" : ".bad"}`, "Sound: no cube of the cover touches a 0-cell."),
@@ -116,12 +116,12 @@ export default {
     results.hidden = false;
     add(results,
       h("h2", "Cubes that are blocks"),
-      h("p", "With plain binary positions, a cube whose free bits are the lowest ones of a field covers an unbroken run of positions. If both fields are like that, the cube is a rectangle on the map: every residue of one chain segment touches every residue of another. Lean proves this segment lemma for all such cubes."),
+      h("p", "With plain binary positions, a cube whose free bits are the lowest ones of a field covers an unbroken run of positions. If both fields are like that, the cube is a rectangle on the map: every residue of one chain segment touches every residue of another. Lean proves this segment lemma for every cube on 4-bit positions; on your map every block is also checked, cell by cell."),
       example,
-      ex ? h("p.small", `One of your blocks. Positions count from 0, as in the bits. ${blocks.length} such blocks cover ${int(inBlocks)} of the ${int(cm.n)} contacts.`) : h("p.note", "This map has no block of four or more cells: its contacts are isolated rather than segment against segment. Try a protein with β-sheets such as 1FNA."),
+      ex ? h("p.small", `One of your blocks. Positions count from 0, as in the bits. ${blocks.length} such blocks cover ${int(inBlocks)} of the ${int(cm.n)} contacts.`) : h("p.note", cm.n ? "This map has no block of four or more cells: its contacts are isolated rather than segment against segment. Try a protein with β-sheets such as 1FNA." : "This chain has no contacts under the definition, so there are no blocks. Try a larger chain or one of the examples."),
       tags([["lean", "sc_contact_cube_is_block"], ["lean", "sc_low_free_is_interval"], ["data", `your map: ${blocks.length} ${blocks.length === 1 ? "block" : "blocks"}`]]),
       clusters.length ? h("h2", "Blocks line up into strand pairs") : null,
-      clusters.length ? h("p", `Neighbouring blocks that continue each other along both segments belong to one pair of touching strands or helices. Your ${blocks.length} blocks form ${clusters.length} such ${clusters.length === 1 ? "pair" : "pairs"}: the Boolean minimum recovers the chain's packing without being told what a β-sheet is.`) : null,
+      clusters.length ? h("p", `Neighbouring blocks that continue each other along both segments belong to one pair of touching strands or helices. Your ${blocks.length} blocks form ${clusters.length} such ${clusters.length === 1 ? "pair" : "pairs"}: the minimised circuit recovers the chain's packing without being told what a β-sheet is.`) : null,
       clusters.length ? h("section.stage.white", { "aria-label": "Arc diagram of strand pairs" }, arcHolder, h("div.cap", "The chain drawn as a line; each band joins two segments that touch. Tap a pair below to isolate it in every view.")) : null,
       clusters.length ? list : null,
       viewBox,

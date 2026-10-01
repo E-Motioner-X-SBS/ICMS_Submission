@@ -37,7 +37,7 @@ export default {
       const N = 1 << w, prev = (n - 1 + N) % N;
       box(bin, n, prev); box(gry, gray(n), gray(prev));
       const fb = ham(n, prev), fg = ham(gray(n), gray(prev));
-      readout.replaceChildren(`${prev} → ${n}: binary flips `, h("b", `${fb} ${fb === 1 ? "bit" : "bits"}`), ", Gray flips ", h("b", { style: { color: "var(--flip)" } }, `${fg} bit`), n === 0 ? " (the code wraps round: 1000 → 0000)" : "");
+      readout.replaceChildren(`${prev} → ${n}: binary flips `, h("b", `${fb} ${fb === 1 ? "bit" : "bits"}`), ", Gray flips ", h("b", { style: { color: "var(--flip)" } }, `${fg} bit`), n === 0 ? ` (the code wraps round: ${bits(gray(prev), w)} → ${bits(gray(0), w)})` : "");
       xor.textContent = `n       = ${bits(n, w)}   (${n})\nn >> 1  = ${bits(n >> 1, w)}   shift right\ng(n)    = ${bits(gray(n), w)}   XOR of the two`;
       figBin.replaceChildren(planes(w, (x) => x, n)); figGray.replaceChildren(planes(w, gray, n));
       slider.value = n;
@@ -79,8 +79,8 @@ export default {
       xor,
       h("p.small", "The formula is linear over GF(2), the algebra of XOR, and it can be undone. Both facts come back in chapter 1110."),
       h("h2", "On your chain"),
-      h("p", `Chain ${ctx.chain.id} has ${int(L)} positions, so a position needs ${p} bits. Counting positions in binary, the worst step is ${worstAt - 1} → ${worstAt}, which flips ${worstBin} bits. Counted in Gray code, all ${int(Math.max(0, L - 1))} steps flip exactly one.`),
-      tags([["lean", "gray_hamming_one: every n < 256"], ["data", `your chain: ${int(Math.max(0, L - 1))} of ${int(Math.max(0, L - 1))} Gray steps are one bit`]]),
+      h("p", L < 2 ? `Chain ${ctx.chain.id} has ${int(L)} position, so there is no step to count.` : `Chain ${ctx.chain.id} has ${int(L)} positions, so a position needs ${p} bits. Counting positions in binary, the worst step is ${worstAt - 1} → ${worstAt}, which flips ${worstBin} ${worstBin === 1 ? "bit" : "bits"}. Counted in Gray code, all ${int(L - 1)} steps flip exactly one.`),
+      tags([["lean", "gray_hamming_one: every n < 255"], ["data", `your chain: ${int(Math.max(0, L - 1))} of ${int(Math.max(0, L - 1))} Gray steps are one bit`]]),
       ctx.chain.entityType === "protein" ? null : h("p", `The nucleotide codes are a Gray cycle themselves: A 00 → C 01 → G 11 → ${T} 10 → A 00, one bit per step.`),
       grayOK ? null : h("div.error", "A Gray step flipped more than one bit. This should be impossible; please report it."),
       theoremBlock("0011", ["KmapProofs.gray_hamming_one", "KmapProofs.gray_injective", "KmapProofs.gray_involution", "KmerIndexing.grayNat_cyclic"]),

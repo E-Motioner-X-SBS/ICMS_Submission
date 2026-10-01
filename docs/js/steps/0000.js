@@ -18,7 +18,7 @@ export default {
       try {
         const { results: rs, total } = await search(q, { signal: ctl.signal, rows: 8 });
         if (!rs.length) { results.replaceChildren(h("li.small", "Nothing found. Try another word, or a four-character PDB ID.")); return; }
-        results.replaceChildren(...rs.map((r) => h("li", h("button", { type: "button", on: { click: () => open(r.id) } },
+        results.replaceChildren(); add(results, ...rs.map((r) => h("li", h("button", { type: "button", on: { click: () => open(r.id) } },
           h("span.id", r.id), h("span.t", r.title || "Open this entry"),
           h("span.m", [r.kinds?.map((k) => KIND[k] || k).join(" + "), r.method, r.resolution ? `${r.resolution.toFixed(2)} Å` : null, r.organisms?.[0]].filter(Boolean).join(", "))))),
           total > rs.length ? h("li.small", `${total.toLocaleString("en-US")} entries match; showing the first ${rs.length}.`) : null);

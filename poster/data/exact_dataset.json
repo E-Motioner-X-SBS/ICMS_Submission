@@ -7,7 +7,7 @@
   "na": "C1′ (P if missing) < 10 Å, |i−j| ≥ 3"
  },
  "structures": 154,
- "analysed": 112,
+ "analysed": 121,
  "skipped": [
   {
    "id": "7TLS",
@@ -66,16 +66,6 @@
   },
   {
    "id": "4LUP",
-   "set": "dna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DMN",
-   "set": "dna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DPB",
    "set": "dna",
    "why": "no contacts"
   },
@@ -145,41 +135,6 @@
    "why": "no contacts"
   },
   {
-   "id": "6DO9",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DOK",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DP7",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DPC",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DPG",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DPI",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
-   "id": "6DPK",
-   "set": "rna",
-   "why": "no contacts"
-  },
-  {
    "id": "6E0O",
    "set": "rna",
    "why": "no contacts"
@@ -222,10 +177,10 @@
  ],
  "allExact": true,
  "totals": {
-  "contacts": 28096,
-  "inputs": 6003520,
-  "gates": 32686,
-  "rules": 16945,
+  "contacts": 28124,
+  "inputs": 6004096,
+  "gates": 32726,
+  "rules": 16966,
   "exceptions": 0,
   "missed": 0
  },
@@ -233,29 +188,29 @@
   "protein": {
    "structures": 81,
    "exact": 81,
-   "contacts": 27553,
-   "oneCells": 55106,
+   "contacts": 27562,
+   "oneCells": 55124,
    "inputs": 5971968,
-   "gates": 31948,
-   "rules": 16559,
+   "gates": 31956,
+   "rules": 16563,
    "exceptions": 0,
    "missed": 0,
-   "contactsInBlockRules": 5039,
-   "strandPairs": 646,
-   "antiparallel": 185,
-   "parallel": 72,
-   "hairpins": 59,
+   "contactsInBlockRules": 5043,
+   "strandPairs": 647,
+   "antiparallel": 216,
+   "parallel": 76,
+   "hairpins": 68,
    "sequencesLossless": 81,
    "basePairs": null
   },
   "dna": {
    "structures": 25,
    "exact": 25,
-   "contacts": 489,
-   "oneCells": 978,
+   "contacts": 499,
+   "oneCells": 998,
    "inputs": 29440,
-   "gates": 660,
-   "rules": 347,
+   "gates": 674,
+   "rules": 355,
    "exceptions": 0,
    "missed": 0,
    "contactsInBlockRules": 48,
@@ -270,13 +225,13 @@
    }
   },
   "rna": {
-   "structures": 6,
-   "exact": 6,
-   "contacts": 54,
-   "oneCells": 108,
-   "inputs": 2112,
-   "gates": 78,
-   "rules": 39,
+   "structures": 15,
+   "exact": 15,
+   "contacts": 63,
+   "oneCells": 126,
+   "inputs": 2688,
+   "gates": 96,
+   "rules": 48,
    "exceptions": 0,
    "missed": 0,
    "contactsInBlockRules": 4,
@@ -284,7 +239,7 @@
    "antiparallel": 0,
    "parallel": 0,
    "hairpins": 0,
-   "sequencesLossless": 6,
+   "sequencesLossless": 15,
    "basePairs": {
     "n": 15,
     "watsonCrick": 12
@@ -344,7 +299,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 10
+   "ms": 28
   },
   {
    "id": "1R6J",
@@ -442,7 +397,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 10
+   "ms": 11
   },
   {
    "id": "1UCS",
@@ -670,7 +625,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 3
+   "ms": 16
   },
   {
    "id": "2B97",
@@ -784,7 +739,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 4
+   "ms": 9
   },
   {
    "id": "2OV0",
@@ -950,7 +905,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 8
+   "ms": 12
   },
   {
    "id": "3A38",
@@ -1044,7 +999,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 4
+   "ms": 9
   },
   {
    "id": "3A39",
@@ -1150,7 +1105,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 6
+   "ms": 7
   },
   {
    "id": "3X2M",
@@ -1448,7 +1403,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 22
+   "ms": 23
   },
   {
    "id": "4I8H",
@@ -1568,8 +1523,12 @@
      "j1": 91,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 153,
+      "hi": 157
+     },
      "gap": 20,
      "hairpin": false
     },
@@ -1580,8 +1539,12 @@
      "j1": 176,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 293,
+      "hi": 297
+     },
      "gap": 49,
      "hairpin": false
     },
@@ -1750,7 +1713,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 37
+   "ms": 45
   },
   {
    "id": "4LBS",
@@ -2000,7 +1963,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 38
+   "ms": 51
   },
   {
    "id": "4REK",
@@ -2088,8 +2051,12 @@
      "j1": 380,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 683,
+      "hi": 688
+     },
      "gap": 66,
      "hairpin": false
     },
@@ -2816,7 +2783,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 19
+   "ms": 33
   },
   {
    "id": "5D8V",
@@ -2996,7 +2963,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 4
+   "ms": 2
   },
   {
    "id": "5OME",
@@ -3082,7 +3049,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 8
+   "ms": 2
   },
   {
    "id": "6E6O",
@@ -3122,7 +3089,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 1
+   "ms": 2
   },
   {
    "id": "6S2M",
@@ -3210,8 +3177,12 @@
      "j1": 44,
      "contacts": 8,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 48,
+      "hi": 52
+     },
      "gap": 28,
      "hairpin": false
     },
@@ -3300,7 +3271,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 11
+   "ms": 10
   },
   {
    "id": "7FEZ",
@@ -3474,7 +3445,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 13
+   "ms": 8
   },
   {
    "id": "7TLS",
@@ -3578,7 +3549,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 5
+   "ms": 4
   },
   {
    "id": "8C5N",
@@ -3780,7 +3751,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 18
+   "ms": 16
   },
   {
    "id": "8GL4",
@@ -3830,8 +3801,12 @@
      "j1": 56,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 59,
+      "hi": 63
+     },
      "gap": 43,
      "hairpin": false
     },
@@ -3908,8 +3883,12 @@
      "j1": 56,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 59,
+      "hi": 63
+     },
      "gap": 43,
      "hairpin": false
     },
@@ -4062,7 +4041,7 @@
      "j1": 124,
      "contacts": 8,
      "rules": 1,
-     "orientation": "mixed",
+     "orientation": "short",
      "register": null,
      "gap": 88,
      "hairpin": false
@@ -4364,7 +4343,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 42
+   "ms": 58
   },
   {
    "id": "1US0",
@@ -4602,7 +4581,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 38
+   "ms": 66
   },
   {
    "id": "2QXW",
@@ -4840,7 +4819,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 37
+   "ms": 60
   },
   {
    "id": "2VB1",
@@ -5088,8 +5067,12 @@
      "j1": 91,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 153,
+      "hi": 157
+     },
      "gap": 20,
      "hairpin": false
     },
@@ -5100,8 +5083,12 @@
      "j1": 176,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 293,
+      "hi": 297
+     },
      "gap": 49,
      "hairpin": false
     },
@@ -5270,7 +5257,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 25
+   "ms": 27
   },
   {
    "id": "4G13",
@@ -5400,8 +5387,12 @@
      "j1": 91,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 153,
+      "hi": 157
+     },
      "gap": 20,
      "hairpin": false
     },
@@ -5412,8 +5403,12 @@
      "j1": 176,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 293,
+      "hi": 297
+     },
      "gap": 49,
      "hairpin": false
     },
@@ -5582,7 +5577,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 24
+   "ms": 30
   },
   {
    "id": "4UA6",
@@ -5686,8 +5681,12 @@
      "j1": 216,
      "contacts": 7,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "parallel",
+     "register": {
+      "kind": "j − i",
+      "lo": 66,
+      "hi": 69
+     },
      "gap": 64,
      "hairpin": false
     },
@@ -5828,7 +5827,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 31
+   "ms": 32
   },
   {
    "id": "5AL6",
@@ -5958,8 +5957,12 @@
      "j1": 91,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 153,
+      "hi": 157
+     },
      "gap": 20,
      "hairpin": false
     },
@@ -5970,8 +5973,12 @@
      "j1": 176,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 293,
+      "hi": 297
+     },
      "gap": 49,
      "hairpin": false
     },
@@ -6140,7 +6147,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 24
+   "ms": 28
   },
   {
    "id": "5MNK",
@@ -6244,8 +6251,12 @@
      "j1": 91,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 153,
+      "hi": 157
+     },
      "gap": 20,
      "hairpin": false
     },
@@ -6256,8 +6267,12 @@
      "j1": 176,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 293,
+      "hi": 297
+     },
      "gap": 49,
      "hairpin": false
     },
@@ -6454,7 +6469,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 22
+   "ms": 23
   },
   {
    "id": "6ANM",
@@ -6668,7 +6683,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 12
+   "ms": 14
   },
   {
    "id": "7TLU",
@@ -6706,30 +6721,30 @@
    "chain": "A",
    "type": "protein",
    "length": 253,
-   "contacts": 559,
+   "contacts": 564,
    "organism": "Escherichia coli",
    "bits": 16,
    "inputs": 65536,
-   "oneCells": 1118,
-   "primes": 840,
-   "gates": 656,
-   "literals": 9895,
+   "oneCells": 1128,
+   "primes": 844,
+   "gates": 660,
+   "literals": 9951,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 65536,
-   "rules": 345,
+   "rules": 347,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
-    "block": 21,
-    "strided": 151,
+    "block": 22,
+    "strided": 153,
     "pair": 94,
-    "single": 79
+    "single": 78
    },
-   "contactsInBlockRules": 81,
+   "contactsInBlockRules": 85,
    "pairs": [
     {
      "i0": 16,
@@ -6770,8 +6785,12 @@
      "j1": 164,
      "contacts": 9,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "parallel",
+     "register": {
+      "kind": "j − i",
+      "lo": 35,
+      "hi": 39
+     },
      "gap": 32,
      "hairpin": false
     },
@@ -6876,6 +6895,18 @@
      "hairpin": false
     },
     {
+     "i0": 210,
+     "i1": 212,
+     "j0": 214,
+     "j1": 216,
+     "contacts": 4,
+     "rules": 1,
+     "orientation": "short",
+     "register": null,
+     "gap": 11,
+     "hairpin": false
+    },
+    {
      "i0": 220,
      "i1": 224,
      "j0": 245,
@@ -6908,7 +6939,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 30
+   "ms": 36
   },
   {
    "id": "1K3X",
@@ -6956,7 +6987,7 @@
      4
     ]
    },
-   "ms": 1
+   "ms": 4
   },
   {
    "id": "2HAX",
@@ -7030,7 +7061,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 2
+   "ms": 4
   },
   {
    "id": "2HAX",
@@ -7182,7 +7213,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 27
+   "ms": 24
   },
   {
    "id": "2VLA",
@@ -7190,19 +7221,19 @@
    "chain": "L+M",
    "type": "dna",
    "length": 24,
-   "contacts": 19,
+   "contacts": 20,
    "organism": "Bacillus pumilus",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 38,
-   "primes": 20,
-   "gates": 20,
-   "literals": 178,
+   "oneCells": 40,
+   "primes": 22,
+   "gates": 22,
+   "literals": 198,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 1024,
-   "rules": 10,
+   "rules": 11,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
@@ -7210,7 +7241,7 @@
    "kinds": {
     "block": 3,
     "strided": 5,
-    "single": 2
+    "single": 3
    },
    "contactsInBlockRules": 12,
    "pairs": [
@@ -7225,10 +7256,9 @@
      "register": {
       "kind": "i + j",
       "lo": 24,
-      "hi": 26,
-      "centre": 25
+      "hi": 26
      },
-     "gap": 10,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -7389,7 +7419,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 12
+   "ms": 14
   },
   {
    "id": "3NDH",
@@ -7397,26 +7427,26 @@
    "chain": "C+D",
    "type": "dna",
    "length": 20,
-   "contacts": 10,
+   "contacts": 11,
    "organism": "Thermoplasma acidophilum",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 20,
-   "primes": 16,
-   "gates": 16,
-   "literals": 152,
+   "oneCells": 22,
+   "primes": 18,
+   "gates": 18,
+   "literals": 172,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 1024,
-   "rules": 8,
+   "rules": 9,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
     "pair": 4,
-    "single": 4
+    "single": 5
    },
    "contactsInBlockRules": 0,
    "pairs": [],
@@ -7435,7 +7465,7 @@
      10
     ]
    },
-   "ms": 0
+   "ms": 5
   },
   {
    "id": "4LUP",
@@ -7690,28 +7720,28 @@
    "chain": "A+B",
    "type": "dna",
    "length": 22,
-   "contacts": 17,
+   "contacts": 18,
    "organism": "synthetic construct",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 34,
-   "primes": 24,
+   "oneCells": 36,
+   "primes": 26,
    "gates": 24,
-   "literals": 226,
+   "literals": 224,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 1024,
-   "rules": 12,
+   "rules": 13,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
     "block": 1,
-    "pair": 3,
-    "strided": 2,
-    "single": 6
+    "pair": 4,
+    "strided": 3,
+    "single": 5
    },
    "contactsInBlockRules": 4,
    "pairs": [
@@ -7724,7 +7754,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 4,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -7744,7 +7774,7 @@
      5
     ]
    },
-   "ms": 0
+   "ms": 1
   },
   {
    "id": "6DMN",
@@ -7846,7 +7876,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 8
+   "ms": 9
   },
   {
    "id": "6DMN",
@@ -7854,9 +7884,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "Bacillus halodurans",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DPB",
@@ -7958,7 +8021,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 10
+   "ms": 9
   },
   {
    "id": "6DPB",
@@ -7966,9 +8029,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 1
   },
   {
    "id": "6KBX",
@@ -8024,8 +8120,12 @@
      "j1": 144,
      "contacts": 16,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 198,
+      "hi": 204
+     },
      "gap": 76,
      "hairpin": false
     },
@@ -8084,8 +8184,12 @@
      "j1": 148,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "parallel",
+     "register": {
+      "kind": "j − i",
+      "lo": 70,
+      "hi": 74
+     },
      "gap": 69,
      "hairpin": false
     },
@@ -8096,8 +8200,12 @@
      "j1": 199,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 313,
+      "hi": 317
+     },
      "gap": 76,
      "hairpin": false
     },
@@ -8156,8 +8264,12 @@
      "j1": 221,
      "contacts": 8,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 418,
+      "hi": 423
+     },
      "gap": 12,
      "hairpin": false
     },
@@ -8230,7 +8342,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 18
+   "ms": 21
   },
   {
    "id": "6KBX",
@@ -8344,10 +8456,14 @@
      "j1": 71,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 125,
+      "hi": 129
+     },
      "gap": 8,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 160,
@@ -8356,8 +8472,12 @@
      "j1": 221,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 379,
+      "hi": 383
+     },
      "gap": 54,
      "hairpin": false
     },
@@ -8462,14 +8582,14 @@
    "chain": "A+B",
    "type": "dna",
    "length": 26,
-   "contacts": 22,
+   "contacts": 23,
    "organism": "Haemophilus parahaemolyticus",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 44,
+   "oneCells": 46,
    "primes": 30,
    "gates": 30,
-   "literals": 280,
+   "literals": 278,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
@@ -8481,9 +8601,9 @@
    "missed": 0,
    "kinds": {
     "block": 1,
-    "pair": 7,
+    "pair": 8,
     "strided": 1,
-    "single": 6
+    "single": 5
    },
    "contactsInBlockRules": 4,
    "pairs": [
@@ -8496,7 +8616,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 12,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -8515,7 +8635,7 @@
      13
     ]
    },
-   "ms": 1
+   "ms": 2
   },
   {
    "id": "6UKG",
@@ -8635,10 +8755,14 @@
      "j1": 46,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 75,
+      "hi": 79
+     },
      "gap": 7,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 56,
@@ -8647,10 +8771,14 @@
      "j1": 71,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 125,
+      "hi": 129
+     },
      "gap": 8,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 160,
@@ -8659,8 +8787,12 @@
      "j1": 221,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 379,
+      "hi": 383
+     },
      "gap": 54,
      "hairpin": false
     },
@@ -8737,7 +8869,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 22
+   "ms": 19
   },
   {
    "id": "6UKG",
@@ -8791,28 +8923,28 @@
    "chain": "A",
    "type": "protein",
    "length": 192,
-   "contacts": 466,
+   "contacts": 469,
    "organism": "Homo sapiens",
    "bits": 16,
    "inputs": 65536,
-   "oneCells": 932,
-   "primes": 674,
-   "gates": 528,
-   "literals": 7955,
+   "oneCells": 938,
+   "primes": 680,
+   "gates": 532,
+   "literals": 8017,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 65536,
-   "rules": 276,
+   "rules": 278,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
     "block": 27,
-    "strided": 102,
+    "strided": 103,
     "pair": 89,
-    "single": 58
+    "single": 59
    },
    "contactsInBlockRules": 98,
    "pairs": [
@@ -8845,7 +8977,7 @@
       "lo": 132,
       "hi": 136
      },
-     "gap": 128,
+     "gap": 133,
      "hairpin": false
     },
     {
@@ -8855,9 +8987,13 @@
      "j1": 151,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
-     "gap": 80,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 213,
+      "hi": 217
+     },
+     "gap": 85,
      "hairpin": false
     },
     {
@@ -8867,10 +9003,14 @@
      "j1": 116,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 215,
+      "hi": 219
+     },
      "gap": 7,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 26,
@@ -8901,7 +9041,7 @@
       "lo": 214,
       "hi": 217
      },
-     "gap": 96,
+     "gap": 101,
      "hairpin": false
     },
     {
@@ -8929,7 +9069,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 105,
+     "gap": 113,
      "hairpin": false
     },
     {
@@ -8941,7 +9081,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 26,
+     "gap": 29,
      "hairpin": false
     },
     {
@@ -8965,7 +9105,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 92,
+     "gap": 97,
      "hairpin": false
     },
     {
@@ -8977,7 +9117,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 60,
+     "gap": 65,
      "hairpin": false
     }
    ],
@@ -8989,7 +9129,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 17
+   "ms": 26
   },
   {
    "id": "7B4N",
@@ -9141,7 +9281,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 4
+   "ms": 6
   },
   {
    "id": "7KII",
@@ -9192,14 +9332,14 @@
    "chain": "A",
    "type": "protein",
    "length": 325,
-   "contacts": 596,
+   "contacts": 597,
    "organism": "Homo sapiens",
    "bits": 18,
    "inputs": 262144,
-   "oneCells": 1192,
+   "oneCells": 1194,
    "primes": 918,
    "gates": 746,
-   "literals": 12868,
+   "literals": 12866,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
@@ -9212,8 +9352,8 @@
    "kinds": {
     "block": 13,
     "strided": 145,
-    "pair": 101,
-    "single": 128
+    "pair": 102,
+    "single": 127
    },
    "contactsInBlockRules": 52,
    "pairs": [
@@ -9230,8 +9370,8 @@
       "lo": 454,
       "hi": 458
      },
-     "gap": 6,
-     "hairpin": true
+     "gap": 26,
+     "hairpin": false
     },
     {
      "i0": 192,
@@ -9246,7 +9386,7 @@
       "lo": 53,
       "hi": 56
      },
-     "gap": 50,
+     "gap": 70,
      "hairpin": false
     },
     {
@@ -9310,7 +9450,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 82,
+     "gap": 102,
      "hairpin": false
     },
     {
@@ -9334,7 +9474,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 28
+   "ms": 37
   },
   {
    "id": "7KTN",
@@ -9342,14 +9482,14 @@
    "chain": "T+P+D",
    "type": "dna",
    "length": 18,
-   "contacts": 7,
+   "contacts": 8,
    "organism": "Homo sapiens",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 14,
+   "oneCells": 16,
    "primes": 10,
    "gates": 10,
-   "literals": 94,
+   "literals": 92,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
@@ -9360,8 +9500,8 @@
    "exceptions": 0,
    "missed": 0,
    "kinds": {
-    "pair": 3,
-    "single": 2
+    "pair": 4,
+    "single": 1
    },
    "contactsInBlockRules": 0,
    "pairs": [],
@@ -9495,7 +9635,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 14
+   "ms": 15
   },
   {
    "id": "7P0W",
@@ -9503,26 +9643,26 @@
    "chain": "B+I",
    "type": "dna",
    "length": 17,
-   "contacts": 4,
+   "contacts": 5,
    "organism": "synthetic construct",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 8,
-   "primes": 6,
-   "gates": 6,
-   "literals": 58,
+   "oneCells": 10,
+   "primes": 8,
+   "gates": 8,
+   "literals": 78,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 1024,
-   "rules": 3,
+   "rules": 4,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
     "pair": 1,
-    "single": 2
+    "single": 3
    },
    "contactsInBlockRules": 0,
    "pairs": [],
@@ -9644,7 +9784,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 15
+   "ms": 16
   },
   {
    "id": "7P8L",
@@ -9685,7 +9825,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 14,
+     "gap": null,
      "hairpin": false
     },
     {
@@ -9697,7 +9837,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 4,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -9756,8 +9896,12 @@
      "j1": 96,
      "contacts": 7,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 148,
+      "hi": 152
+     },
      "gap": 32,
      "hairpin": false
     },
@@ -9834,7 +9978,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 16
+   "ms": 15
   },
   {
    "id": "7P9Z",
@@ -9971,19 +10115,19 @@
    "chain": "B+C",
    "type": "dna",
    "length": 32,
-   "contacts": 29,
+   "contacts": 30,
    "organism": "Danio rerio",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 58,
-   "primes": 40,
-   "gates": 34,
-   "literals": 310,
+   "oneCells": 60,
+   "primes": 42,
+   "gates": 36,
+   "literals": 330,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 1024,
-   "rules": 17,
+   "rules": 18,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
@@ -9992,7 +10136,7 @@
     "block": 2,
     "pair": 7,
     "strided": 4,
-    "single": 4
+    "single": 5
    },
    "contactsInBlockRules": 8,
    "pairs": [
@@ -10005,7 +10149,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 22,
+     "gap": null,
      "hairpin": false
     },
     {
@@ -10017,7 +10161,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 10,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -10122,7 +10266,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 4
+   "ms": 6
   },
   {
    "id": "7YZA",
@@ -10130,19 +10274,19 @@
    "chain": "B+C",
    "type": "dna",
    "length": 32,
-   "contacts": 26,
+   "contacts": 27,
    "organism": "Danio rerio",
    "bits": 10,
    "inputs": 1024,
-   "oneCells": 52,
-   "primes": 32,
-   "gates": 32,
-   "literals": 290,
+   "oneCells": 54,
+   "primes": 34,
+   "gates": 34,
+   "literals": 310,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 1024,
-   "rules": 16,
+   "rules": 17,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
@@ -10151,7 +10295,7 @@
     "block": 2,
     "strided": 4,
     "pair": 7,
-    "single": 3
+    "single": 4
    },
    "contactsInBlockRules": 8,
    "pairs": [
@@ -10164,7 +10308,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 26,
+     "gap": null,
      "hairpin": false
     },
     {
@@ -10176,7 +10320,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 10,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -10235,10 +10379,14 @@
      "j1": 32,
      "contacts": 10,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 50,
+      "hi": 54
+     },
      "gap": 4,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 72,
@@ -10365,10 +10513,14 @@
      "j1": 32,
      "contacts": 10,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 50,
+      "hi": 54
+     },
      "gap": 4,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 72,
@@ -10495,10 +10647,14 @@
      "j1": 32,
      "contacts": 10,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 50,
+      "hi": 54
+     },
      "gap": 4,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 72,
@@ -10625,10 +10781,14 @@
      "j1": 32,
      "contacts": 10,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 50,
+      "hi": 54
+     },
      "gap": 4,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 72,
@@ -10755,10 +10915,14 @@
      "j1": 32,
      "contacts": 10,
      "rules": 2,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 50,
+      "hi": 54
+     },
      "gap": 4,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 72,
@@ -10853,26 +11017,26 @@
    "chain": "A+B",
    "type": "dna",
    "length": 12,
-   "contacts": 4,
+   "contacts": 5,
    "organism": null,
    "bits": 8,
    "inputs": 256,
-   "oneCells": 8,
-   "primes": 6,
-   "gates": 6,
-   "literals": 44,
+   "oneCells": 10,
+   "primes": 8,
+   "gates": 8,
+   "literals": 60,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 256,
-   "rules": 3,
+   "rules": 4,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
     "strided": 2,
-    "single": 1
+    "single": 2
    },
    "contactsInBlockRules": 0,
    "pairs": [],
@@ -10899,26 +11063,26 @@
    "chain": "A+B",
    "type": "dna",
    "length": 12,
-   "contacts": 4,
+   "contacts": 5,
    "organism": "synthetic construct",
    "bits": 8,
    "inputs": 256,
-   "oneCells": 8,
-   "primes": 6,
-   "gates": 6,
-   "literals": 44,
+   "oneCells": 10,
+   "primes": 8,
+   "gates": 8,
+   "literals": 60,
    "sound": true,
    "complete": true,
    "exactEverywhere": true,
    "agree": 256,
-   "rules": 3,
+   "rules": 4,
    "rulesSound": true,
    "rulesComplete": true,
    "exceptions": 0,
    "missed": 0,
    "kinds": {
     "strided": 2,
-    "single": 1
+    "single": 2
    },
    "contactsInBlockRules": 0,
    "pairs": [],
@@ -11084,7 +11248,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 11,
+     "gap": null,
      "hairpin": false
     }
    ],
@@ -11581,7 +11745,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 27
+   "ms": 28
   },
   {
    "id": "5KLA",
@@ -11773,7 +11937,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 12
+   "ms": 13
   },
   {
    "id": "6D2Z",
@@ -11961,7 +12125,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 13
+   "ms": 12
   },
   {
    "id": "6D30",
@@ -12081,9 +12245,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "unidentified",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DOK",
@@ -12185,7 +12382,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 7
+   "ms": 8
   },
   {
    "id": "6DOK",
@@ -12193,9 +12390,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic construct",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DP7",
@@ -12297,7 +12527,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 7
+   "ms": 8
   },
   {
    "id": "6DP7",
@@ -12305,9 +12535,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic construct",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DPC",
@@ -12417,9 +12680,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DPG",
@@ -12521,7 +12817,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 7
+   "ms": 8
   },
   {
    "id": "6DPG",
@@ -12529,9 +12825,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic construct",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DPI",
@@ -12633,7 +12962,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 9
+   "ms": 8
   },
   {
    "id": "6DPI",
@@ -12641,9 +12970,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic construct",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6DPK",
@@ -12745,7 +13107,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 7
+   "ms": 8
   },
   {
    "id": "6DPK",
@@ -12753,9 +13115,42 @@
    "chain": "B+b",
    "type": "rna",
    "length": 6,
-   "contacts": 0,
+   "contacts": 1,
    "organism": "synthetic construct",
-   "skipped": "no contacts"
+   "bits": 6,
+   "inputs": 64,
+   "oneCells": 2,
+   "primes": 2,
+   "gates": 2,
+   "literals": 12,
+   "sound": true,
+   "complete": true,
+   "exactEverywhere": true,
+   "agree": 64,
+   "rules": 1,
+   "rulesSound": true,
+   "rulesComplete": true,
+   "exceptions": 0,
+   "missed": 0,
+   "kinds": {
+    "single": 1
+   },
+   "contactsInBlockRules": 0,
+   "pairs": [],
+   "sequence": {
+    "positions": 6,
+    "gates": 5,
+    "lossless": true,
+    "residueFree": 0,
+    "sound": true,
+    "complete": true
+   },
+   "basePairs": {
+    "n": 0,
+    "watsonCrick": 0,
+    "stems": []
+   },
+   "ms": 0
   },
   {
    "id": "6E0O",
@@ -12827,9 +13222,13 @@
      "j1": 117,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
-     "gap": 50,
+     "orientation": "parallel",
+     "register": {
+      "kind": "j − i",
+      "lo": 52,
+      "hi": 56
+     },
+     "gap": 69,
      "hairpin": false
     },
     {
@@ -12839,10 +13238,14 @@
      "j1": 108,
      "contacts": 10,
      "rules": 3,
-     "orientation": "mixed",
-     "register": null,
+     "orientation": "antiparallel",
+     "register": {
+      "kind": "i + j",
+      "lo": 201,
+      "hi": 205
+     },
      "gap": 5,
-     "hairpin": false
+     "hairpin": true
     },
     {
      "i0": 103,
@@ -12867,7 +13270,7 @@
      "j1": 152,
      "contacts": 8,
      "rules": 1,
-     "orientation": "mixed",
+     "orientation": "short",
      "register": null,
      "gap": 10,
      "hairpin": false
@@ -12885,7 +13288,7 @@
       "lo": 87,
       "hi": 90
      },
-     "gap": 86,
+     "gap": 105,
      "hairpin": false
     },
     {
@@ -12901,7 +13304,7 @@
       "lo": 53,
       "hi": 56
      },
-     "gap": 52,
+     "gap": 71,
      "hairpin": false
     },
     {
@@ -12913,7 +13316,7 @@
      "rules": 1,
      "orientation": "short",
      "register": null,
-     "gap": 162,
+     "gap": 181,
      "hairpin": false
     },
     {
@@ -12997,7 +13400,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 20
+   "ms": 23
   },
   {
    "id": "6E0O",
@@ -13129,7 +13532,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 3
+   "ms": 4
   },
   {
    "id": "6GD3",
@@ -13259,7 +13662,7 @@
      "j1": 112,
      "contacts": 8,
      "rules": 1,
-     "orientation": "mixed",
+     "orientation": "short",
      "register": null,
      "gap": 28,
      "hairpin": false
@@ -13389,7 +13792,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 30
+   "ms": 31
   },
   {
    "id": "6M7K",
@@ -13529,7 +13932,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 10
+   "ms": 11
   },
   {
    "id": "6N6J",
@@ -13833,7 +14236,7 @@
     "sound": true,
     "complete": true
    },
-   "ms": 8
+   "ms": 10
   },
   {
    "id": "7NJC",

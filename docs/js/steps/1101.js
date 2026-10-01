@@ -58,7 +58,7 @@ export default {
     this._off = () => { alive = false; viewer?.dispose(); };
     const status = h("div.loading", h("span.spinner"), "Reading the rules…");
     add(el, h("h1", "From the rules, inferences"),
-      h("p.hook", "Block rules that continue one another along both segments describe one pair of touching segments. Their positions then tell, by counting rather than fitting, which segments pair, in which direction and in which register."),
+      h("p.hook", "Block rules that continue one another along both segments describe one pair of touching segments. Their positions then tell which segments pair, in which direction and in which register, by a stated rule applied to every contact of the pair."),
       status);
     let a;
     try { a = await ctx.derived.analysis(); } catch (e) { status.replaceChildren(failBox(e)); return; }
@@ -73,7 +73,7 @@ export default {
     const cards = inf.map((c, k) => {
       const o = ORIENT[c.orientation];
       const evidence = c.register
-        ? `over all ${c.nPairs} contacts, positions satisfy ${c.register.kind} = ${c.register.lo}–${c.register.hi}`
+        ? `over all ${c.nPairs} contacts, i + j spans ${c.sumRange.lo}–${c.sumRange.hi} and j − i spans ${c.diffRange.lo}–${c.diffRange.hi} (positions from 0)`
         : `${c.nPairs} contacts from ${c.blocks.length} ${c.blocks.length === 1 ? "rule" : "rules"}`;
       const sentence = [
         c.orientation === "antiparallel" || c.orientation === "parallel" ? `Segments ${label(c.i0)}–${label(c.i1 - 1)} and ${label(c.j0)}–${label(c.j1 - 1)} run ${o.word}.` : `Segments ${label(c.i0)}–${label(c.i1 - 1)} and ${label(c.j0)}–${label(c.j1 - 1)} touch as a block.`,
@@ -89,7 +89,7 @@ export default {
 
     const summary = inf.length
       ? `${int(inf.length)} strand ${inf.length === 1 ? "pair" : "pairs"}: ${n("antiparallel")} antiparallel, ${n("parallel")} parallel${n("short") + n("mixed") ? `, ${n("short") + n("mixed")} too short or mixed` : ""}${inf.some((c) => c.hairpin) ? `; ${inf.filter((c) => c.hairpin).length} ${inf.filter((c) => c.hairpin).length === 1 ? "hairpin" : "hairpins"}` : ""}.`
-      : "No block rules here, so no strand pairs to read: this structure's contacts are isolated rather than segment against segment.";
+      : cm.n ? "No block rules here, so no strand pairs to read: this structure's contacts are isolated rather than segment against segment." : "This chain has no contacts under the definition, so there are no rules to read inferences from.";
     const viewBox = h("div.viewer", { "aria-label": "3D backbone coloured by strand pair direction" }, h("span.hint", "drag to turn"));
 
     add(el,
@@ -99,7 +99,7 @@ export default {
         h("div.stat", h("div.v", int(n("parallel"))), h("div.l", "parallel")),
         h("div.stat", h("div.v", int(inf.reduce((m, c) => m + c.nPairs, 0))), h("div.l", `of ${int(cm.n)} contacts inside them`))),
       h("p", summary),
-      h("p.small", "How direction is read: in an antiparallel pair one segment runs forward while the other runs back, so i + j stays nearly constant across its contacts; in a parallel pair j − i does. The ranges below are the full spread over every contact of the pair, not an average."),
+      h("p.small", "The rule: a pair made of one block has no direction. Otherwise, over all its contacts (positions i, j counted from 0), the pair is antiparallel when i + j varies less than j − i, parallel when j − i varies less. The range printed is the full spread over every contact, not an average."),
       viewBox,
       h("div.legend", Object.values(ORIENT).map((o) => h("span", h("i", { style: { background: o.color } }), o.word))),
       ...cards.slice(0, 8),

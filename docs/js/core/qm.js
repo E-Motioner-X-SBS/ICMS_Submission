@@ -158,9 +158,18 @@ export function analyseContacts(pairs, length, onRound) {
   // exact: the distinct contacts (unordered pairs) that lie in at least one block cube
   const inBlockSet = new Set();
   for (const s of blockSegs) for (let i = s.i.start; i < s.i.end; i++) for (let j = s.j.start; j < s.j.end; j++) inBlockSet.add(i < j ? i * length + j : j * length + i);
-  const blocks = blockSegs.filter((s) => s.i.start <= s.j.start)
-    .map((s) => ({ i0: s.i.start, i1: s.i.end, j0: s.j.start, j1: s.j.end, size: s.size, nFree: s.nFree, fi: s.i.nFree, fj: s.j.nFree, val: s.pi.val, mask: s.pi.mask }))
-    .sort((a, b) => b.size - a.size || a.i0 - b.i0 || a.j0 - b.j0);
+  // blocks over unordered residue pairs: a cube below the diagonal is mirrored above it, and a
+  // cube whose mirror is also in the cover is listed once (the greedy cover need not be symmetric)
+  const m = (1 << f.p) - 1, byKey = new Map();
+  for (const s of blockSegs) {
+    const up = s.i.start <= s.j.start;
+    const [I, J] = up ? [s.i, s.j] : [s.j, s.i];
+    const val = up ? s.pi.val : (((s.pi.val & m) << f.p) | (s.pi.val >>> f.p)) >>> 0;
+    const mask = up ? s.pi.mask : (((s.pi.mask & m) << f.p) | (s.pi.mask >>> f.p)) >>> 0;
+    const key = `${I.start},${I.end},${J.start},${J.end}`;
+    if (!byKey.has(key)) byKey.set(key, { i0: I.start, i1: I.end, j0: J.start, j1: J.end, size: s.size, nFree: s.nFree, fi: I.nFree, fj: J.nFree, val, mask });
+  }
+  const blocks = [...byKey.values()].sort((a, b) => b.size - a.size || a.i0 - b.i0 || a.j0 - b.j0);
   return {
     p: f.p, nVars: f.nVars, nOn: f.on.length, nPrimes: primes.length, nCover: cover.length, nEssential: essentials.length,
     complete, sound, blocks, nBlockCubes: blockSegs.length, fracInBlocks: inBlocks / Math.max(1, f.on.length),

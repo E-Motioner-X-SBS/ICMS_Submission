@@ -20,7 +20,7 @@ export default {
     add(el, 
       h("h1", "Read the sequence back"),
       h("p.hook", `Now the sequence itself becomes a Boolean function: f(i, a) = 1 when position i holds the letter whose code is a. One 1-cell per position: ${int(codes.length)} in all.`),
-      h("p", "Minimise it exactly as the contact map. Cubes may merge positions that hold the same letter, but a cube that freed a letter bit would name two letters at once. Lean proves that can never happen, so the minimised circuit is a lossless description of the sequence."),
+      h("p", "Minimise it exactly as the contact map. Cubes may merge positions that hold the same letter, but a cube that freed a letter bit would name two letters at once. Lean proves it cannot happen for 5-bit positions and 5-bit letters, every case; for your chain the circuit below is checked directly: no cube frees a letter bit, and every position reads back."),
       enc.unknown ? h("p.note", `${enc.unknown} ${enc.unknown === 1 ? "position has" : "positions have"} no standard letter and ${enc.unknown === 1 ? "is" : "are"} left out here.`) : null,
       status, body);
 
@@ -66,7 +66,7 @@ export default {
         h(`li${r.residueFree === 0 ? "" : ".bad"}`, `No cube frees a letter bit: 0 of ${int(r.nCover)}.`),
         h(`li${r.lossless ? "" : ".bad"}`, `Every one of the ${int(codes.length)} positions decodes to its original letter.`)),
       tags([["lean", "sc_residue_field_fixed"], ["lean", "sc_no_cross_residue_merge"], ["lean", "sc_cell_injective"], ["data", `your chain: ${int(codes.length)} positions read back`]]),
-      h("p", "This is why the encoding can be trusted as a representation: whatever minimisation does to a sequence, the proofs guarantee nothing about which letter sits where is lost."),
+      h("p", "This is why the encoding can be trusted as a representation: minimisation merges positions, never letters, and the read-back above confirms, position by position, that nothing about which letter sits where is lost."),
       theoremBlock("1111", ["SequenceCircuits.sc_residue_field_fixed", "SequenceCircuits.sc_no_cross_residue_merge", "SequenceCircuits.sc_cell_injective"]),
       nextStep(ctx, "Gray code or plain binary: what does the choice of code actually change?"));
 

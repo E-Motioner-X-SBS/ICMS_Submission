@@ -164,22 +164,25 @@ export function kmerString(code, k, entityType) {
   const A = alphabet(entityType);
   return kmerSymbols(code, k, A.bits).map((c) => A.letterOf(c) ?? "·").join("");
 }
-/** Overlapping k-mer frequencies. Windows touching an unknown letter are skipped.
+/** Overlapping k-mer frequencies. Windows touching an unknown letter, or crossing one of `breaks`
+ * (indices that start a new strand or follow a gap in the modelled chain), are skipped.
  * Returns {k, bits, totalBits, shape, counts: Uint32Array(2^(k·bits)), windows, skipped, distinct}. */
-export function kmerCounts(seq, k, entityType) {
+export function kmerCounts(seq, k, entityType, breaks = null) {
   const A = alphabet(entityType);
   const totalBits = k * A.bits;
   if (totalBits > 20) throw new Error(`k = ${k} gives a map of 2^${totalBits} cells; too large to draw`);
   const { codes } = encodeSequence(seq, entityType);
   const counts = new Uint32Array(1 << totalBits);
-  let windows = 0, skipped = 0;
+  let windows = 0, skipped = 0, crossing = 0;
+  const crosses = (i) => { if (!breaks) return false; for (let t = i + 1; t < i + k; t++) if (breaks.has(t)) return true; return false; };
   for (let i = 0; i + k <= codes.length; i++) {
+    if (crosses(i)) { crossing++; continue; }                 // spans a strand junction or a gap in the chain
     const w = codes.slice(i, i + k);
     if (w.some((c) => c === null)) { skipped++; continue; }
     counts[kmerCode(w, A.bits)]++; windows++;
   }
   let distinct = 0; for (const n of counts) if (n) distinct++;
-  return { k, bits: A.bits, totalBits, shape: kmapShape(totalBits), counts, windows, skipped, distinct };
+  return { k, bits: A.bits, totalBits, shape: kmapShape(totalBits), counts, windows, skipped, crossing, distinct };
 }
 
 // ── Code geometry ─────────────────────────────────────────────────────────────
@@ -190,9 +193,9 @@ export function aaPairHistogram() {
   return h;
 }
 /** Histogram of code distances between consecutive symbols of a sequence (null codes skipped). */
-export function neighbourDistanceHistogram(codes, width) {
+export function neighbourDistanceHistogram(codes, width, breaks = null) {
   const h = new Array(width + 1).fill(0);
-  for (let i = 0; i + 1 < codes.length; i++) if (codes[i] !== null && codes[i + 1] !== null) h[ham(codes[i], codes[i + 1])]++;
+  for (let i = 0; i + 1 < codes.length; i++) if (codes[i] !== null && codes[i + 1] !== null && !(breaks && breaks.has(i + 1))) h[ham(codes[i], codes[i + 1])]++;
   return h;
 }
 /** The 5-cube drawn as a 4×8 K-map (rows: high 2 bits, columns: low 3 bits, both in Gray order). */

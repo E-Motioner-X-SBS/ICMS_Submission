@@ -11,8 +11,7 @@ export async function createViewer(container, chain, { onPick } = {}) {
     THREE = await import("three");
     ({ OrbitControls } = await import("three/addons/OrbitControls.js"));
   } catch (e) { container.textContent = "The 3D view could not load on this device."; return null; }
-  const probe = document.createElement("canvas");
-  if (!(probe.getContext("webgl2") || probe.getContext("webgl"))) { container.textContent = "This browser has no WebGL, so the 3D view is off. Everything else works."; return null; }
+  if (!(window.WebGL2RenderingContext || window.WebGLRenderingContext)) { container.textContent = "This browser has no WebGL, so the 3D view is off. Everything else works."; return null; }
 
   const { xyz } = representativeCoords(chain, TRACE[chain.entityType] || TRACE.protein);
   const idx = [], pts = [];
@@ -116,6 +115,6 @@ export async function createViewer(container, chain, { onPick } = {}) {
   return {
     setColors(fn) { colorOf = fn; applyColors(); },
     setRungs,
-    dispose() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); controls.dispose(); pieces.forEach((p) => p.geo.dispose()); mat.dispose(); rungs.children.forEach((l) => { l.geometry.dispose(); l.material.dispose(); }); renderer.dispose(); renderer.domElement.remove(); },
+    dispose() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); controls.dispose(); pieces.forEach((p) => p.geo.dispose()); mat.dispose(); rungs.children.forEach((l) => { l.geometry.dispose(); l.material.dispose(); }); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); },
   };
 }

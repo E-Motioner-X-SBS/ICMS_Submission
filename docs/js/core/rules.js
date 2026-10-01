@@ -7,6 +7,7 @@
 // Everything here is exact: a rule's cells are enumerated, never estimated, and the checks
 // re-evaluate the circuit on every input. DOM-free (runs under Node for the tests).
 import { strandPairClusters } from "./clusters.js";
+import { chainSegments } from "./contacts.js";
 
 const popcount = (x) => { x >>>= 0; let c = 0; while (x) { x &= x - 1; c++; } return c; };
 
@@ -94,43 +95,29 @@ export function setText(positions, max = 8) {
 
 // ── inferences ──────────────────────────────────────────────────────────────
 
-const pearson = (xs, ys) => {
-  const n = xs.length, mx = xs.reduce((a, b) => a + b, 0) / n, my = ys.reduce((a, b) => a + b, 0) / n;
-  let sxy = 0, sxx = 0, syy = 0;
-  for (let k = 0; k < n; k++) { sxy += (xs[k] - mx) * (ys[k] - my); sxx += (xs[k] - mx) ** 2; syy += (ys[k] - my) ** 2; }
-  return sxx && syy ? sxy / Math.sqrt(sxx * syy) : 0;
-};
 const WC = new Set(["AT", "TA", "AU", "UA", "CG", "GC"]), WOBBLE = new Set(["GU", "UG"]);
+const span = (xs) => Math.max(...xs) - Math.min(...xs);
 
-/** Strand pairs from block rules, with orientation, register and (nucleic acids) base pairing.
- *  chain: {residues, entityType, strands?}. Every number is counted, not fitted. */
+/** Strand pairs from block rules, with direction and register. chain: {residues, entityType, strands?}.
+ *  The rule, stated on the page: one block is a rectangle and has no direction ("short"); for two or
+ *  more blocks, the pair is antiparallel when i + j varies less than j − i across all its contacts,
+ *  parallel when j − i varies less, "mixed" when both vary equally. Both ranges are reported. */
 export function inferences(rules, chain, has) {
   const blocks = rules.filter((r) => r.kind === "block").map((r) => ({ i0: r.I.positions[0], i1: r.I.positions.at(-1) + 1, j0: r.J.positions[0], j1: r.J.positions.at(-1) + 1, rule: r }));
   const clusters = strandPairClusters(blocks, has);
-  const letter = (k) => chain.residues[k]?.one ?? "?";
-  const strandOf = (k) => { if (!chain.strands) return null; let acc = 0; for (const s of chain.strands) { if (k < acc + s.length) return s.id; acc += s.length; } return null; };
-  const na = chain.entityType !== "protein";
+  const { strand, seq } = chainSegments(chain);
+  const strandId = (k) => (chain.strands ? chain.strands[strand[k]]?.id ?? null : null);
   return clusters.map((c) => {
-    const is = c.pairs.map((q) => q[0]), js = c.pairs.map((q) => q[1]);
-    const r = c.pairs.length >= 3 ? pearson(is, js) : 0;
-    const orientation = c.blocks.length < 2 && c.pairs.length < 6 ? "short" : r < -0.3 ? "antiparallel" : r > 0.3 ? "parallel" : "mixed";
     const sums = c.pairs.map(([i, j]) => i + j), diffs = c.pairs.map(([i, j]) => j - i);
-    const reg = orientation === "antiparallel" ? { kind: "i + j", lo: Math.min(...sums), hi: Math.max(...sums) }
-      : orientation === "parallel" ? { kind: "j − i", lo: Math.min(...diffs), hi: Math.max(...diffs) } : null;
-    const gap = c.j0 - c.i1;                                             // residues between the two segments
-    const out = { ...c, rules: c.blocks.map((b) => blocks[b].rule), orientation, r, register: reg, gap,
-      strands: [strandOf(c.i0), strandOf(c.j0)], hairpin: orientation === "antiparallel" && gap >= 0 && gap <= 8 && !chain.strands };
-    if (na && orientation === "antiparallel") {
-      // the pairing line: for each i in the first segment, the partner j on the central register
-      const s = Math.round((reg.lo + reg.hi) / 2);
-      const pairs = [];
-      for (let i = c.i0; i < c.i1; i++) { const j = s - i; if (j >= c.j0 && j < c.j1 && j > i) pairs.push([i, j, letter(i) + letter(j)]); }
-      out.basePairs = pairs;
-      out.watsonCrick = pairs.filter((q) => WC.has(q[2])).length;
-      out.wobble = pairs.filter((q) => WOBBLE.has(q[2])).length;
-      out.register.centre = s;
-    }
-    return out;
+    const sumRange = { lo: Math.min(...sums), hi: Math.max(...sums) }, diffRange = { lo: Math.min(...diffs), hi: Math.max(...diffs) };
+    const ss = span(sums), sd = span(diffs);
+    const orientation = c.blocks.length < 2 ? "short" : ss < sd ? "antiparallel" : sd < ss ? "parallel" : "mixed";
+    const register = orientation === "antiparallel" ? { kind: "i + j", ...sumRange } : orientation === "parallel" ? { kind: "j − i", ...diffRange } : null;
+    const sameStrand = strand[c.i0] === strand[c.j0];
+    // residues between the two segments, by sequence number (unmodelled residues count)
+    const gap = sameStrand ? seq[c.j0] - seq[c.i1 - 1] - 1 : null;
+    return { ...c, rules: c.blocks.map((b) => blocks[b].rule), orientation, register, sumRange, diffRange, gap,
+      strands: [strandId(c.i0), strandId(c.j0)], hairpin: orientation === "antiparallel" && sameStrand && gap >= 0 && gap <= 8 };
   });
 }
 
@@ -145,7 +132,7 @@ export function toVerilog(terms, p, name = "contact") {
   const lit = (pat, f) => [...pat].map((ch, k) => (ch === "-" ? null : `${ch === "0" ? "~" : ""}${f}[${p - 1 - k}]`)).filter(Boolean);
   const prods = terms.map((t) => { const l = [...lit(t.I.pattern, "i"), ...lit(t.J.pattern, "j")]; return l.length ? `(${l.join(" & ")})` : "1'b1"; });
   return [`// ${name}: C(i, j) = 1 iff residues i and j touch. ${terms.length} AND terms, one OR. Exact.`,
-    `module ${name.replace(/\W/g, "_")} (input [${p - 1}:0] i, input [${p - 1}:0] j, output C);`,
+    `module ${/^[A-Za-z_]/.test(name) ? name.replace(/\W/g, "_") : `pdb_${name.replace(/\W/g, "_")}`} (input [${p - 1}:0] i, input [${p - 1}:0] j, output C);`,
     `  assign C = ${prods.length ? prods.join("\n           | ") : "1'b0   // no contacts: the constant 0"};`, "endmodule", ""].join("\n");
 }
 
@@ -154,13 +141,12 @@ export function toVerilog(terms, p, name = "contact") {
  *  (i, j), (i+1, j−1), …). Exact: every pair is a measured distance under a stated cutoff. */
 export function basePairs(chain, cutoff = 3.5) {
   const R = chain.residues, pur = (l) => l === "A" || l === "G", pyr = (l) => l === "C" || l === "T" || l === "U";
-  const strand = new Array(R.length).fill(0);
-  if (chain.strands) { let k = 0; chain.strands.forEach((st, n) => { for (let t = 0; t < st.length; t++) strand[k++] = n; }); }
+  const { strand, seq } = chainSegments(chain);
   const pairs = [];
-  // same strand: at least 3 unpaired nucleotides between partners (the shortest hairpin loop);
-  // that also rules out stacked neighbours, whose N1 and N3 can sit 3.4 Å apart
+  // same strand: at least 3 unpaired nucleotides between partners (the shortest hairpin loop), by
+  // sequence number; that also rules out stacked neighbours, whose N1 and N3 can sit 3.4 Å apart
   for (let i = 0; i < R.length; i++) for (let j = i + 1; j < R.length; j++) {
-    if (strand[i] === strand[j] && j - i < 4) continue;
+    if (strand[i] === strand[j] && seq[j] - seq[i] < 4) continue;
     const a = R[i], b = R[j], la = a.one, lb = b.one;
     let u = null, v = null;
     if (pur(la) && pyr(lb)) { u = a.atoms.N1; v = b.atoms.N3; } else if (pyr(la) && pur(lb)) { u = a.atoms.N3; v = b.atoms.N1; }

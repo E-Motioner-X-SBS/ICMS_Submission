@@ -18,6 +18,7 @@
 // No DOM access here: this module also runs under Node for the test harness.
 
 import { THEOREM_SOURCES, LEAN_FILES } from "./lean-source.js";
+import { kmerCode, kmapCell, kmapShape, NUC_RAW, AA_RAW } from "./encoding.js";   // the site's own tables, checked against the statements
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mirrors of the Lean definitions (same names, same arithmetic)
@@ -219,7 +220,9 @@ const T = {
   "KmerIndexing.nucCell_adj_TA": [["0010"], "T and A sit one above the other, so the cycle A → C → G → T → A walks round the 2×2 map.",
     conj(() => nucRow.T === nucRow.A + 1, () => nucCol.T === nucCol.A), "two conjuncts"],
   "KmerIndexing.dinucEncode_eq": [["0010"], "A dinucleotide's cell is row × 4 + column, with the first letter giving the row and the second the column.",
-    forall(["d"], [16], (d) => { const a = nuc(d >> 2), b = nuc(d & 3); return encodeNuc[a] * 4 + encodeNuc[b] === encodeNuc[a] * 4 + encodeNuc[b]; }), "d ∈ Nucleotide × Nucleotide"],
+    // the site's K-map code of a dinucleotide, and the row and column it is drawn at, against the statement
+    forall(["d"], [16], (d) => { const a = nuc(d >> 2), b = nuc(d & 3); const code = kmerCode([NUC_RAW[a], NUC_RAW[b]], 2), cell = kmapCell(code, kmapShape(4));
+      return code === cell.row * 4 + cell.col && cell.row === encodeNuc[a] && cell.col === encodeNuc[b]; }), "d ∈ Nucleotide × Nucleotide"],
   "KmerIndexing.dinucEncode_injective": [["0010"], "The 16 dinucleotides land in 16 different cells of the 4×4 map.",
     forall(["a", "b"], [16, 16], (a, b) => {
       const ea = encodeNuc[nuc(a >> 2)] * 4 + encodeNuc[nuc(a & 3)], eb = encodeNuc[nuc(b >> 2)] * 4 + encodeNuc[nuc(b & 3)];
@@ -302,7 +305,7 @@ const T = {
   "AminoAcidEncoding.within_group_distance_1": [["0110"], "The 14 one-bit pairs that stay inside a chemical group.",
     hdAll([["A", "V", "=", 1], ["A", "I", "=", 1], ["V", "L", "=", 1], ["L", "I", "=", 1], ["F", "Y", "=", 1], ["Y", "W", "=", 1], ["M", "C", "=", 1],
       ["P", "G", "=", 1], ["S", "T", "=", 1], ["T", "N", "=", 1], ["N", "Q", "=", 1], ["D", "E", "=", 1], ["H", "K", "=", 1], ["K", "R", "=", 1]]), "fourteen conjuncts"],
-  "AminoAcidEncoding.cross_group_distance_1_aliphatic": [["0110"], "Eight one-bit pairs that cross from the aliphatic group into another group: seven groups cannot all be kept apart in five bits.",
+  "AminoAcidEncoding.cross_group_distance_1_aliphatic": [["0110"], "Eight one-bit pairs that cross from the aliphatic group into another group.",
     hdAll([["A", "M", "=", 1], ["A", "D", "=", 1], ["V", "W", "=", 1], ["V", "Q", "=", 1], ["L", "Y", "=", 1], ["L", "N", "=", 1], ["I", "F", "=", 1], ["I", "T", "=", 1]]), "eight conjuncts"],
   "AminoAcidEncoding.cross_group_distance_1_aromatic": [["0110"], "Five one-bit pairs that cross from the aromatic group into another group.",
     hdAll([["F", "M", "=", 1], ["F", "S", "=", 1], ["Y", "G", "=", 1], ["W", "M", "=", 1], ["W", "P", "=", 1]]), "five conjuncts"],
@@ -360,7 +363,8 @@ const T = {
 
   // ── KmapEncodingEquiv.lean ─────────────────────────────────────────────────
   "KmapEncodingEquiv.rawEncodingInjective": [["0001"], "The raw group-order index 0–19 identifies the amino acid.",
-    forall(["a", "b"], [20, 20], (a, b) => imp(a === b, a === b)), "a, b ∈ Fin 20"],
+    // the site's raw-index table (encoding.js AA_RAW) against the Lean order, and injective
+    forall(["a", "b"], [20, 20], (a, b) => AA_RAW[AA[a]] === a && imp(AA_RAW[AA[a]] === AA_RAW[AA[b]], a === b)), "a, b ∈ Fin 20"],
   "KmapEncodingEquiv.distanceDistributionCurrent": [["0110"], "Over all 380 ordered pairs of different amino acids, the code distances 1–5 occur 80, 132, 112, 48 and 8 times.",
     closed(400, () => {
       const c = [1, 2, 3, 4, 5].map((d) => countPairsAtDistance(grayNat, d));
@@ -409,7 +413,7 @@ const T = {
     closed(4, () => ccOffAvoidingB(4, ccTableToy, [ccPiToy], 2)), "the 4 cells of the worked table"],
   "ContactCircuits.cc_fixed_match_unique": [["1010", "0100", "1100"], "On the padded 32×32 grid, a rule with all ten bits fixed fires on exactly one cell: its own.",
     forall(["v", "r", "c"], [32, 32, 1024], (v, r, c) => ccEval(10, 32 * v + r, 0, c) === (c === 32 * v + r)), "v, r ∈ Fin 32, c ∈ Fin 1024"],
-  "ContactCircuits.cc_padding_safety": [["1010", "1100"], "Padding is inert: a rule about real residues (row and column below 20) can only fire inside the 20×20 block, never on padding.",
+  "ContactCircuits.cc_padding_safety": [["1010", "1100"], "Padding is inert for exact rules: a fully fixed rule about real residues (row and column below 20) fires only inside the 20×20 block, never on padding.",
     forall(["v", "r", "c"], [20, 20, 1024], (v, r, c) => imp(ccEval(10, 32 * v + r, 0, c), Math.floor(c / 32) < 20 && c % 32 < 20)), "v, r < 20, c < 1024 (the cases the hypotheses allow)"],
 
   // ── SequenceCircuits.lean ──────────────────────────────────────────────────
@@ -440,7 +444,7 @@ const T = {
     forall(["i", "i'", "a", "a'"], [64, 64, 32, 32], (i, i2, a, a2) => imp(scCell(5, i, a) === scCell(5, i2, a2), i === i2 && a === a2)), "i, i' ∈ Fin 64, a, a' ∈ Fin 32"],
   "SequenceCircuits.sc_no_cross_residue_merge": [["1111"], "Two cells with different positions and different residues are never one bit apart, so minimisation can never merge across residues.",
     forall(["i", "i'", "a", "a'"], [32, 32, 32, 32], (i, i2, a, a2) => imp(i !== i2 && a !== a2, 2 <= scHamming(10, scCell(5, i, a), scCell(5, i2, a2)))), "i, i', a, a' ∈ Fin 32"],
-  "SequenceCircuits.sc_residue_field_fixed": [["1111"], "Flipping any residue bit at a fixed position gives a different cell, so no prime implicant of a sequence can leave a residue bit free.",
+  "SequenceCircuits.sc_residue_field_fixed": [["1111"], "Flipping any one residue bit at a fixed position gives a different cell.",
     forall(["i", "a", "k"], [32, 32, 5], (i, a, k) => scCell(5, i, a) !== scCell(5, i, a ^ (1 << k))), "i, a ∈ Fin 32, k ∈ Fin 5"],
   "SequenceCircuits.sc_gray_gf2_linear": [["1110"], "The Gray code is linear over GF(2): g(x ⊕ y) = g(x) ⊕ g(y).",
     forall(["x", "y"], [32, 32], (x, y) => scGray(x ^ y) === (scGray(x) ^ scGray(y))), "x, y ∈ Fin 32"],
@@ -526,7 +530,7 @@ async function runSpec(spec, { onProgress, signal } = {}) {
 // Registry
 // ─────────────────────────────────────────────────────────────────────────────
 const TRUST = {
-  compiler: "Proved with native_decide: Lean ran every case in compiled code, so this proof also trusts Lean's compiler.",
+  compiler: "Depends on native_decide, directly or through a lemma: Lean ran cases in compiled code, so this proof also trusts Lean's compiler.",
   kernel: "Proved by tactics that Lean's small kernel re-checks, using only Lean's standard axioms.",
   none: "Proved by tactics that Lean's kernel re-checks, with no axioms at all.",
 };

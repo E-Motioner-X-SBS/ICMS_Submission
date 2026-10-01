@@ -110,7 +110,7 @@
           <div class="pair">
             <div class="txt">
               <h3>Exact rules on padded maps</h3>
-              <p>Twenty residues need five bits per axis, so a 20×20 residue-pair map is padded to 32×32 with 10-bit addresses. Lean proves that a fully fixed rule matches exactly its own cell and that any rule on real residues fires only inside the 20×20 block: padding never enters a result.</p>
+              <p>Twenty residues need five bits per axis, so a 20×20 residue-pair map is padded to 32×32 with 10-bit addresses. Lean proves that a fully fixed rule matches exactly its own cell and that such a rule on two real residues fires only inside the 20×20 block, never on padding.</p>
             </div>
             <figure><div class="fig" id="padding" data-w="172" data-h="76"></div></figure>
           </div>
@@ -153,7 +153,7 @@
         <div class="d1">
           <p>Each PSICOV<sup>7</sup> protein becomes a circuit equal to its contact map. Its AND gates are rules; block rules that continue one another give strand pairs, direction and register, by counting.</p>
           <figure><div class="fig" id="contact" data-w="250" data-h="96"></div></figure>
-          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_contact_cube_is_block</span><span class="tag data"><span class="g">◆</span>150 / 150 proteins</span><span class="tag data"><span class="g">◆</span>112 / 112 chains</span></div>
+          <div class="tags"><span class="tag lean"><span class="g">⊢</span>sc_contact_cube_is_block</span><span class="tag data"><span class="g">◆</span>150 / 150 proteins</span><span class="tag data"><span class="g">◆</span>121 / 121 chains</span></div>
         </div>
         <div class="d2">
           <p>One species: in 1,299 SARS-CoV-2 Spike sequences, exact circuits list which residue pairs occur at co-evolving positions and which never do. No sequence breaks a rule.</p>
@@ -163,7 +163,7 @@
         <div class="d3">
           <h3>Takeaways</h3>
           <ul class="short">
-            <li><b>A verified foundation.</b> Lean fixes the encodings and what every cube means; every circuit is exact on all inputs.</li>
+            <li><b>A verified foundation.</b> Lean fixes the encodings and what a block rule means; every circuit is exact on all inputs.</li>
             <li><b>Rules that are true, not likely.</b> Each holds for every contact, sequence or frame it names.</li>
             <li><b>One language for sequence, structure and dynamics.</b> Any finite encoding can be checked the same way.</li>
           </ul>

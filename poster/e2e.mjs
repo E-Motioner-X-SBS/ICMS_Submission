@@ -78,7 +78,7 @@ for (const entry of ENTRIES) {
   if (nTiles > 3) {
     await page.locator(".seq span").nth(3).click(); await sleep(150);
     const r = await text(".readout");
-    check(tag("0001"), /Residue 4:/.test(r) && /[01]{2,5}/.test(r), `tap residue 4 → "${r.slice(0, 80)}"`);
+    check(tag("0001"), /Residue .+ \(position 3\):/.test(r) && /[01]{2,5}/.test(r), `tap residue 4 → "${r.slice(0, 80)}"`);
   }
   await checkAllTheorems(tag("0001"));
 

@@ -1,5 +1,5 @@
 // 0001 Letters become bits: the chain's sequence, one codeword per letter.
-import { h, theoremBlock, tags, nextStep, inkOn, css, sleep, reducedMotion, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, inkOn, css, sleep, reducedMotion, add, residueLabel } from "../ui.js";
 import { encodeSequence, bits, GROUPS, AA_CODE, AA_NAMES, AA_GROUP, NUC_RAW, NUC_NAMES, letterVar } from "../core/encoding.js";
 import { int } from "../core/format.js";
 
@@ -59,7 +59,7 @@ export default {
       tiles.children[sel]?.classList.remove("sel");
       sel = i; tiles.children[i].classList.add("sel");
       const l = enc.letters[i], c = enc.codes[i];
-      readout.replaceChildren(h("span", `Residue ${i + 1}: `), h("b", l), ` (${describe(l)}) → `, h("span.mono", c === null ? "no code" : bits(c, w)));
+      readout.replaceChildren(h("span", `Residue ${residueLabel(chain, i).replace(/[A-Z]?(?=-?\d)/, "")} (position ${i}): `), h("b", l), ` (${describe(l)}) → `, h("span.mono", c === null ? "no code" : bits(c, w)));
       paintBits(c, prev); paintStream(i);
       cwButtons.forEach((b, k) => b.setAttribute("aria-pressed", String(k === l)));
       if (user && tiles.children[i].scrollIntoView) tiles.children[i].scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -105,7 +105,7 @@ export default {
       book,
       enc.unknown || chain.notes?.length ? h("p.note", [
         enc.unknown ? `${enc.unknown} ${enc.unknown === 1 ? "residue has" : "residues have"} no standard letter and no code; they are shown grey and skipped by counts. ` : "",
-        ...(chain.notes || []).map((n) => `${n.name} was read as ${n.one ?? "unknown"} (${n.count}×). `)].join("")) : null,
+        ...(chain.notes || []).map((n) => (n.one ? `${n.name} was read as ${n.one} (${n.count}×). ` : `${n.name} is not a standard residue and is left out (${n.count}×). `))].join("")) : null,
       tags([["lean", isProt ? "AminoAcidEncoding.encode_injective" : "KmapProofs.encode_injective"], ["data", `your chain: ${int(enc.codes.length - enc.unknown)} letters encoded, none shared by two letters`]]),
       h("p", "Injectivity is what makes the rest possible: no two letters share a codeword, so everything built from bits can be read back as sequence."),
       theoremBlock("0001", isProt ? ["AminoAcidEncoding.encode_injective", "AminoAcidEncoding.encode_in_range", "KmapEncodingEquiv.rawEncodingInjective"] : ["KmapProofs.encode_injective", "KmapProofs.gray_cycle_AC", "KmapProofs.encode_all_distinct"]),
