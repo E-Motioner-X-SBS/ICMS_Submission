@@ -69,8 +69,6 @@ export default async function build(host, { w, h }) {
     svg.appendChild(sw(COLORS.paper, COLORS.rule)); svg.appendChild(T(tx + fs * 1.15, y, "padding 20–31: don't-care", { size: fs, fill: COLORS.ink2 })); y += lineH * 1.25;
     svg.appendChild(sw(COLORS.teal)); svg.appendChild(S(tx + fs * 1.15, y, [["one rule "], [pattern, { mono: true }]], { size: fs })); y += lineH;
     svg.appendChild(T(tx + fs * 1.15, y, "covers 16 real cells, no padding", { size: fs, fill: COLORS.ink2 })); y += lineH;
-    y += lineH * 0.35;
-    put([["⊢ ", { weight: 700 }], ["cc_padding_safety", { mono: true }]], { fill: COLORS.gold });
-    put([["⊢ ", { weight: 700 }], ["cc_fixed_match_unique", { mono: true }]], { fill: COLORS.gold });
-  }, `A 20 by 20 residue-pair map padded to 32 by 32 = 1,024 ten-bit addresses; padding rows and columns 20 to 31 are don't-care. A rule ${pattern} covers 16 real cells and no padding; cc_padding_safety proves any rule on real residues fires only inside the 20 by 20 block.`);
+
+  }, `A 20 by 20 residue-pair map padded to 32 by 32 = 1,024 ten-bit addresses; padding rows and columns 20 to 31 are don't-care. A rule ${pattern} covers 16 real cells and no padding; Lean proves a fully fixed rule on real residues fires only inside the 20 by 20 block.`);
 }

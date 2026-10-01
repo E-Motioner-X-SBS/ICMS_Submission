@@ -294,10 +294,10 @@ export default async function build(host, { w, h }) {
 
   // ── forward arrows, each labelled with what it does ────────────────────────
   const hops = [
-    { x1: X1 + W1 + 2.0 * s, x2: X2 - 2.0 * s, verb: "encode", thm: ["encode_injective"], gloss: "one code per residue" },
-    { x1: X2 + W2 + 2.0 * s, x2: X3 - 2.0 * s, verb: "pair up", thm: ["gray_hamming_one"], gloss: "touching cells differ in one bit" },
-    { x1: gx3 + G + 2.4 * s, x2: X4 - 2.0 * s, verb: "minimise", thm: ["cc_cover_complete", "cc_off_avoiding"], gloss: "the cover check, proved on a worked table" },
-    { x1: gx4 + G + 2.4 * s, x2: X5 - 2.0 * s, verb: "decode", thm: ["sc_contact_cube_is_block"], gloss: "the cube is a segment × segment block" },
+    { x1: X1 + W1 + 2.0 * s, x2: X2 - 2.0 * s, verb: "encode", thm: [], gloss: "one code per residue" },
+    { x1: X2 + W2 + 2.0 * s, x2: X3 - 2.0 * s, verb: "pair up", thm: [], gloss: "touching cells differ in one bit" },
+    { x1: gx3 + G + 2.4 * s, x2: X4 - 2.0 * s, verb: "minimise", thm: [], gloss: "every 1 covered, no 0 covered" },
+    { x1: gx4 + G + 2.4 * s, x2: X5 - 2.0 * s, verb: "decode", thm: [], gloss: "the cube is a segment × segment block" },
   ];
   for (const hp of hops) {
     add(arrow(hp.x1, y0, hp.x2, y0));
@@ -306,13 +306,11 @@ export default async function build(host, { w, h }) {
     for (const [l, r] of capBoxes) if (hp.gx > l - 1.2 * s && hp.gx < r + 1.2 * s) throw new Error(`tie of "${hp.verb}" would cross a caption`);
   }
 
-  // ── proof rail: gold tags under their arrows, glosses beneath ──────────────
-  const pairGap = 2.4 * s, minGap = 4.5 * s;
+  // ── what each step guarantees, in words, under its arrow ───────────────────
+  const minGap = 4.5 * s;
   const items = hops.map((hp) => {
-    const ps = hp.thm.map((n) => pill(n));
-    const iw = ps.reduce((a, p) => a + p.w, 0) + pairGap * (ps.length - 1);
     const glW = measure(T(0, 0, hp.gloss, { size: F(19) })).width;
-    return { hp, ps, iw, glW, left: hp.gx - iw / 2 };
+    return { hp, iw: glW, left: hp.gx - glW / 2 };
   });
   // resolve overlaps: sweep right, then pull back from the right edge
   for (let k = 1; k < items.length; k++) items[k].left = Math.max(items[k].left, items[k - 1].left + items[k - 1].iw + minGap);
@@ -320,47 +318,23 @@ export default async function build(host, { w, h }) {
     const lim = k === items.length - 1 ? w - inset - items[k].iw : items[k + 1].left - minGap - items[k].iw;
     items[k].left = Math.min(items[k].left, lim);
   }
-  if (items[0].left < inset) throw new Error("proof rail does not fit");
-  const hP = items[0].ps[0].h, pillTop = yPill - hP / 2;
-  const tie = { stroke: COLORS.gold, sw: 0.4 * s, cap: "butt" };
-  for (const it of items) {
-    let x = it.left;
-    const centres = [];
-    for (const p of it.ps) {
-      p.node.setAttribute("transform", `translate(${x},${yPill})`); add(p.node);
-      centres.push(x + p.w / 2); x += p.w + pairGap;
-    }
-    const gx = it.hp.gx, yFrom = y0 + 0.45 * s;
-    if (centres.length === 1) {
-      if (gx >= it.left + 3 * s && gx <= it.left + it.iw - 3 * s) add(line(gx, yFrom, gx, pillTop, tie));
-      else {
-        const xa = Math.min(Math.max(gx, it.left + 3 * s), it.left + it.iw - 3 * s);
-        add(path(`M${gx},${yFrom} V${yBus} H${xa} V${pillTop}`, tie));
-      }
-    } else {
-      add(path(`M${gx},${yFrom} V${yBus}`, tie));
-      add(path(`M${centres[0]},${pillTop} V${yBus} H${centres.at(-1)} V${pillTop}`, tie));
-    }
-    const gcx = Math.min(Math.max(it.left + it.iw / 2, inset + it.glW / 2), w - inset - it.glW / 2);
-    add(T(gcx, yGloss, it.hp.gloss, { size: F(19), fill: COLORS.ink2, anchor: "middle" }));
-  }
+  if (items[0].left < inset) throw new Error("gloss rail does not fit");
+  for (const it of items) add(T(it.left + it.iw / 2, yPill + F(19) * 0.36, it.hp.gloss, { size: F(19), fill: COLORS.ink2, anchor: "middle" }));
 
   // ── return path: the K-map cell gives both residues back ───────────────────
   {
     const xs = gx3 + 1.4 * s, ys = barT - 0.7 * s;              // leaves the map's top-left corner
     const xe = (tileX(0) + tileX(1)) / 2, ye = y0 - t1 / 2 - 1.0 * s;   // lands on residues 1 and 2
     const rr = 2.6 * s, col = COLORS.ink2, sw = 0.45 * s;
-    const P = pill("sc_cell_injective");
     const gl = T(0, 0, "lossless: the cell gives back both residues", { size: F(19), fill: COLORS.ink2 });
-    const glW = measure(gl).width, sep = 2.4 * s, pad = 1.8 * s;
-    const groupW = P.w + sep + glW;
+    const glW = measure(gl).width, pad = 1.8 * s;
+    const groupW = glW;
     const gxl = Math.max(xe + rr + 6 * s, (xs + xe) / 2 - groupW / 2);
     if (gxl + groupW + pad > xs - rr - 2 * s) throw new Error("return-path label does not fit");
     add(path(`M${xs},${ys} V${yLane + rr} Q${xs},${yLane} ${xs - rr},${yLane} H${gxl + groupW + pad}`, { stroke: col, sw }));
     add(path(`M${gxl - pad},${yLane} H${xe + rr} Q${xe},${yLane} ${xe},${yLane + rr} V${ye - 3.0 * s}`, { stroke: col, sw }));
     add(arrow(xe, ye - 3.2 * s, xe, ye, { stroke: col, sw, head: 2.9 * s, hw: 1.25 * s }));
     add(path(`M${tileX(0) - t1 / 2 + 0.4 * s},${ye + 0.2 * s} V${ye - 0.5 * s} H${tileX(1) + t1 / 2 - 0.4 * s} V${ye + 0.2 * s}`, { stroke: col, sw, cap: "butt" }));
-    P.node.setAttribute("transform", `translate(${gxl},${yLane})`); add(P.node);
-    gl.setAttribute("x", gxl + P.w + sep); gl.setAttribute("y", yLane + F(19) * 0.36); add(gl);
+    gl.setAttribute("x", gxl); gl.setAttribute("y", yLane + F(19) * 0.36); add(gl);
   }
 }

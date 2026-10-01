@@ -16,7 +16,13 @@ await Promise.all(slots.map(async (host) => {
   let mod;
   try { mod = await import(`./figs/${host.id}.js`); }
   catch { host.classList.add("placeholder"); return; }
-  try { await mod.default(host, { w: Number(host.dataset.w), h: Number(host.dataset.h) }); }
+  // data-base-w/h: draw at the audited base size, then scale the whole diagram up to data-w × data-h
+  const bw = Number(host.dataset.baseW || host.dataset.w), bh = Number(host.dataset.baseH || host.dataset.h);
+  try {
+    await mod.default(host, { w: bw, h: bh });
+    const svg = host.querySelector(":scope > svg");
+    if (svg && (bw !== Number(host.dataset.w) || bh !== Number(host.dataset.h))) { svg.setAttribute("width", `${host.dataset.w}mm`); svg.setAttribute("height", `${host.dataset.h}mm`); }
+  }
   catch (e) { errors.push(`${host.id}: ${e.stack || e.message}`); host.classList.add("placeholder"); }
 }));
 for (const e of errors) console.error("FIGURE ERROR", e);

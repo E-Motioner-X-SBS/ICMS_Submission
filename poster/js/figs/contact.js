@@ -60,7 +60,7 @@ export default async function build(host, { w, h }) {
 
   mount(host, w, h, (svg) => {
     // ── contact map with block rules coloured by strand pair ─────────────────────
-    const tick = fs * 1.9, M = h - 2 * inset - fs * 1.35, cs = M / L, mx = inset + tick, my = inset + fs * 0.2;
+    const tick = fs * 1.9, M = Math.min(h - 2 * inset - fs * 1.35, w - 166), cs = M / L, mx = inset + tick, my = inset + fs * 0.2;   // keep ≥ 150 mm for the text
     const map = g({ "aria-label": `Contact map of 1fnaA with its ${d.blocks.length} block rules coloured by strand pair` });
     map.appendChild(el("rect", { x: mx, y: my, width: M, height: M, fill: COLORS.paper, stroke: COLORS.ink300, "stroke-width": 0.3 }));
     for (const [i, j] of d.contacts) for (const [r, c] of [[i, j], [j, i]])
@@ -114,7 +114,7 @@ export default async function build(host, { w, h }) {
     const lines = [
       [[`${X.psicov.exact} / ${X.psicov.proteins} proteins exact`, { weight: 700 }], [` on all ${n(X.psicov.inputs)} inputs`]],
       [[`${n(X.psicov.rules)} rules`, { weight: 700 }], [", 0 exceptions, 0 contacts missed"]],
-      [[`${X.psicov.antiparallel} antiparallel`, { weight: 700 }], [" and "], [`${X.psicov.parallel} parallel`, { weight: 700 }], [` pairs, ${X.psicov.hairpins} hairpins`]],
+      [[`${X.psicov.antiparallel} antiparallel`, { weight: 700 }], [", "], [`${X.psicov.parallel} parallel`, { weight: 700 }], [` pairs, ${X.psicov.hairpins} hairpins`]],
     ];
     let by = h - inset - fsM * 0.25 - fsM * 1.12 * (lines.length - 1);
     svg.appendChild(el("line", { x1: rx, y1: by - fsM * 1.0, x2: w - inset, y2: by - fsM * 1.0, stroke: COLORS.rule, "stroke-width": 0.3 }));
