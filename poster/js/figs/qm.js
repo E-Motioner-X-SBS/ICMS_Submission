@@ -113,6 +113,9 @@ export default async function build(host, { w, h }) {
     for (let p = 0; p < 8; p++) {
       svg.appendChild(T(gx - 1, gy + (p + 0.5) * cs + fsM * 0.34, g3[p], { size: fsM, mono: true, anchor: "end", fill: COLORS.ink2 }));
     }
+    // axes: residue i down the rows (Gray-coded labels), residue j along the columns
+    svg.appendChild(T(gx - 2.4, gy - 1.2, "i ↓", { size: fsM, italic: true, anchor: "end", fill: COLORS.ink2 }));
+    svg.appendChild(T(gx + 1.6, gy - 1.2, "j →", { size: fsM, italic: true, fill: COLORS.ink2 }));
     const isC = (i, j) => all.some(([a, b]) => a === i && b === j);
     for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) {
       svg.appendChild(el("rect", { x: gx + j * cs, y: gy + i * cs, width: cs, height: cs,

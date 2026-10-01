@@ -29,10 +29,10 @@
     <!-- ═════════ 000 · the finding ═════════ -->
     <section class="band band-a sec" data-fit="band A">
       <div class="a-left">
-        <div class="sec-h"><span class="gc">000</span><h2>The finding</h2></div>
-        <p class="finding">We formalised in Lean&nbsp;4 the mathematics that turns DNA, RNA and protein sequences into Karnaugh maps: 131 machine-checked theorems, none left unproved. On this foundation every structure becomes an exact Boolean circuit whose rules hold without exception, for proteins, a viral species and folding simulations.</p>
+        <div class="sec-h"><span class="gc">000</span><h2>The finding<span class="review-mark">*</span></h2></div>
+        <p class="finding">We formalised in Lean&nbsp;4 the mathematics that turns DNA, RNA and protein sequences into Karnaugh maps: 131 machine-checked theorems, none left unproved. On this foundation every structure becomes an exact Boolean circuit with exception-free rules. So does a viral species, given a dataset of its sequences: here 1,299 SARS-CoV-2 Omicron Spike proteins.</p>
         <p class="why">Gray-coded grids of sequences, from Petoukhov's genetic Karnaugh matrices<sup>1</sup> to chaos-game maps (FCGR)<sup>2,3</sup>, are usually taken on trust. Here the encodings are theorems and every circuit and rule is checked on every case.</p>
-        <figure><div class="fig" id="pipeline" data-w="474" data-h="84"></div></figure>
+        <figure><div class="fig" id="pipeline" data-w="474" data-h="74"></div></figure>
       </div>
       <div class="a-right">
         <figure class="hero">
@@ -68,7 +68,7 @@
 
         <section class="sec" data-fit="010">
           <div class="sec-h"><span class="gc">01<span class="fb">0</span></span><h2>Amino acids on a five-dimensional cube</h2></div>
-          <p>Proteins need five bits: 32 codewords for 20 residues. Numbering residues group by group before Gray-coding keeps chemistry close. All 190 pairwise distances are proved: 40 pairs sit one bit apart, only four sit five apart, and the code uses exactly half of the cube's 80 edges.</p>
+          <p>Proteins need five bits: 32 codewords for 20 residues. Numbering residues group by group before Gray-coding keeps chemistry close. All 20&nbsp;×&nbsp;19&nbsp;/&nbsp;2&nbsp;=&nbsp;190 pairwise distances are proved: 40 pairs sit one bit apart, only four sit five apart, and the code uses exactly half of the cube's 80 edges.</p>
           <figure><div class="fig" id="aa5" data-w="403" data-h="116"></div></figure>
         </section>
 
@@ -76,7 +76,13 @@
           <div class="sec-h"><span class="gc"><span class="fb">1</span>10</span><h2>Contacts as a Boolean function</h2></div>
           <div class="pair">
             <div class="txt">
-              <p>A contact map is a Boolean function: <i>C</i>(<i>i</i>,<i>j</i>)&nbsp;=&nbsp;1 when residues <i>i</i> and <i>j</i> lie within 8&nbsp;Å. Quine–McCluskey<sup>5</sup> merges 1-cells one bit apart into ever larger cubes; the cubes that cannot grow are the prime implicants, and a cover of them is a two-level circuit equal to the map. For an 8-residue example Lean proves the map symmetric and that no two of its contacts can merge.</p>
+              <p><b>Contact map (Boolean function):</b> <i>C</i>(<i>i</i>,<i>j</i>)&nbsp;=&nbsp;1 ⇔ Cβ–Cβ&nbsp;&lt;&nbsp;8&nbsp;Å, |<i>i</i>&nbsp;−&nbsp;<i>j</i>|&nbsp;≥&nbsp;6.</p>
+              <ul class="keys">
+                <li><b>Quine–McCluskey</b><sup>5</sup>: merge cells one bit apart.</li>
+                <li><b>Prime implicant:</b> a cube that cannot grow.</li>
+                <li><b>Circuit:</b> OR of covering primes = the map.</li>
+                <li><b>Lean</b>, 8 residues: symmetric, no merges.</li>
+              </ul>
             </div>
             <figure><div class="fig" id="qm" data-w="212" data-h="93.7" data-base-w="190" data-base-h="84"></div></figure>
           </div>
@@ -87,7 +93,11 @@
       <div class="col">
         <section class="sec" data-fit="111">
           <div class="sec-h"><span class="gc">11<span class="fb">1</span></span><h2>How Lean checks a claim</h2></div>
-          <p>In Lean&nbsp;4<sup>6</sup> a statement is a type and a proof is a program checked by a small kernel. For finite claims, <code>native_decide</code> evaluates every case in compiled code, up to 2<sup>20</sup> in one theorem, and so also trusts Lean's compiler. No proof uses <code>sorry</code> or adds an axiom of its own.</p>
+          <ul class="keys">
+            <li><b>Lean&nbsp;4</b><sup>6</sup>: statement = type · proof = program · a small kernel checks it.</li>
+            <li><code>native_decide</code> = <b>compiled exhaustive check</b>: runs every case (≤&nbsp;2<sup>20</sup> per theorem), trusting the compiler.</li>
+            <li><b>0</b> <code>sorry</code> · <b>0</b> axioms of our own.</li>
+          </ul>
           <div class="pair">
             <pre class="lean"><span class="c">-- Gray code is additive over GF(2)</span>
 <span class="k">theorem</span> <span class="n">sc_gray_gf2_linear</span> :
@@ -141,21 +151,23 @@
       <div class="sec-h"><span class="gc"><span class="fb">1</span>00</span><h2>Rules with no exception, from exact circuits</h2></div>
       <div class="d-grid">
         <div class="d1">
-          <p>Each PSICOV<sup>7</sup> protein becomes a circuit equal to its contact map. Its AND gates are rules; block rules that continue one another give strand pairs, direction and register, by counting.</p>
+          <p>Each PSICOV<sup>7</sup> protein (150 Pfam families) becomes a circuit equal to its contact map. Its AND gates are rules; block rules that continue one another give strand pairs, direction and register, by counting.</p>
           <figure><div class="fig" id="contact" data-w="262" data-h="126"></div></figure>
         </div>
         <div class="d2">
-          <p>One species: in 1,299 SARS-CoV-2 Spike sequences, exact circuits list which residue pairs occur at co-evolving positions and which never do. No sequence breaks a rule.</p>
-          <figure><div class="fig" id="spike" data-w="292" data-h="104"></div></figure>
+          <p>One species, SARS-CoV-2 Omicron: in 1,299 Spike sequences, exact circuits list which residue pairs occur at co-evolving positions and which never do. No sequence breaks a rule.</p>
+          <figure><div class="fig" id="spike" data-w="292" data-h="126"></div></figure>
         </div>
         <div class="d3">
           <h3>Takeaways</h3>
           <ul class="short">
-            <li><b>A verified foundation.</b> Lean fixes the encodings and what a block rule means; every circuit is exact on all inputs.</li>
+            <li><b>A verified foundation.</b> The encodings are Lean theorems; every circuit is exact on all inputs.</li>
             <li><b>Rules that are true, not likely.</b> Each holds for every contact, sequence or frame it names.</li>
             <li><b>One language for sequence, structure and dynamics.</b> Any finite encoding can be checked the same way.</li>
+            <li><b>Lossless by proof.</b> Each cell decodes to both residues; Gray order only permutes cells, so no statistic changes.</li>
+            <li><b>Exact about absence.</b> No rule on chemistry alone holds without exception: all 196 group × separation classes of PSICOV pairs mix contacts and non-contacts.</li>
           </ul>
-          <p class="repo">Try any PDB entry, from file to circuit, rules and inferences:<br><b>e-motioner-x-sbs.github.io/ICMS_Submission</b></p>
+          <p class="repo">Demo, any PDB entry: <b>e-motioner-x-sbs.github.io/ICMS_Submission</b></p>
         </div>
       </div>
     </section>
@@ -172,6 +184,7 @@
         <li>D. T. Jones <i>et al.</i>, <i>Bioinformatics</i> <b>2012</b>, 28, 184–190.</li>
         <li>J. K. Noel <i>et al.</i>, <i>PLoS Comput. Biol.</i> <b>2016</b>, 12, e1004794.</li>
       </ol>
+      <p class="review-note">* This work is currently under review.</p>
     </footer>
   </div>
 </main>

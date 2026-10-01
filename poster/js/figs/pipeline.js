@@ -5,17 +5,18 @@
 //                      tiles tinted by amino-acid group, letter white or ink by
 //                      WCAG contrast.
 //   (2) 5-bit codes    AA_CODE = grayNat(raw index), AminoAcidEncoding.lean.
-//   (3) K-map cell     the 32 x 32 residue-pair Karnaugh map. Axes are in K-map
-//                      (Gray) order: axis position r carries the label gray(r),
-//                      so a code c sits at position grayInv(c). Because every
-//                      code is c = gray(raw), residue k sits at position k: the
-//                      20 residues fill positions 0..19 in group order (the
-//                      colour bars) and the 12 unused codewords (16-23, 28-31)
-//                      fill positions 20..31 (white cells). The first dipeptide
-//                      R-D is the cell (row R = 11010, column D = 01000) =
-//                      (position 19, position 15). Its four touching cells are
-//                      exactly one bit away from it (orange = the bit that
-//                      flips); the module re-checks that.
+//   (3) K-map cell     a magnified 3 x 3 window of the 32 x 32 residue-pair
+//                      Karnaugh map. Axes are in K-map (Gray) order: position r
+//                      carries the code gray(r), and since every code is
+//                      gray(raw index), residue k sits at position k (20 residues
+//                      at 0..19 in group order, the 12 unused codewords at
+//                      20..31, drawn dashed). The first dipeptide R-D is the cell
+//                      at (position 19, position 15): row code 11010 over column
+//                      code 01000. Its four touching cells (rows K and unused,
+//                      columns Q and unused) carry their own two codes with the
+//                      one bit that flips in orange; the module re-checks that
+//                      each touching cell is exactly one bit away and each corner
+//                      two.
 //   (4) prime implicant  an 8 x 8 window (residues 1-8 x 11-18) of the real
 //                      1fnaA contact map with PLAIN BINARY positions, as the
 //                      segment lemma requires. The outlined cube is block
@@ -59,10 +60,10 @@ export default async function build(host, { w, h }) {
     "500 20px Archivo", "700 20px Archivo", "900 20px Archivo", `500 20px "Plex Mono"`,
   ].map((f) => document.fonts.load(f)));
 
-  const svg = mount(host, w, h, () => {}, "Pipeline: the protein sequence of 1fnaA becomes 5-bit Gray codes, a cell of a 32 by 32 Karnaugh map, a prime implicant of its contact map and a contact block of two chain segments; each step is labelled with the Lean theorem that certifies it, and a return arrow shows the cell gives back both residues.");
+  const svg = mount(host, w, h, () => {}, "Pipeline: the protein sequence of 1fnaA becomes 5-bit Gray codes; the first two residues, R and D, pick a row and a column of the 32 by 32 Karnaugh map, shown magnified: cell R-D carries row code 11010 over column code 01000, and each of its four touching cells differs in exactly one bit. A prime implicant of the contact map is a contact block of two chain segments, and a return arrow shows the cell gives back both residues.");
 
   // ── scale: geometry follows (w, h); type never drops below 18 pt ────────────
-  const sx = w / 474, sy = h / 82, s = Math.min(sx, sy);
+  const sx = w / 474, sy = h / 74, s = Math.min(sx, sy);
   const F = (n) => pt(Math.max(18, n * s));               // font size (mm) for n pt
   const inset = 1.8 * s;
 
@@ -116,14 +117,11 @@ export default async function build(host, { w, h }) {
   }
 
   // ── vertical frame (fractions of h) ─────────────────────────────────────────
-  const yLane = 6.2 * sy;            // return path, column label, (4) axis numbers
-  const gridTop = 14.2 * sy;          // top of both grids
+  const yLane = 6.4 * sy;            // return path, (4) axis numbers
+  const gridTop = 14.5 * sy;          // top of both grids
   const G = 36.0 * s;                 // grid side
-  const objBottom = gridTop + G;
-  const yCap = 57.4 * sy;             // stage captions (baseline)
-  const yBus = 60.9 * sy;             // where a tie forks to two tags
-  const yPill = 67.3 * sy;            // proof rail (tag centre)
-  const yGloss = 78.7 * sy;           // what each theorem guarantees (baseline)
+  const yCap = 59.6 * sy;             // stage captions (baseline)
+  const yPill = 69.4 * sy;            // what each step guarantees (centre line)
 
   // ── data ────────────────────────────────────────────────────────────────────
   const seq = data.sequence, N1 = 10, first = [...seq.slice(0, N1)];
@@ -163,11 +161,12 @@ export default async function build(host, { w, h }) {
   const W1 = N1 * p1 - (p1 - t1) + 1.4 * s + ellW;
   const t2 = 6.3 * s, b2 = 6.3 * s, bg2 = 0.55 * s, rp2 = 7.3 * s, NR2 = 4;   // (2)
   const W2 = t2 + 1.8 * s + 5 * b2 + 4 * bg2;
-  const t3 = 5.8 * s, bitsFs = 19;                           // (3)
-  const bitsW = measure(T(0, 0, "00000", { size: F(bitsFs), mono: true })).width;
-  const lab3W = t3 + 1.2 * s + bitsW;
-  const barH = 1.2 * s, barGap = 0.7 * s;
-  const W3 = lab3W + 1.6 * s + barH + barGap + G;
+  const t3 = 5.8 * s, codeFs = 18;                           // (3)
+  const codeW = measure(T(0, 0, "00000", { size: F(codeFs), mono: true })).width;
+  const cw3 = codeW + 3.6 * s, ch3 = 13.0 * s;                // window cell: two 5-bit codes
+  const top3 = gridTop - 0.9 * s;                             // the window sits a little higher than (4)
+  const lab3W = t3 + 1.6 * s;
+  const W3 = lab3W + 3 * cw3;
   const rowLab = rng(blk.i0 + 1, blk.i1), colLab = rng(blk.j0 + 1, blk.j1);   // (4)
   const rowLabW = measure(T(0, 0, rowLab, { size: F(19) })).width;
   const W4 = rowLabW + 1.6 * s + G;
@@ -180,8 +179,7 @@ export default async function build(host, { w, h }) {
   if (gap < 30 * s) throw new Error(`pipeline: gaps too narrow (${gap.toFixed(1)} mm)`);
   const X1 = inset, X2 = X1 + W1 + gap, X3 = X2 + W2 + gap, X4 = X3 + W3 + gap, X5 = X4 + W4 + gap;
 
-  const c3 = G / 32;
-  const y0 = gridTop + (rowPos + 0.5) * c3;                  // flow line = K-map row of residue 1
+  const y0 = top3 + 1.5 * ch3;                               // flow line = the window's middle row (residue 1)
 
   const root = g({});
   svg.appendChild(root);
@@ -209,39 +207,51 @@ export default async function build(host, { w, h }) {
   }
   const cx2 = X2 + W2 / 2;
 
-  // ── (3) the 32 x 32 residue-pair Karnaugh map ───────────────────────────────
-  const gx3 = X3 + lab3W + 1.6 * s + barH + barGap;          // grid left
-  const barL = gx3 - barGap - barH, barT = gridTop - barGap - barH;
-  const runs = [];
-  AA_ORDER.forEach((aa, r) => { const gr = AA_GROUP[aa]; if (runs.length && runs.at(-1).gr === gr) runs.at(-1).n++; else runs.push({ gr, r0: r, n: 1 }); });
-  for (const run of runs) {                                   // positions 0..19 = residues in group order
-    add(rect(barL, gridTop + run.r0 * c3, barH, run.n * c3, { fill: run.gr.hex }));
-    add(rect(gx3 + run.r0 * c3, barT, run.n * c3, barH, { fill: run.gr.hex }));
+  // ── (3) a magnified 3 x 3 window of the 32 x 32 Karnaugh map ─────────────────
+  // positions rowPos-1..rowPos+1 x colPos-1..colPos+1; a position >= 20 is an unused codeword
+  const gx3 = X3 + lab3W, gw3 = 3 * cw3;                     // window left, width
+  const resAt = (pos) => (pos < AA_ORDER.length ? AA_ORDER[pos] : null);
+  const code5 = (pos) => bits(gray(pos), 5);
+  if (code5(rowPos) !== bits(AA_CODE[r1], 5) || code5(colPos) !== bits(AA_CODE[r2], 5)) throw new Error("window centre is not R-D");
+  const flipIdx = (a, b) => [...a].map((ch, k) => (ch !== b[k] ? k : -1)).filter((k) => k >= 0);
+  const fz = F(codeFs), chW = codeW / 5, pitch = 6.3 * s;
+  function codeLine(cx, base, str, flips, fill) {               // a 5-bit code, its flipped bit on an orange chip
+    const x0 = cx - codeW / 2;
+    for (const k of flips) add(rect(x0 + k * chW - 0.25 * s, base - fz * 0.78, chW + 0.5 * s, fz * 0.98, { rx: 0.7 * s, fill: COLORS.flip }));
+    add(T(cx, base, str, { size: fz, mono: true, anchor: "middle", fill }));
   }
-  const nbr = new Set([[rowPos - 1, colPos], [rowPos + 1, colPos], [rowPos, colPos - 1], [rowPos, colPos + 1]].map(([r, c]) => r * 32 + c));
-  for (const k of nbr) {                                      // re-check: touching cells are one bit away
-    const r = Math.floor(k / 32), c = k % 32;
-    if (ham(gray(r) * 32 + gray(c), AA_CODE[r1] * 32 + AA_CODE[r2]) !== 1) throw new Error("K-map neighbour not one bit away");
+  function emptyTile(cx, cy) {                                // header for an unused codeword
+    add(rect(cx - t3 / 2, cy - t3 / 2, t3, t3, { rx: t3 * 0.2, fill: COLORS.paper, stroke: COLORS.ink300, sw: 0.3 * s }))
+      .setAttribute("stroke-dasharray", `${0.9 * s} ${0.7 * s}`);
   }
-  const gap3 = Math.min(0.2 * s, c3 * 0.17);
-  add(rect(gx3, gridTop, G, G, { fill: COLORS.paper }));
-  for (let r = 0; r < 32; r++) for (let c = 0; c < 32; c++) {
-    let fill = r < 20 && c < 20 ? COLORS.ink100 : null;       // unused codewords stay white
-    if ((r === rowPos && c < colPos) || (c === colPos && r < rowPos)) fill = COLORS.ink200;
-    if (nbr.has(r * 32 + c)) fill = COLORS.flip;
-    if (r === rowPos && c === colPos) fill = COLORS.ink;
-    if (fill) add(rect(gx3 + c * c3 + gap3 / 2, gridTop + r * c3 + gap3 / 2, c3 - gap3, c3 - gap3, { fill }));
+  for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) {
+    const r = rowPos + a, c = colPos + b, x = gx3 + (b + 1) * cw3, y = top3 + (a + 1) * ch3;
+    const real = resAt(r) && resAt(c), centre = a === 0 && b === 0, touching = Math.abs(a) + Math.abs(b) === 1;
+    const rc = code5(r), cc = code5(c), dr = flipIdx(rc, code5(rowPos)), dc = flipIdx(cc, code5(colPos));
+    if (dr.length + dc.length !== Math.abs(a) + Math.abs(b)) throw new Error(`K-map window: cell (${r}, ${c}) is ${dr.length + dc.length} bits from R-D`);
+    const g3 = 0.45 * s;
+    const box = add(rect(x + g3, y + g3, cw3 - 2 * g3, ch3 - 2 * g3, { rx: 1.2 * s,
+      fill: centre ? COLORS.ink : real ? COLORS.ink100 : COLORS.paper,
+      stroke: touching ? COLORS.flip : real ? undefined : COLORS.ink300, sw: touching ? 0.6 * s : 0.3 * s }));
+    if (!real && !touching) box.setAttribute("stroke-dasharray", `${0.9 * s} ${0.7 * s}`);
+    if (!real && touching) box.setAttribute("stroke-dasharray", `${1.6 * s} ${0.8 * s}`);
+    if (centre || touching) {                                 // row code over column code
+      const cx = x + cw3 / 2, cy = y + ch3 / 2, fill = centre ? "#FFFFFF" : COLORS.ink;
+      codeLine(cx, cy - pitch / 2 + fz * 0.34, rc, dr, fill);
+      codeLine(cx, cy + pitch / 2 + fz * 0.34, cc, dc, fill);
+    }
   }
-  add(rect(gx3, gridTop, G, G, { stroke: COLORS.ink200, sw: 0.25 * s }));
-  // row label  R 11010  (residue 1 -> row), on the flow line
-  add(tile(X3 + t3 / 2, y0, r1, t3, 18));
-  add(T(X3 + t3 + 1.2 * s, y0 + F(bitsFs) * 0.36, bits(AA_CODE[r1], 5), { size: F(bitsFs), mono: true }));
-  // column label  D 01000  (residue 2 -> column), above the map with a leader
-  const colX = gx3 + (colPos + 0.5) * c3;
-  add(tile(colX, yLane, r2, t3, 18));
-  add(T(colX + t3 / 2 + 1.2 * s, yLane + F(bitsFs) * 0.36, bits(AA_CODE[r2], 5), { size: F(bitsFs), mono: true }));
-  add(line(colX, yLane + t3 / 2 + 0.6 * s, colX, barT - 0.5 * s, { stroke: COLORS.ink, sw: 0.3 * s }));
-  const cx3 = gx3 + G / 2;
+  // headers: residue tiles in group colours, dashed blanks for unused codewords
+  for (let a = -1; a <= 1; a++) {
+    const cy = top3 + (a + 1.5) * ch3, aa = resAt(rowPos + a);
+    if (aa) add(tile(X3 + t3 / 2, cy, aa, t3, 18)); else emptyTile(X3 + t3 / 2, cy);
+  }
+  const hy3 = top3 - 1.0 * s - t3 / 2;
+  for (let b = -1; b <= 1; b++) {
+    const cx = gx3 + (b + 1.5) * cw3, aa = resAt(colPos + b);
+    if (aa) add(tile(cx, hy3, aa, t3, 18)); else emptyTile(cx, hy3);
+  }
+  const cx3 = gx3 + gw3 / 2;
 
   // ── (4) contact-map window with the prime-implicant cube ────────────────────
   const gx4 = X4 + rowLabW + 1.6 * s, p4 = G / NW, gap4 = 0.5 * s;
@@ -296,7 +306,7 @@ export default async function build(host, { w, h }) {
   const hops = [
     { x1: X1 + W1 + 2.0 * s, x2: X2 - 2.0 * s, verb: "encode", thm: [], gloss: "one code per residue" },
     { x1: X2 + W2 + 2.0 * s, x2: X3 - 2.0 * s, verb: "pair up", thm: [], gloss: "touching cells differ in one bit" },
-    { x1: gx3 + G + 2.4 * s, x2: X4 - 2.0 * s, verb: "minimise", thm: [], gloss: "every 1 covered, no 0 covered" },
+    { x1: gx3 + gw3 + 2.4 * s, x2: X4 - 2.0 * s, verb: "minimise", thm: [], gloss: "every 1 covered, no 0 covered" },
     { x1: gx4 + G + 2.4 * s, x2: X5 - 2.0 * s, verb: "decode", thm: [], gloss: "the cube is a segment × segment block" },
   ];
   for (const hp of hops) {
@@ -323,7 +333,7 @@ export default async function build(host, { w, h }) {
 
   // ── return path: the K-map cell gives both residues back ───────────────────
   {
-    const xs = gx3 + 1.4 * s, ys = barT - 0.7 * s;              // leaves the map's top-left corner
+    const xs = gx3 + 1.4 * s, ys = top3 - 0.2 * s;              // leaves the window's top-left corner
     const xe = (tileX(0) + tileX(1)) / 2, ye = y0 - t1 / 2 - 1.0 * s;   // lands on residues 1 and 2
     const rr = 2.6 * s, col = COLORS.ink2, sw = 0.45 * s;
     const gl = T(0, 0, "lossless: the cell gives back both residues", { size: F(19), fill: COLORS.ink2 });

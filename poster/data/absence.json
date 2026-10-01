@@ -1,0 +1,11 @@
+{
+ "proteins": 150,
+ "pairs": 1675886,
+ "contacts": 47430,
+ "cells": 196,
+ "possible_cells": 196,
+ "mixed": 196,
+ "pure_contact": 0,
+ "pure_no_contact": 0,
+ "pure_no_contact_cells": []
+}

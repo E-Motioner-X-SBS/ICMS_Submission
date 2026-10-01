@@ -60,7 +60,8 @@ export default async function build(host, { w, h }) {
 
   mount(host, w, h, (svg) => {
     // ── contact map with block rules coloured by strand pair ─────────────────────
-    const tick = fs * 1.9, M = Math.min(h - 2 * inset - fs * 1.35, w - 166), cs = M / L, mx = inset + tick, my = inset + fs * 0.2;   // keep ≥ 150 mm for the text
+    // axis titles: residue i down the rows (left, rotated), residue j along the columns (below)
+    const ax = fsM * 1.2, tick = fs * 1.9, M = Math.min(h - 2 * inset - fs * 1.35 - ax, w - 166 - ax), cs = M / L, mx = inset + ax + tick, my = inset + fs * 0.2;
     const map = g({ "aria-label": `Contact map of 1fnaA with its ${d.blocks.length} block rules coloured by strand pair` });
     map.appendChild(el("rect", { x: mx, y: my, width: M, height: M, fill: COLORS.paper, stroke: COLORS.ink300, "stroke-width": 0.3 }));
     for (const [i, j] of d.contacts) for (const [r, c] of [[i, j], [j, i]])
@@ -75,6 +76,11 @@ export default async function build(host, { w, h }) {
       map.appendChild(T(mx - 1, my + (r - 0.5) * cs + fs * 0.34, String(r), { size: fsM, anchor: "end", fill: COLORS.ink2 }));
       map.appendChild(T(mx + (r - 0.5) * cs, my + M + fs * 1.05, String(r), { size: fsM, anchor: "middle", fill: COLORS.ink2 }));
     }
+    const axisTitle = (v) => [["residue "], [v, { italic: true }], [` (position 1–${L})`, { fill: COLORS.ink2 }]];
+    map.appendChild(S(mx + M / 2, my + M + fs * 1.05 + fsM * 1.25, axisTitle("j"), { size: fsM, anchor: "middle" }));
+    const yt = S(0, 0, axisTitle("i"), { size: fsM, anchor: "middle" });
+    yt.setAttribute("transform", `translate(${inset + fsM * 0.78},${my + M / 2}) rotate(-90)`);
+    map.appendChild(yt);
     svg.appendChild(map);
 
     // ── right: one rule, its inferences, the dataset ─────────────────────────────
