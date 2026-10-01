@@ -1,9 +1,34 @@
 // A small three.js structure viewer: a smooth tube through the backbone, per-residue
 // colours, rungs between residue pairs, touch orbit, render-on-demand.
+//
+// One WebGL renderer and its materials are shared by the chapters: a viewer leases them and
+// hands them back when it is disposed, so moving between the 3D chapters keeps the context and
+// its compiled shaders instead of building both again. A second viewer alive at the same time
+// gets a renderer of its own, released with it.
 import { representativeCoords } from "../core/contacts.js";
 import { css, reducedMotion } from "../ui.js";
 
 const TRACE = { protein: { atom: "CA", fallback: "CB", glyAtom: "CA" }, dna: { atom: "C4'", fallback: "P" }, rna: { atom: "C4'", fallback: "P" } };
+
+let shared = null;
+function lease(THREE) {
+  if (shared && !shared.busy && !shared.lost) { shared.busy = true; return shared; }
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));   // sharp on phones, without a 3x framebuffer
+  const l = { renderer, busy: true, lost: false, own: false,
+    tube: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, metalness: 0.0 }), lines: new Map() };
+  l.line = (col) => { if (!l.lines.has(col)) l.lines.set(col, new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.85 })); return l.lines.get(col); };
+  renderer.domElement.addEventListener("webglcontextlost", () => { l.lost = true; });
+  if (!shared || shared.lost) { if (shared && !shared.busy) release(shared, true); shared = l; } else l.own = true;
+  return l;
+}
+function release(l, destroy = l.own || l.lost) {
+  l.renderer.domElement.remove();
+  if (!destroy) { l.renderer.setClearColor(0x000000, 0); l.renderer.clear(); l.busy = false; return; }   // no stale frame on reuse
+  l.tube.dispose(); for (const m of l.lines.values()) m.dispose();
+  l.renderer.dispose(); l.renderer.forceContextLoss();
+  if (shared === l) shared = null;
+}
 
 export async function createViewer(container, chain, { onPick } = {}) {
   let THREE, OrbitControls;
@@ -24,8 +49,8 @@ export async function createViewer(container, chain, { onPick } = {}) {
   pts.forEach((p) => p.sub(centre));
   const radius = Math.max(...pts.map((p) => p.length()));
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));   // sharp on phones, without a 3x framebuffer
+  const gl = lease(THREE), { renderer } = gl;
+  const listen = new AbortController();                    // this viewer's listeners on the shared canvas
   container.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, radius * 20);
@@ -43,7 +68,7 @@ export async function createViewer(container, chain, { onPick } = {}) {
     runs.at(-1).push(k);
   }
   const radial = 10, tubeR = chain.entityType === "protein" ? 0.55 : 0.9;
-  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, metalness: 0.0 });
+  const mat = gl.tube;
   const pieces = runs.map((run) => {
     let geo, segs;
     if (run.length >= 2) {
@@ -76,14 +101,14 @@ export async function createViewer(container, chain, { onPick } = {}) {
   }
   const posOf = (res) => { const k = idx.indexOf(res); return k < 0 ? null : pts[k]; };
   function setRungs(pairs) {
-    rungs.children.forEach((l) => { l.geometry.dispose(); l.material.dispose(); });
+    rungs.children.forEach((l) => l.geometry.dispose());
     rungs.clear();
     const byColor = new Map();
     for (const [i, j, col] of pairs) {
       const a = posOf(i), b = posOf(j); if (!a || !b) continue;
       const k = col || "#1E86A8"; if (!byColor.has(k)) byColor.set(k, []); byColor.get(k).push(a, b);
     }
-    for (const [col, arr] of byColor) rungs.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(arr), new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.85 })));
+    for (const [col, arr] of byColor) rungs.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(arr), gl.line(col)));
     request();
   }
 
@@ -92,7 +117,7 @@ export async function createViewer(container, chain, { onPick } = {}) {
   controls.autoRotate = !reducedMotion(); controls.autoRotateSpeed = 0.9;
   // phones: a vertical swipe scrolls the page, a horizontal drag turns the molecule, two fingers zoom
   renderer.domElement.style.touchAction = "pan-y";
-  renderer.domElement.addEventListener("pointerdown", () => { controls.autoRotate = false; });
+  renderer.domElement.addEventListener("pointerdown", () => { controls.autoRotate = false; }, { signal: listen.signal });
 
   // One render loop at most. controls.update() fires "change" while the loop runs; that must not
   // schedule a second frame, or the number of pending frames doubles every frame. The loop also
@@ -122,12 +147,18 @@ export async function createViewer(container, chain, { onPick } = {}) {
     let best = -1, bd = 22 * 22;
     pts.forEach((p, k) => { const v = p.clone().project(camera); const x = (v.x + 1) / 2 * b.width, y = (1 - v.y) / 2 * b.height; const d = (x - mx) ** 2 + (y - my) ** 2; if (d < bd) { bd = d; best = k; } });
     if (best >= 0) onPick(idx[best]);
-  });
+  }, { signal: listen.signal });
 
   applyColors();
   return {
     setColors(fn) { colorOf = fn; applyColors(); },
     setRungs,
-    dispose() { alive = false; cancelAnimationFrame(raf); raf = 0; ro.disconnect(); io.disconnect(); document.removeEventListener("visibilitychange", onVis); controls.dispose(); pieces.forEach((p) => p.geo.dispose()); mat.dispose(); rungs.children.forEach((l) => { l.geometry.dispose(); l.material.dispose(); }); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); },
+    dispose() {
+      if (!alive) return;
+      alive = false; cancelAnimationFrame(raf); raf = 0; ro.disconnect(); io.disconnect(); document.removeEventListener("visibilitychange", onVis);
+      controls.dispose(); listen.abort();
+      pieces.forEach((p) => p.geo.dispose()); rungs.children.forEach((l) => l.geometry.dispose()); scene.clear();
+      release(gl);
+    },
   };
 }

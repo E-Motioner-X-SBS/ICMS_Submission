@@ -27,7 +27,8 @@ export default {
     input.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => run(input.value), 380); });
     input.addEventListener("keydown", (e) => { if (e.key === "Enter") { const id = normalizeId(input.value); if (id) open(id); else run(input.value); } });
 
-    const examples = h("div.examples", EXAMPLES.map((x) => h("button.ex", { type: "button", on: { click: () => open(x.id, x.kind === "protein" ? x.chain : null) } },
+    const ahead = (x) => () => ctx.warmEntry?.(x.id);          // a finger or pointer on a card: start loading it
+    const examples = h("div.examples", EXAMPLES.map((x) => h("button.ex", { type: "button", on: { click: () => open(x.id, x.kind === "protein" ? x.chain : null), pointerenter: ahead(x), pointerdown: ahead(x), focus: ahead(x) } },
       h("span.id", x.id), h("span.nm", x.name), h("span.bl", x.blurb), h("span.kind", KIND[x.kind] || x.kind))));
 
     add(el, 

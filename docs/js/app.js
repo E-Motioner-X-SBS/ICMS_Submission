@@ -1,5 +1,5 @@
 // The app: routing (#/ID/CHAIN/STEP), structure loading, per-chain caches, navigation.
-import { EXAMPLES, fetchEntry, defaultChain, normalizeId } from "./core/rcsb.js";
+import { EXAMPLES, fetchEntry, defaultChain, normalizeId, isExample } from "./core/rcsb.js";
 import { chainOptions } from "./core/chains.js";
 import { cachedExample, fingerprint } from "./core/cache.js";
 import { contactMap } from "./core/contacts.js";
@@ -97,6 +97,41 @@ const derived = {
   }),
 };
 
+// ── warming: while the browser is idle, fetch what the visitor will need next ──────────────────
+// The chapters ahead (each module brings its own imports, three.js included), the chain's
+// precomputed results, and on the home page the five examples themselves, parsed and ready.
+const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1200));
+const thrifty = () => navigator.connection?.saveData === true;
+const warmed = new Map();
+function warmModule(step) {
+  if (!warmed.has(step)) warmed.set(step, import(`./steps/${step}.js`).catch(() => { warmed.delete(step); }));
+  return warmed.get(step);
+}
+/** Load and parse an entry ahead of a click, and fetch its default chain's precomputed results. */
+export function warmEntry(id) {
+  if (thrifty()) return Promise.resolve();
+  return fetchEntry(id).then((s) => cachedExample(pickChain(s, null).uid)).catch(() => {});
+}
+let swRegistered = false;
+function registerWorkerOnce() {   // offline and instant revisits; after the first chapter, so it does not compete with it
+  if (swRegistered) return;
+  swRegistered = true;
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost"))
+    navigator.serviceWorker.register(new URL("../sw.js", import.meta.url)).catch(() => { /* the site works without it */ });
+}
+function afterMount(step) {
+  idle(() => {
+    registerWorkerOnce();
+    if (thrifty()) return;
+    const k = idx(step), ahead = [...CHAPTERS.slice(k + 1), ...CHAPTERS.slice(0, k)];
+    ahead.reduce((p, c) => p.then(() => warmModule(c.id)), Promise.resolve());
+    if (step === "0000") EXAMPLES.reduce((p, ex) => p.then(() => new Promise((r) => idle(r))).then(() => warmEntry(ex.id)), Promise.resolve());
+    // the minimised circuit: a cached file for the examples; for other entries, start the worker
+    // one chapter before the first one that needs it
+    else if (state.chain && (isExample(state.id) || k >= idx("0111"))) derived.analysis().catch(() => {});
+  });
+}
+
 // ── routing ──────────────────────────────────────────────────────────────────
 function parseHash() {
   const raw = location.hash.replace(/^#\/?/, "");
@@ -135,8 +170,10 @@ async function route() {
   const gen = ++routeGen;
   const r = parseHash();
   const step = CHAPTERS.some((c) => c.id === r.step) ? r.step : "0000";
+  warmModule(step);                                        // the chapter's code loads while the entry does
   const main = document.getElementById("chapter");
   if (r.bad) {
+    idle(registerWorkerOnce);
     renderChrome();
     main.replaceChildren(h("div.error", `“${r.bad}” is not a PDB ID. A PDB ID has four characters and starts with a digit, like 1UBQ.`), h("p", h("a", { href: "#/0000" }, "Pick a structure")));
     return;
@@ -151,6 +188,7 @@ async function route() {
   } catch (e) {
     if (gen !== routeGen) return;
     main.replaceChildren(h("div.error", e.userMessage || e.message), h("p", h("a", { href: "#/0000" }, "Pick another structure")));
+    idle(registerWorkerOnce);
     return;
   }
   if (gen !== routeGen) return;
@@ -176,10 +214,11 @@ async function mountChapter(step, gen = routeGen) {
   const el = h("div");
   main.replaceChildren(el);
   main.classList.remove("chapter"); void main.offsetWidth; main.classList.add("chapter");
-  const ctx = { structure: state.structure, chain: state.chain, derived, go, loadEntry, chainOptions, chapter: ch, next: CHAPTERS[k + 1], state };
+  const ctx = { structure: state.structure, chain: state.chain, derived, go, loadEntry, warmEntry, chainOptions, chapter: ch, next: CHAPTERS[k + 1], state };
   state.mounted = mod;                       // set first, so leaving mid-mount still unmounts
   try { await mod.mount(el, ctx); }
   catch (e) { console.error(e); el.append(h("div.error", `Something went wrong in this chapter: ${e.message}`)); }
+  if (gen === routeGen) afterMount(step);
   window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
   document.getElementById("main").focus({ preventScroll: true });
 }
@@ -231,7 +270,3 @@ window.addEventListener("hashchange", route);
 window.addEventListener("error", (e) => toast(`Unexpected error: ${e.message}`));
 route();
 
-// offline and instant revisits: the service worker precaches the site and keeps fetched structures
-if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
-  navigator.serviceWorker.register(new URL("../sw.js", import.meta.url)).catch(() => { /* the site works without it */ });
-}

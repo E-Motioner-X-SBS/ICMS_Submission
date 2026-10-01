@@ -360,9 +360,15 @@ export async function fetchEntry(idIn, { signal, onProgress, timeoutMs = 25000 }
   if (cache.has(id)) return cache.get(id);
   const job = (async () => {
     if (isExample(id)) {
-      const url = new URL(`../../examples/${id}.cif`, import.meta.url);
-      const text = await request(url.href, { signal, timeoutMs: 15000, as: "text", onProgress: (p) => onProgress?.({ ...p, source: "offline" }) });
-      const s = parseCif(text, { id });
+      // the parsed copy written by tools/precompute-examples.mjs (a few kB, compressed in transit,
+      // nothing to parse); the bundled mmCIF is the fallback
+      const pre = new URL(`../../data/examples/${id}.structure.json`, import.meta.url);
+      let s = await request(pre.href, { signal, timeoutMs: 15000, as: "json" }).catch((e) => { if (e.kind === "aborted") throw e; return null; });
+      if (!s || s.id !== id || !Array.isArray(s.chains) || !s.chains.length) {
+        const url = new URL(`../../examples/${id}.cif`, import.meta.url);
+        const text = await request(url.href, { signal, timeoutMs: 15000, as: "text", onProgress: (p) => onProgress?.({ ...p, source: "offline" }) });
+        s = parseCif(text, { id });
+      }
       s.source = "offline";
       return s;
     }

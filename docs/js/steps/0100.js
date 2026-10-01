@@ -111,13 +111,17 @@ export default {
     const probeOut = h("div.readout", { "aria-live": "polite" });
     const verifyOut = h("div.readout", { "aria-live": "polite" });
     const firedSet = () => (probe ? new Set(evaluate(terms, p, probe[0], probe[1]).fired.map((t) => t.k)) : null);
+    // the four drawing widths, read together (one layout) before drawing and again on resize;
+    // reading each one between drawings would force a fresh layout every time
+    let wd = null;
+    const measure = () => (wd = { flow: stageWidth(flowBox), pla: stageWidth(pla), gate: stageWidth(gate), map: stageWidth(mapStage) });
 
     function drawFlow() {
       flowBox.replaceChildren(flow([{ v: structure.id, l: `chain ${chain.id}` }, { v: int(L), l: "positions" }, { v: int(cm.n), l: "contacts" },
-        { v: int(a.nOn), l: "1-cells" }, { v: int(terms.length), l: "AND gates" }, { v: "1", l: "OR gate" }], Math.max(320, stageWidth(flowBox))));
+        { v: int(a.nOn), l: "1-cells" }, { v: int(terms.length), l: "AND gates" }, { v: "1", l: "OR gate" }], Math.max(320, wd.flow)));
     }
     function drawPLA() {
-      const W = Math.max(300, Math.min(stageWidth(pla), 640));
+      const W = Math.max(300, Math.min(wd.pla, 640));
       pla.replaceChildren(plaView(order, p, page * PAGE, sel, firedSet(), (k) => { sel = k; drawPLA(); drawGate(); drawMap(); }, W));
       const pages = Math.ceil(order.length / PAGE);
       pager.replaceChildren(
@@ -127,7 +131,7 @@ export default {
     }
     function drawGate() {
       const t = terms[sel]; if (!t) return;
-      gate.replaceChildren(gateView(t, p, Math.max(300, Math.min(stageWidth(gate), 640))));
+      gate.replaceChildren(gateView(t, p, Math.max(300, Math.min(wd.gate, 640))));
       const lit = (pat, f) => [...pat].map((ch, k) => (ch === "-" ? null : `${ch === "0" ? "¬" : ""}${f}${p - 1 - k}`)).filter(Boolean);
       formula.textContent = `T${t.k + 1} = ${[...lit(t.I.pattern, "i"), ...lit(t.J.pattern, "j")].join(" ∧ ") || "1"}\n` +
         `i = ${t.I.pattern}  j = ${t.J.pattern}   (${t.literals} literals, ${2 ** t.nFree} cells)`;
@@ -137,7 +141,7 @@ export default {
       canvas.replaceWith(fresh); canvas = fresh;
       const t = terms[sel], marks = [];
       if (t) for (const i of t.I.positions) for (const j of t.J.positions) marks.push([i, j]);
-      contactMapCanvas(canvas, { L, pairs: cm.pairs, width: stageWidth(mapStage) - 28, marks, onTap: ({ i, j }) => { probe = [i, j]; runProbe(); } });
+      contactMapCanvas(canvas, { L, pairs: cm.pairs, width: wd.map - 28, marks, onTap: ({ i, j }) => { probe = [i, j]; runProbe(); } });
     }
     function runProbe() {
       const [i, j] = probe, r = evaluate(terms, p, i, j), truth = i !== j && cm.has(i, j);
@@ -185,10 +189,11 @@ export default {
       theoremBlock("0100", ["ContactCircuits.cc_cover_complete", "ContactCircuits.cc_off_avoiding", "ContactCircuits.cc_fixed_match_unique", "ContactMapCompleteness.contactCell_injective"]),
       nextStep(ctx, "Each AND gate, read in words, is a rule about the structure."));
 
-    drawFlow(); drawPLA(); drawGate(); drawMap();
-    probe = cm.pairs[0] ? [...cm.pairs[0]] : [0, 1]; runProbe();
+    measure();
+    probe = cm.pairs[0] ? [...cm.pairs[0]] : [0, 1];
+    drawFlow(); runProbe();                                  // the probe draws the AND plane, the gate and the map
     let lastW = mapStage.clientWidth;
-    ro = new ResizeObserver(() => { if (Math.abs(mapStage.clientWidth - lastW) > 8) { lastW = mapStage.clientWidth; drawFlow(); drawPLA(); drawGate(); drawMap(); } });
+    ro = new ResizeObserver(() => { if (Math.abs(mapStage.clientWidth - lastW) > 8) { lastW = mapStage.clientWidth; measure(); drawFlow(); drawPLA(); drawGate(); drawMap(); } });
     ro.observe(mapStage);
   },
   unmount() { this._off?.(); },

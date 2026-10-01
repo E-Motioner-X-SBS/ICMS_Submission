@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Precompute the slow results for the five bundled examples, so their chapters open instantly:
-// the minimised contact circuit (with its merge rounds), the five seeded separation-preserving
-// shuffles, and the sequence circuit, for every chain a visitor can pick.
+// the parsed structure itself (the mmCIF is sent uncompressed and parsed on the phone; this JSON
+// is a few kB gzipped and needs no parsing), the minimised contact circuit (with its merge
+// rounds), the five seeded separation-preserving shuffles, and the sequence circuit, for every
+// chain a visitor can pick.
 //
 //   node docs/tools/precompute-examples.mjs      → docs/data/examples/*.json + index.json
 //
@@ -27,6 +29,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const index = {};
 for (const ex of EXAMPLES) {
   const s = parseCif(fs.readFileSync(path.join(DOCS, "examples", `${ex.id}.cif`), "utf8"), { id: ex.id });
+  fs.writeFileSync(path.join(OUT, `${ex.id}.structure.json`), JSON.stringify(s));   // before anything below touches s
   for (const opt of chainOptions(s)) {
     const chain = opt.chain, uid = chain.uid;
     const cm = contactMap(chain);
