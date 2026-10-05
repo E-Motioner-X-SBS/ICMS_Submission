@@ -1,6 +1,6 @@
 // 1100 From the circuit, rules: every AND gate read in words, with its support and its
 // (zero) exceptions; together the rules reproduce the contact map exactly.
-import { h, theoremBlock, tags, nextStep, stageWidth, add, failBox, residueLabel } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, stageWidth, add, failBox, residueLabel, onWidthChange } from "../ui.js";
 import { contactMapCanvas, barsSVG } from "../viz/maps.js";
 import { circuitTerms, rulesFrom, checkRules, setText } from "../core/rules.js";
 import { int, pct } from "../core/format.js";
@@ -17,7 +17,7 @@ export default {
   async mount(el, ctx) {
     const { chain } = ctx, cm = ctx.derived.contacts(), L = cm.L;
     let alive = true, ro = null;
-    this._off = () => { alive = false; ro?.disconnect(); };
+    this._off = () => { alive = false; ro?.(); };
     const status = h("div.loading", h("span.spinner"), "Reading the circuit…");
     add(el, h("h1", "From the circuit, rules"),
       h("p.hook", "Read an AND gate in words and it is a rule: IF position i is in one set AND position j in another, THEN they touch. The cover is exact, so every rule holds without a single exception, and together the rules say everything the contact map says."),
@@ -93,9 +93,7 @@ export default {
       theoremBlock("1100", ["SequenceCircuits.sc_low_free_is_interval", "SequenceCircuits.sc_interval_span", "SequenceCircuits.sc_contact_cube_is_block", "ContactCircuits.cc_padding_safety"]),
       nextStep(ctx, "Rules that line up tell you how the chain is folded."));
     drawList(); drawDetail(); drawMap();
-    let lastW = mapStage.clientWidth;
-    ro = new ResizeObserver(() => { if (Math.abs(mapStage.clientWidth - lastW) > 8) { lastW = mapStage.clientWidth; drawMap(); } });
-    ro.observe(mapStage);
+    ro = onWidthChange(mapStage, () => { drawMap(); });
   },
   unmount() { this._off?.(); },
 };

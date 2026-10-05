@@ -1,5 +1,5 @@
 // 0101 Minimisation finds blocks: exact Quine–McCluskey on the chain's contact function.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, sleep, reducedMotion, add, failBox } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, sleep, reducedMotion, add, failBox, onWidthChange } from "../ui.js";
 import { contactMapCanvas, barsSVG } from "../viz/maps.js";
 import { createViewer } from "../viz/structure3d.js";
 import { bits } from "../core/encoding.js";
@@ -39,7 +39,7 @@ export default {
   async mount(el, ctx) {
     const { chain } = ctx, cm = ctx.derived.contacts(), L = cm.L;
     let alive = true, viewer = null, map = null, res = null, sel = null, ro = null;
-    this._off = () => { alive = false; viewer?.dispose(); ro?.disconnect(); };
+    this._off = () => { alive = false; viewer?.dispose(); ro?.(); };
     const colourOf = (k) => (k < CATEGORICAL.length ? CATEGORICAL[k] : css("--cell-4"));
 
     const rounds = h("div.rounds", { "aria-live": "polite" });
@@ -135,9 +135,7 @@ export default {
       theoremBlock("0101", ["SequenceCircuits.sc_contact_cube_is_block", "SequenceCircuits.sc_low_free_is_interval", "ContactCircuits.cc_cover_complete", "ContactCircuits.cc_off_avoiding"]),
       nextStep(ctx, "The same minimiser, run on the sequence itself, must give the sequence back."));
     paintAll();
-    let lastW = mapStage.clientWidth;
-    ro = new ResizeObserver(() => { if (Math.abs(mapStage.clientWidth - lastW) > 8) { lastW = mapStage.clientWidth; paintAll(); } });
-    ro.observe(mapStage);
+    ro = onWidthChange(mapStage, () => { paintAll(); });
 
     // shuffles and the 3D view, in parallel
     const shufP = ctx.derived.shuffles(5).then((sh) => {

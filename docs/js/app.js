@@ -112,6 +112,20 @@ export function warmEntry(id) {
   if (thrifty()) return Promise.resolve();
   return fetchEntry(id).then((s) => cachedExample(pickChain(s, null).uid)).catch(() => {});
 }
+// A new deploy can take over a page that is already open (the service worker activates at once).
+// The page then holds the old version's modules while new ones would be fetched for chapters not
+// yet loaded, and the two would be linked together. So once that happens, the next navigation
+// reloads the page: every module then comes from one version.
+let updated = false;
+if ("serviceWorker" in navigator) {
+  const wasControlled = !!navigator.serviceWorker.controller;            // false on a first visit: nothing to mix
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (wasControlled) updated = true; });
+}
+const RELOAD_KEY = "kmap-reloaded-for-update";
+const store = { get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch { /* private mode */ } } };
+/** A module that fails to link (an export missing) or to load means files of two versions met. */
+const isVersionSkew = (e) => /does not provide an export named|dynamically imported module|module script failed|Importing a module script failed/i.test(e?.message || "");
+
 let swRegistered = false;
 function registerWorkerOnce() {   // offline and instant revisits; after the first chapter, so it does not compete with it
   if (swRegistered) return;
@@ -120,9 +134,10 @@ function registerWorkerOnce() {   // offline and instant revisits; after the fir
     navigator.serviceWorker.register(new URL("../sw.js", import.meta.url)).catch(() => { /* the site works without it */ });
 }
 function afterMount(step) {
+  store.set(RELOAD_KEY, null);                             // this version works: allow a reload on a later update
   idle(() => {
     registerWorkerOnce();
-    if (thrifty()) return;
+    if (thrifty() || updated) return;
     const k = idx(step), ahead = [...CHAPTERS.slice(k + 1), ...CHAPTERS.slice(0, k)];
     ahead.reduce((p, c) => p.then(() => warmModule(c.id)), Promise.resolve());
     if (step === "0000") EXAMPLES.reduce((p, ex) => p.then(() => new Promise((r) => idle(r))).then(() => warmEntry(ex.id)), Promise.resolve());
@@ -167,6 +182,7 @@ export async function loadEntry(id, chainId, gen = routeGen) {
 }
 
 async function route() {
+  if (updated) { location.reload(); return; }              // a new version took over: load it whole (see above)
   const gen = ++routeGen;
   const r = parseHash();
   const step = CHAPTERS.some((c) => c.id === r.step) ? r.step : "0000";
@@ -209,7 +225,10 @@ async function mountChapter(step, gen = routeGen) {
   main.replaceChildren(h("div.loading", h("span.spinner"), "Preparing…"));
   let mod;
   try { mod = (await import(`./steps/${step}.js`)).default; }
-  catch (e) { main.replaceChildren(h("div.error", `This chapter could not load: ${e.message}`)); return; }
+  catch (e) {
+    if (isVersionSkew(e) && !store.get(RELOAD_KEY)) { store.set(RELOAD_KEY, "1"); location.reload(); return; }   // once: then show the error
+    main.replaceChildren(h("div.error", `This chapter could not load: ${e.message}. Reloading the page usually fixes this.`)); return;
+  }
   if (gen !== routeGen) return;                            // superseded while the module loaded
   const el = h("div");
   main.replaceChildren(el);
@@ -267,6 +286,9 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft" && CHAPTERS[k - 1]) go(CHAPTERS[k - 1].id);
 });
 window.addEventListener("hashchange", route);
-window.addEventListener("error", (e) => toast(`Unexpected error: ${e.message}`));
+window.addEventListener("error", (e) => {
+  if (/ResizeObserver loop/.test(e.message || "")) return;     // a browser notice about layout timing, not a failure
+  toast(`Unexpected error: ${e.message}`);
+});
 route();
 

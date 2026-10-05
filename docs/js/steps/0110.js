@@ -1,6 +1,6 @@
 // 0110 The geometry of the code: amino acids on the 5-cube (4 × 8 K-map), or the
 // nucleotide square with Gray-coded labels.
-import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, add, onWidthChange } from "../ui.js";
 import { Q5_SHAPE, kmapCode, kmapCell, CODE_AA, AA_CODE, AA_GROUP, AA_NAMES, GROUPS, ham, bits, gray, aaPairHistogram,
   neighbourDistanceHistogram, encodeSequence, NUC_GRAYNAT, NA_SQUARE, nucRelation, UNUSED_AA_CODES, letterVar } from "../core/encoding.js";
 import { barsSVG } from "../viz/maps.js";
@@ -73,9 +73,7 @@ function proteinCube(el, ctx) {
     theoremBlock("0110", ["KmapEncodingEquiv.unorderedDistanceDistribution", "AminoAcidEncoding.max_distance_FH", "AminoAcidEncoding.charge_adjacency_DE", "KmapEncodingEquiv.encoding_edge_coverage"]),
     nextStep(ctx, "Sequence was the warm-up. Next: the chain's 3D contacts, as a Boolean function."));
   draw();
-  let lastW = stage.clientWidth;
-  const ro = new ResizeObserver(() => { if (Math.abs(stage.clientWidth - lastW) > 8) { lastW = stage.clientWidth; draw(); } }); ro.observe(stage);
-  return () => ro.disconnect();
+  return onWidthChange(stage, draw);
 }
 
 function nucleotideSquare(el, ctx) {

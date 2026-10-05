@@ -240,7 +240,7 @@ await generic("nav rapid");
 await page.goto(BASE + "#/ZZZZ/A/0001"); await sleep(2000);
 check("bad id", (await page.locator(".error").count()) === 1 && /not a PDB ID/.test(await text(".error")), `malformed id: "${await text(".error")}"`);
 logs.length = 0;
-await page.goto(BASE + "#/9ZZZ/A/0001"); await sleep(6000);
+await page.goto(BASE + "#/9ZZZ/A/0001"); await page.waitForSelector("#chapter .error", { timeout: 45000 }).catch(() => {}); await sleep(800);   // three PDB sources are tried first
 check("missing id", (await page.locator(".error").count()) === 1, `well-formed but missing id: "${await text(".error")}"`);
 logs.length = 0;
 await go("/1FNA/Q/0001");

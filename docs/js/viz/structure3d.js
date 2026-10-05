@@ -134,7 +134,16 @@ export async function createViewer(container, chain, { onPick } = {}) {
     if (!raf && running() && (moved || controls.autoRotate)) raf = requestAnimationFrame(loop);
   }
   controls.addEventListener("change", request);
-  const ro = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); request(); });
+  let sizing = 0;                                          // resize in the next frame, never inside the observer (see ui.js onWidthChange)
+  const ro = new ResizeObserver(() => {
+    if (sizing) return;
+    sizing = requestAnimationFrame(() => {
+      sizing = 0;
+      const w = container.clientWidth, h = container.clientHeight;
+      if (!alive || !w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); request();
+    });
+  });
   ro.observe(container);
   const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) request(); else if (raf) { cancelAnimationFrame(raf); raf = 0; } });
   io.observe(container);
@@ -155,7 +164,7 @@ export async function createViewer(container, chain, { onPick } = {}) {
     setRungs,
     dispose() {
       if (!alive) return;
-      alive = false; cancelAnimationFrame(raf); raf = 0; ro.disconnect(); io.disconnect(); document.removeEventListener("visibilitychange", onVis);
+      alive = false; cancelAnimationFrame(raf); raf = 0; cancelAnimationFrame(sizing); ro.disconnect(); io.disconnect(); document.removeEventListener("visibilitychange", onVis);
       controls.dispose(); listen.abort();
       pieces.forEach((p) => p.geo.dispose()); rungs.children.forEach((l) => l.geometry.dispose()); scene.clear();
       release(gl);

@@ -1,6 +1,6 @@
 // 0100 The structure as a circuit: the minimised contact function drawn as a two-level
 // AND–OR circuit (PLA view and gate view), evaluated live, verified on every input, exported.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, add, failBox } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, add, failBox, onWidthChange } from "../ui.js";
 import { contactMapCanvas } from "../viz/maps.js";
 import { circuitTerms, evaluate, verifyEverywhere, toPLA, toVerilog } from "../core/rules.js";
 import { bits } from "../core/encoding.js";
@@ -89,7 +89,7 @@ export default {
   async mount(el, ctx) {
     const { chain, structure } = ctx, cm = ctx.derived.contacts(), L = cm.L;
     let alive = true, ro = null;
-    this._off = () => { alive = false; ro?.disconnect(); };
+    this._off = () => { alive = false; ro?.(); };
     const status = h("div.loading", h("span.spinner"), "Minimising the contact function…");
     add(el, h("h1", "The structure as a circuit"),
       h("p.hook", `This chain is now one Boolean function, and its minimised cover is a circuit: one AND gate per term, one OR gate collecting them. Feed it the bits of two positions and it answers, exactly, whether those ${chain.entityType === "protein" ? "residues" : "nucleotides"} touch.`),
@@ -192,9 +192,7 @@ export default {
     measure();
     probe = cm.pairs[0] ? [...cm.pairs[0]] : [0, 1];
     drawFlow(); runProbe();                                  // the probe draws the AND plane, the gate and the map
-    let lastW = mapStage.clientWidth;
-    ro = new ResizeObserver(() => { if (Math.abs(mapStage.clientWidth - lastW) > 8) { lastW = mapStage.clientWidth; measure(); drawFlow(); drawPLA(); drawGate(); drawMap(); } });
-    ro.observe(mapStage);
+    ro = onWidthChange(mapStage, () => { measure(); drawFlow(); drawPLA(); drawGate(); drawMap(); });
   },
   unmount() { this._off?.(); },
 };

@@ -95,6 +95,19 @@ export function fitCanvas(canvas, cssW, cssH) {
 }
 export const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 export const stageWidth = (el) => Math.max(240, Math.min(el.clientWidth || 340, 720));
+/** Call fn() when el's width changes by more than `min` px, in the next animation frame. Never
+ *  redraw inside the ResizeObserver callback itself: that resizes the page while the browser is
+ *  still delivering size changes, which it reports as a "ResizeObserver loop" error. `fire`: also
+ *  call fn on the first observation. Returns a function that stops watching. */
+export function onWidthChange(el, fn, { min = 8, fire = false } = {}) {
+  let last = fire ? -Infinity : el.clientWidth, raf = 0;
+  const ro = new ResizeObserver(() => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = 0; const w = el.clientWidth; if (Math.abs(w - last) > min) { last = w; fn(w); } });
+  });
+  ro.observe(el);
+  return () => { ro.disconnect(); cancelAnimationFrame(raf); raf = 0; };
+}
 export const sleep = (t) => new Promise((r) => setTimeout(r, t));
 export const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 export function toast(msg, t = 3200) {

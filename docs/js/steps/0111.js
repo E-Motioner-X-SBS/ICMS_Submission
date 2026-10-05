@@ -1,5 +1,5 @@
 // 0111 Contacts become a Boolean function: the chain's contact map, in 3D and as a truth table.
-import { h, theoremBlock, tags, nextStep, css, stageWidth, add, residueLabel } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, stageWidth, add, residueLabel, onWidthChange } from "../ui.js";
 import { contactMapCanvas } from "../viz/maps.js";
 import { createViewer } from "../viz/structure3d.js";
 import { contactFunction } from "../core/qm.js";
@@ -13,7 +13,7 @@ export default {
     const f = contactFunction(cm.pairs, L), p = f.p;
     const resLabel = (i) => residueLabel(chain, i);
     let sel = null, viewer = null, map = null, alive = true, ro = null;
-    this._off = () => { alive = false; viewer?.dispose(); ro?.disconnect(); };
+    this._off = () => { alive = false; viewer?.dispose(); ro?.(); };
 
     // pick the busiest residue to start with
     let busiest = 0; for (let i = 0; i < L; i++) if (cm.neighbours(i).length > cm.neighbours(busiest).length) busiest = i;
@@ -114,9 +114,7 @@ export default {
       nextStep(ctx, "A Boolean function can be minimised. On a contact map, the pieces that survive turn out to be structure."));
 
     drawMap();
-    let lastW = mapStage.clientWidth;
-    ro = new ResizeObserver(() => { if (Math.abs(mapStage.clientWidth - lastW) > 8) { lastW = mapStage.clientWidth; drawMap(); } });
-    ro.observe(mapStage);
+    ro = onWidthChange(mapStage, () => { drawMap(); });
     choose(busiest);
     viewer = await createViewer(viewBox, chain, { onPick: (i) => choose(i) });
     if (!alive) { viewer?.dispose(); return; }

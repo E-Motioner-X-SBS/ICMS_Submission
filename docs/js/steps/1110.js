@@ -1,6 +1,6 @@
 // 1110 What the code can and cannot see: GF(2) linearity, the lex ↔ Gray permutation,
 // and the one thing Gray coding does change, Hamming distance.
-import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, reducedMotion, add } from "../ui.js";
+import { h, theoremBlock, tags, nextStep, css, inkOn, stageWidth, reducedMotion, add, onWidthChange } from "../ui.js";
 import { gray, bits, ham, encodeSequence, kmerCounts, AA_ORDER, AA_RAW, NUC_RAW, NUC_GRAYNAT, letterVar, alphabet } from "../core/encoding.js";
 import { barsSVG } from "../viz/maps.js";
 import { chainSegments } from "../core/contacts.js";
@@ -87,8 +87,8 @@ function permutation(ctx) {
   setTimeout(layout, 0);
   let auto = null;
   if (!reducedMotion()) auto = setTimeout(() => { gray_ = true; layout(); }, 1400);
-  let lastW = 0; const ro = new ResizeObserver(() => { if (Math.abs(stage.clientWidth - lastW) > 8) { lastW = stage.clientWidth; layout(); } }); ro.observe(stage);
-  return { stage, same, n: items.length, off: () => { clearTimeout(auto); ro.disconnect(); } };
+  const stopWatching = onWidthChange(stage, layout, { fire: true });
+  return { stage, same, n: items.length, off: () => { clearTimeout(auto); stopWatching(); } };
 }
 
 /** What changes: Hamming distance between contact partners. */
