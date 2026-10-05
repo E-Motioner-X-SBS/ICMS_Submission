@@ -321,3 +321,31 @@ sup { font-size: 0.7em; line-height: 0; }
 .flow button { border: 1px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 5px 10px; min-height: 34px; font: 600 13.5px/1 var(--sans); color: var(--ink); cursor: pointer; }
 .flow button .mono { color: var(--ink-3); font-size: 11.5px; }
 .flow li:nth-child(n+6):nth-child(-n+9) button { border-color: var(--teal); background: var(--teal-wash); }
+
+/* ── feedback card (home page, takeaways) ── */
+.feedback { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text qr" "form form"; gap: 12px 22px;
+  margin: 28px 0 12px; padding: 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+.feedback .fb-text { grid-area: text; min-width: 0; }
+.feedback .fb-text h2 { margin: 2px 0 6px; }
+.feedback .fb-text p { margin: 0 0 12px; font-size: 15.5px; color: var(--ink-2); }
+.feedback .fb-kicker { font: 650 12.5px/1 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--flip); }
+.feedback .fb-link { font-size: 13.5px; color: var(--ink-2); word-break: break-all; }
+.feedback .fb-qr { grid-area: qr; margin: 0; text-align: center; align-self: start; }
+.feedback .fb-qr-svg { display: block; width: 156px; height: 156px; padding: 6px; background: #FFFFFF; border-radius: 12px; border: 1px solid var(--rule); }
+.feedback .fb-qr-svg svg { display: block; width: 100%; height: 100%; }
+.feedback .fb-qr figcaption { font: 500 12.5px/1.3 var(--sans); color: var(--ink-3); margin-top: 6px; }
+.feedback .fb-frame, .feedback .fb-details { grid-area: form; min-width: 0; }
+/* heights measured from the form itself: it needs ~1,240 px at 640 px and wider, ~1,400 at 530 px,
+   ~1,530 at 330 px and ~1,570 at 300 px (narrow screens stack the 1–5 scale) */
+.feedback .fb-frame iframe { display: block; width: 100%; height: 1290px; border: 0; border-radius: 12px; background: #FFFFFF; }
+@media (max-width: 760px) { .feedback .fb-frame iframe { height: 1440px; } }
+.feedback .fb-details summary { cursor: pointer; font: 650 15px/1.3 var(--sans); padding: 10px 0; min-height: 44px; list-style: none; color: var(--ink); }
+.feedback .fb-details summary::-webkit-details-marker { display: none; }
+.feedback .fb-details summary::before { content: "＋ "; color: var(--flip); }
+.feedback .fb-details[open] summary::before { content: "－ "; }
+@media (max-width: 560px) {
+  .feedback { grid-template-columns: 1fr; grid-template-areas: "text" "qr" "form"; padding: 14px 12px; }
+  .feedback .fb-qr-svg { width: 132px; height: 132px; margin: 0 auto; }
+  .feedback .fb-frame iframe { height: 1560px; }
+}
+@media (max-width: 380px) { .feedback .fb-frame iframe { height: 1700px; } }

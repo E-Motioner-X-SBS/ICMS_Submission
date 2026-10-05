@@ -1,6 +1,6 @@
 // 1010 What it all means: the visitor's results with their provenance, the takeaways,
 // and the full theorem inventory, re-checkable here.
-import { h, theoremBlock, tags, css, add, dataTable } from "../ui.js";
+import { h, theoremBlock, tags, css, add, dataTable, feedbackCard } from "../ui.js";
 import { STATS, THEOREMS, runAll, TOPIC_LIST, REPO, TRUST_TEXT } from "../core/lean.js";
 import { encodeSequence, alphabet } from "../core/encoding.js";
 import { int, pct, ms } from "../core/format.js";
@@ -107,6 +107,7 @@ export default {
         h("a.btn", { href: `${REPO}/blob/main/SBS_ICMS2026_Poster.pdf`, target: "_blank", rel: "noopener" }, "The poster (PDF)"),
         h("a.btn.ghost", { href: REPO, target: "_blank", rel: "noopener" }, "Code and data on GitHub"),
         h("button.btn.ghost", { type: "button", on: { click: () => ctx.go("0000") } }, "Try another structure")),
+      feedbackCard(),
       h("p.small", { style: { marginTop: "16px" } }, "Shuvam Banerji Seal, Susmita Roy, Dwaipayan Roy. IISER Kolkata. ICMS 2026, abstract ICMS2026-F-8."));
 
     // the visitor's own results, with provenance

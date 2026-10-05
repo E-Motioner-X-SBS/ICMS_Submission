@@ -1,5 +1,5 @@
 // 0000 Pick a structure: search the PDB, or tap an offline example; choose a chain.
-import { h, add } from "../ui.js";
+import { h, add, feedbackCard } from "../ui.js";
 import { EXAMPLES, search, normalizeId } from "../core/rcsb.js";
 import { CHAPTERS } from "../app.js";
 
@@ -39,7 +39,8 @@ export default {
       input, results,
       h("h2", "Or start from an example"),
       h("p.small", "These five work offline, useful on conference Wi-Fi."),
-      examples);
+      examples,
+      feedbackCard({ collapsed: true }));
 
     if (ctx.structure) {
       const s = ctx.structure;

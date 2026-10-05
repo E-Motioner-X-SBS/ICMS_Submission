@@ -1,6 +1,7 @@
-// Small DOM toolkit shared by the chapters: an element builder, Lean syntax tinting,
-// theorem cards with live re-checks, evidence tags, and canvas sizing.
+// Small DOM toolkit shared by the chapters: an element builder, theorem cards with live
+// re-checks, evidence tags, canvas sizing, and the poster's feedback card.
 import { byChapter, get, TRUST_TEXT, TRUST_SHORT, NOTATION } from "./core/lean.js";
+import { FEEDBACK } from "./core/feedback.js";
 import { int, ms } from "./core/format.js";
 
 /** h("div.cls#id", {attrs, on: {click}}, children...) */
@@ -181,4 +182,49 @@ export function residueLabel(chain, k) {
   let strand = "";
   if (chain.strands) { let acc = 0; for (const s of chain.strands) { if (k < acc + s.length) { strand = `${s.id}:`; break; } acc += s.length; } }
   return `${strand}${r.one ?? "?"}${r.authSeqId ?? r.seqId ?? k}`;
+}
+
+// ── feedback ────────────────────────────────────────────────────────────────
+/** The feedback form's QR code as SVG: dark modules on white in every theme (so it scans), with
+ *  the site's 2 × 2 mark in the centre (error correction H leaves room for it). */
+export function feedbackQR(label = "QR code: open the poster's feedback form") {
+  const { size, rows } = FEEDBACK.qr, q = 3, N = size + 2 * q, m = 7, c0 = q + (size - m) / 2;
+  let d = "";
+  rows.forEach((row, r) => {
+    for (let c = 0; c < size; c++) {
+      const inMark = r + q >= c0 && r + q < c0 + m && c + q >= c0 && c + q < c0 + m;
+      if (row[c] === "1" && !inMark) d += `M${c + q},${r + q}h1v1h-1z`;
+    }
+  });
+  const u = (m - 2) / 20, mark = (x, y, on) => `<rect x="${c0 + 1 + x * u}" y="${c0 + 1 + y * u}" width="${8 * u}" height="${8 * u}" rx="${1.5 * u}" ${on ? 'fill="#E8871E"' : 'fill="none" stroke="#14304F" stroke-width="' + 1.6 * u + '"'}/>`;
+  return h("span.fb-qr-svg", { html: `<svg viewBox="0 0 ${N} ${N}" role="img" aria-label="${esc(label)}" shape-rendering="crispEdges">
+    <rect width="${N}" height="${N}" rx="1.2" fill="#FFFFFF"/><path d="${d}" fill="#14304F"/>
+    <rect x="${c0}" y="${c0}" width="${m}" height="${m}" rx="1" fill="#FFFFFF"/>
+    <g shape-rendering="geometricPrecision">${mark(1, 1, false)}${mark(11, 1, true)}${mark(1, 11, true)}${mark(11, 11, false)}</g></svg>` });
+}
+
+/** The poster's feedback form: a short invitation, a link and a QR code to open it elsewhere, and the
+ *  form itself embedded. collapsed: the form sits behind "Fill it in here" and is loaded only when
+ *  opened (the home page); otherwise it is shown and loaded as it scrolls into view. */
+export function feedbackCard({ collapsed = false } = {}) {
+  const short = FEEDBACK.url.replace(/^https?:\/\//, "");
+  const frame = () => (navigator.onLine === false
+    ? h("p.note", `The form needs an internet connection. Open it later at ${short}.`)
+    : h("iframe", { src: FEEDBACK.embed, title: FEEDBACK.title, loading: "lazy" }, "Loading the form…"));
+  let form;
+  if (collapsed) {
+    const box = h("div.fb-frame");
+    form = h("details.fb-details", { on: { toggle: (e) => { if (e.currentTarget.open && !box.firstChild) box.append(frame()); } } },
+      h("summary", "Fill it in here"), box);
+  } else form = h("div.fb-frame", frame());
+  return h("section.feedback#feedback", { "aria-label": "Feedback on the poster" },
+    h("div.fb-text",
+      h("span.fb-kicker", "Feedback"),
+      h("h2", "What did you think of the poster?"),
+      h("p", "Five short questions for the authors of poster ICMS2026-F-8: a rating, a yes or no, and room for a comment. The form is a Google Form; fill it in here, open it in a new tab, or scan the code with a phone."),
+      h("div.row",
+        h("a.btn", { href: FEEDBACK.url, target: "_blank", rel: "noopener" }, "Open the form", h("span", { "aria-hidden": "true" }, " ↗")),
+        h("span.fb-link.mono", short))),
+    h("figure.fb-qr", feedbackQR(), h("figcaption", "Scan to open the form")),
+    form);
 }
